@@ -38,7 +38,7 @@ export default async function RealtorProfilePage({ params }: { params: { slug: s
   })
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-4xl mx-auto px-4 py-8 mt-4 ">
       {/* Шапка профиля */}
       <div className="bg-white rounded-lg shadow-sm p-6 mb-8 text-center md:text-left">
         <div className="flex flex-col items-center md:flex-row gap-6">

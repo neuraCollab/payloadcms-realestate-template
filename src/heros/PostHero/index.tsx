@@ -9,6 +9,7 @@ import { formatAuthors } from '@/utilities/formatAuthors'
 export const PostHero: React.FC<{
   post: Post
 }> = ({ post }) => {
+  console.log(post)
   const { categories, heroImage, populatedAuthors, publishedAt, title } = post
 
   const hasAuthors =

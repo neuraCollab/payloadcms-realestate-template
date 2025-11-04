@@ -95,6 +95,7 @@ export default buildConfig({
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [
+
     ...plugins,
     // storage-adapter-placeholder
   ],

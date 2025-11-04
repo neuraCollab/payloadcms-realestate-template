@@ -15,7 +15,7 @@ export type BlogBlockType = {
 
 const PostCard: React.FC<{ post: Post; index: number }> = ({ post, index = 1 }) => {
   return (
-    <div className={`group opacity-0 animate-[fadeInUp_0.6s_ease-out_${0.3 + index * 0.1}s_forwards]`}>
+    <div className={`group animate-[fadeInUp_0.6s_ease-out_${0.3 + index * 0.1}s_forwards]`}>
       <a href={`/posts/${post.slug}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden rounded-lg mb-4 shadow-sm hover:shadow-md transition-all duration-300">
           <img

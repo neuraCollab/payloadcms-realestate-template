@@ -5,10 +5,7 @@ type FilterConditionData = {
   [key: string]: unknown
 }
 
-type PropertyRelation = {
-  relationTo: 'properties'
-  value: string
-}
+// Убираем PropertyRelation — он больше не нужен
 
 export const PropertiesBlock: Block = {
   slug: 'properties',
@@ -43,12 +40,13 @@ export const PropertiesBlock: Block = {
     {
       name: 'properties',
       type: 'relationship',
-      relationTo: 'properties',
+      // ✅ Изменено: теперь relationTo — массив коллекций
+      relationTo: ['commercial', 'flats', 'lands', 'residential-complexes'],
       hasMany: true,
       required: false,
       label: 'Выберите объекты недвижимости',
       admin: {
-        description: 'Выберите объекты недвижимости для отображения в блоке',
+        description: 'Выберите объекты из любых коллекций недвижимости',
       },
     },
     {

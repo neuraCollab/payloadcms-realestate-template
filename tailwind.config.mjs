@@ -24,7 +24,7 @@ const config = {
           secondary: '#FFD166', // Sun yellow
           'secondary-content': '#000000', // Чёрный текст на secondary (жёлтом)
 
-          accent: '#FF6F61', // Coral
+          accent: '#551e19ff', // Coral
           'accent-content': '#ffffff', // Белый текст на accent
 
           neutral: '#2A2E37', // Deep gray
@@ -108,42 +108,42 @@ const config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       colors: {
-        accent: {
-          DEFAULT: 'rgb(var(--accent) / <alpha-value>)',
-          foreground: 'rgb(var(--accent-content) / <alpha-value>)',
-        },
-        background: 'rgb(var(--base-100) / <alpha-value>)',
-        border: 'rgb(var(--base-200) / <alpha-value>)',
+        background: 'hsl(var(--background) / <alpha-value>)',
+        foreground: 'hsl(var(--foreground) / <alpha-value>)',
         card: {
-          DEFAULT: 'rgb(var(--base-100) / <alpha-value>)',
-          foreground: 'rgb(var(--base-content) / <alpha-value>)',
-        },
-        destructive: {
-          DEFAULT: 'rgb(var(--error) / <alpha-value>)',
-          foreground: 'rgb(var(--error-content) / <alpha-value>)',
-        },
-        foreground: 'rgb(var(--base-content) / <alpha-value>)',
-        input: 'rgb(var(--base-200) / <alpha-value>)',
-        muted: {
-          DEFAULT: 'rgb(var(--base-200) / <alpha-value>)',
-          foreground: 'rgb(var(--base-content) / <alpha-value>)',
+          DEFAULT: 'hsl(var(--card) / <alpha-value>)',
+          foreground: 'hsl(var(--card-foreground) / <alpha-value>)',
         },
         popover: {
-          DEFAULT: 'rgb(var(--base-100) / <alpha-value>)',
-          foreground: 'rgb(var(--base-content) / <alpha-value>)',
+          DEFAULT: 'hsl(var(--popover) / <alpha-value>)',
+          foreground: 'hsl(var(--popover-foreground) / <alpha-value>)',
         },
         primary: {
-          DEFAULT: 'rgb(var(--primary) / <alpha-value>)',
-          foreground: 'rgb(var(--primary-content) / <alpha-value>)',
+          DEFAULT: 'hsl(var(--primary) / <alpha-value>)',
+          foreground: 'hsl(var(--primary-foreground) / <alpha-value>)',
         },
-        ring: 'rgb(var(--primary) / <alpha-value>)',
         secondary: {
-          DEFAULT: 'rgb(var(--secondary) / <alpha-value>)',
-          foreground: 'rgb(var(--secondary-content) / <alpha-value>)',
+          DEFAULT: 'hsl(var(--secondary) / <alpha-value>)',
+          foreground: 'hsl(var(--secondary-foreground) / <alpha-value>)',
         },
-        success: 'rgb(var(--success) / <alpha-value>)',
-        error: 'rgb(var(--error) / <alpha-value>)',
-        warning: 'rgb(var(--warning) / <alpha-value>)',
+        muted: {
+          DEFAULT: 'hsl(var(--muted) / <alpha-value>)',
+          foreground: 'hsl(var(--muted-foreground) / <alpha-value>)',
+        },
+        accent: {
+          DEFAULT: 'hsl(var(--accent) / <alpha-value>)',
+          foreground: 'hsl(var(--accent-foreground) / <alpha-value>)',
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive) / <alpha-value>)',
+          foreground: 'hsl(var(--destructive-foreground) / <alpha-value>)',
+        },
+        border: 'hsl(var(--border) / <alpha-value>)',
+        input: 'hsl(var(--input) / <alpha-value>)',
+        ring: 'hsl(var(--ring) / <alpha-value>)',
+        success: 'hsl(var(--success, 142.1 70.6% 45.3%) / <alpha-value>)',
+        warning: 'hsl(var(--warning, 38 92% 50%) / <alpha-value>)',
+        error: 'hsl(var(--error, 0 84.2% 60.2%) / <alpha-value>)',
       },
       fontFamily: {
         mono: ['Satoshi', 'var(--font-geist-mono)'],

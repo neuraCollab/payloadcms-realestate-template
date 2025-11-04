@@ -54,6 +54,7 @@ export type SupportedTimezones =
   | 'Asia/Singapore'
   | 'Asia/Tokyo'
   | 'Asia/Seoul'
+  | 'Australia/Brisbane'
   | 'Australia/Sydney'
   | 'Pacific/Guam'
   | 'Pacific/Noumea'
@@ -171,7 +172,7 @@ export interface Page {
       root: {
         type: string;
         children: {
-          type: string;
+          type: any;
           version: number;
           [k: string]: unknown;
         }[];
@@ -253,9 +254,28 @@ export interface Page {
          */
         showAllLink?: string | null;
         /**
-         * Выберите объекты недвижимости для отображения в блоке
+         * Выберите объекты из любых коллекций недвижимости
          */
-        properties?: (number | Property)[] | null;
+        properties?:
+          | (
+              | {
+                  relationTo: 'commercial';
+                  value: number | Commercial;
+                }
+              | {
+                  relationTo: 'flats';
+                  value: number | Flat;
+                }
+              | {
+                  relationTo: 'lands';
+                  value: number | Land;
+                }
+              | {
+                  relationTo: 'residential-complexes';
+                  value: number | ResidentialComplex;
+                }
+            )[]
+          | null;
         layout?: ('grid' | 'list') | null;
         /**
          * Минимум 3, максимум 12 объектов
@@ -509,7 +529,7 @@ export interface Post {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -543,7 +563,7 @@ export interface Media {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -667,6 +687,13 @@ export interface User {
   hash?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
   password?: string | null;
 }
 /**
@@ -678,7 +705,7 @@ export interface CallToActionBlock {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -729,7 +756,7 @@ export interface ContentBlock {
           root: {
             type: string;
             children: {
-              type: string;
+              type: any;
               version: number;
               [k: string]: unknown;
             }[];
@@ -786,7 +813,7 @@ export interface ArchiveBlock {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -822,7 +849,7 @@ export interface FormBlock {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -879,7 +906,7 @@ export interface Form {
               root: {
                 type: string;
                 children: {
-                  type: string;
+                  type: any;
                   version: number;
                   [k: string]: unknown;
                 }[];
@@ -909,6 +936,7 @@ export interface Form {
             label?: string | null;
             width?: number | null;
             defaultValue?: string | null;
+            placeholder?: string | null;
             options?:
               | {
                   label: string;
@@ -961,7 +989,7 @@ export interface Form {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -993,7 +1021,7 @@ export interface Form {
           root: {
             type: string;
             children: {
-              type: string;
+              type: any;
               version: number;
               [k: string]: unknown;
             }[];
@@ -1029,217 +1057,6 @@ export interface NavbarBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'navbar';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "properties".
- */
-export interface Property {
-  id: number;
-  title: string;
-  slug: string;
-  address: string;
-  /**
-   * Можно указать вручную или они будут рассчитаны по адресу
-   */
-  coordinates?: {
-    lat?: number | null;
-    lng?: number | null;
-    address?: string | null;
-  };
-  price: number;
-  type: 'sale' | 'rent';
-  bedrooms: number;
-  bathrooms: number;
-  area: number;
-  images: {
-    image: number | Media;
-    id?: string | null;
-  }[];
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  features?:
-    | {
-        feature: string;
-        id?: string | null;
-      }[]
-    | null;
-  status?: ('active' | 'sold' | 'draft') | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "agents".
- */
-export interface Agent {
-  id: number;
-  name: string;
-  position: string;
-  image: number | Media;
-  email: string;
-  phone: string;
-  description?: string | null;
-  socialLinks?:
-    | {
-        platform?: ('linkedin' | 'twitter' | 'facebook' | 'instagram') | null;
-        url: string;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "testimonials".
- */
-export interface Testimonial {
-  id: number;
-  name: string;
-  location: string;
-  image: number | Media;
-  text: string;
-  rating: number;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "flats".
- */
-export interface Flat {
-  id: number;
-  title: string;
-  slug: string;
-  realtor?: (number | null) | User;
-  propertyCategory: 'apartment' | 'apartments' | 'studio' | 'townhouse' | 'penthouse' | 'house-part';
-  transactionType: 'sale' | 'rent' | 'daily';
-  location: {
-    city: string;
-    district: string;
-    address: string;
-    metro?: string | null;
-    metroTime?: number | null;
-  };
-  /**
-   * Заполняются автоматически
-   */
-  coordinates?: {
-    lat?: number | null;
-    lng?: number | null;
-    formattedAddress?: string | null;
-  };
-  rooms: 'studio' | '1' | '2' | '3' | '4' | '5plus';
-  area: {
-    total: number;
-    living?: number | null;
-    kitchen?: number | null;
-  };
-  floorInfo?: {
-    floor?: number | null;
-    totalFloors?: number | null;
-  };
-  price: number;
-  currency?: ('RUB' | 'USD' | 'EUR') | null;
-  buildingType?: ('panel' | 'brick' | 'monolithic' | 'block' | 'wood') | null;
-  yearBuilt?: number | null;
-  ceilingHeight?: number | null;
-  images?:
-    | {
-        image: number | Media;
-        alt?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  layout?: (number | null) | Media;
-  video?: string | null;
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  amenities?:
-    | {
-        amenity: string;
-        id?: string | null;
-      }[]
-    | null;
-  residentialComplex?: (number | null) | ResidentialComplex;
-  status?: ('active' | 'sold' | 'unpublished' | 'draft') | null;
-  isFeatured?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "residential-complexes".
- */
-export interface ResidentialComplex {
-  id: number;
-  name: string;
-  slug: string;
-  status: 'planning' | 'under-construction' | 'completed';
-  type: 'economy' | 'comfort' | 'business' | 'premium';
-  developer?: string | null;
-  location: {
-    city: string;
-    district: string;
-    address: string;
-  };
-  completionDate?: string | null;
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  images?:
-    | {
-        image: number | Media;
-        id?: string | null;
-      }[]
-    | null;
-  infrastructure?:
-    | {
-        item?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1299,7 +1116,7 @@ export interface Commercial {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -1316,6 +1133,130 @@ export interface Commercial {
     email?: string | null;
   };
   status?: ('active' | 'sold' | 'unpublished' | 'draft') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "flats".
+ */
+export interface Flat {
+  id: number;
+  title: string;
+  slug: string;
+  realtor?: (number | null) | User;
+  propertyCategory: 'apartment' | 'apartments' | 'studio' | 'townhouse' | 'penthouse' | 'house-part';
+  transactionType: 'sale' | 'rent' | 'daily';
+  location: {
+    city: string;
+    district: string;
+    address: string;
+    metro?: string | null;
+    metroTime?: number | null;
+  };
+  /**
+   * Заполняются автоматически
+   */
+  coordinates?: {
+    lat?: number | null;
+    lng?: number | null;
+    formattedAddress?: string | null;
+  };
+  rooms: 'studio' | '1' | '2' | '3' | '4' | '5plus';
+  area: {
+    total: number;
+    living?: number | null;
+    kitchen?: number | null;
+  };
+  floorInfo?: {
+    floor?: number | null;
+    totalFloors?: number | null;
+  };
+  price: number;
+  currency?: ('RUB' | 'USD' | 'EUR') | null;
+  buildingType?: ('panel' | 'brick' | 'monolithic' | 'block' | 'wood') | null;
+  yearBuilt?: number | null;
+  ceilingHeight?: number | null;
+  images?:
+    | {
+        image: number | Media;
+        alt?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  layout?: (number | null) | Media;
+  video?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  amenities?:
+    | {
+        amenity: string;
+        id?: string | null;
+      }[]
+    | null;
+  residentialComplex?: (number | null) | ResidentialComplex;
+  status?: ('active' | 'sold' | 'unpublished' | 'draft') | null;
+  isFeatured?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "residential-complexes".
+ */
+export interface ResidentialComplex {
+  id: number;
+  name: string;
+  slug: string;
+  status: 'planning' | 'under-construction' | 'completed';
+  type: 'economy' | 'comfort' | 'business' | 'premium';
+  developer?: string | null;
+  location: {
+    city: string;
+    district: string;
+    address: string;
+  };
+  completionDate?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  images?:
+    | {
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  infrastructure?:
+    | {
+        item?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1353,6 +1294,93 @@ export interface Land {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agents".
+ */
+export interface Agent {
+  id: number;
+  name: string;
+  position: string;
+  image: number | Media;
+  email: string;
+  phone: string;
+  description?: string | null;
+  socialLinks?:
+    | {
+        platform?: ('linkedin' | 'twitter' | 'facebook' | 'instagram') | null;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials".
+ */
+export interface Testimonial {
+  id: number;
+  name: string;
+  location: string;
+  image: number | Media;
+  text: string;
+  rating: number;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "properties".
+ */
+export interface Property {
+  id: number;
+  title: string;
+  slug: string;
+  address: string;
+  /**
+   * Можно указать вручную или они будут рассчитаны по адресу
+   */
+  coordinates?: {
+    lat?: number | null;
+    lng?: number | null;
+    address?: string | null;
+  };
+  price: number;
+  type: 'sale' | 'rent';
+  bedrooms: number;
+  bathrooms: number;
+  area: number;
+  images: {
+    image: number | Media;
+    id?: string | null;
+  }[];
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  features?:
+    | {
+        feature: string;
+        id?: string | null;
+      }[]
+    | null;
+  status?: ('active' | 'sold' | 'draft') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "reviews".
  */
 export interface Review {
@@ -1376,7 +1404,7 @@ export interface Message {
     root: {
       type: string;
       children: {
-        type: string;
+        type: any;
         version: number;
         [k: string]: unknown;
       }[];
@@ -2279,6 +2307,13 @@ export interface UsersSelect<T extends boolean = true> {
   hash?: T;
   loginAttempts?: T;
   lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2659,6 +2694,7 @@ export interface FormsSelect<T extends boolean = true> {
               label?: T;
               width?: T;
               defaultValue?: T;
+              placeholder?: T;
               options?:
                 | T
                 | {

@@ -36,7 +36,7 @@ export const TestimonialsBlock: React.FC<TestimonialsBlockType> = ({
 
   return (
     <section className="px-4 py-16">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-2xl mx-auto">
         {/* Заголовок */}
         <div className="text-center mb-12 opacity-0 animate-[fadeInUp_0.6s_ease-out_0.1s_forwards]">
           <div className="text-sm text-primary mb-2 font-medium">{label}</div>

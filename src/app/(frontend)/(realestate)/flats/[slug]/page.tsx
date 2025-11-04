@@ -2,9 +2,10 @@
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { notFound } from 'next/navigation'
-import ImageGallery from '@/components/ImageGallery'
-import { RealtorReviewForm } from '@/components/Forms/RealtorReviewForm'
+import ImageGallery from '@/components/ImageGallery' 
 import { RichMessageForm } from '@/components/RichMessageForm'
+import RichText from '@/components/RichText'
+import Link from 'next/link'
 
 export default async function FlatDetailPage({ params }: { params: { slug: string } }) {
   const payload = await getPayload({ config })
@@ -20,15 +21,17 @@ export default async function FlatDetailPage({ params }: { params: { slug: strin
   }
 
   const data = flat.docs[0]
+  if(data.realtor) {
 
-  const reviews = await payload.find({
-    collection: 'reviews',
-    where: {
-      realtor: { equals: data.realtor.id },
-      status: { equals: 'approved' },
-    },
-    sort: '-createdAt',
-  })
+    const reviews = await payload.find({
+      collection: 'reviews',
+      where: {
+        realtor: { equals: data.realtor.id },
+        status: { equals: 'approved' },
+      },
+      sort: '-createdAt',
+    })
+  }
   //   console.log('Reviews:', reviews.docs)
 
   return (
@@ -46,12 +49,7 @@ export default async function FlatDetailPage({ params }: { params: { slug: strin
           </div>
         </div>
       </div>
-
-      {data.realtor && (
-        <div className="mt-8">
-          <RealtorReviewForm realtorId={data.realtor.id} />
-        </div>
-      )}
+ 
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Основной контент */}
@@ -100,7 +98,7 @@ export default async function FlatDetailPage({ params }: { params: { slug: strin
               <h2 className="text-xl font-semibold mb-4">Описание</h2>
               <div className="prose max-w-none">
                 {/* Рендеринг richText */}
-                {JSON.stringify(data.description)}
+                 <RichText className="max-w-[48rem] mx-auto" data={data.description} enableGutter={false} />
               </div>
             </div>
           )}
@@ -109,37 +107,56 @@ export default async function FlatDetailPage({ params }: { params: { slug: strin
         {/* Боковая панель */}
         <div className="space-y-6">
           {/* Контактная информация */}
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            {data.realtor && (
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <h3 className="text-lg font-semibold mb-3">Риелтор</h3>
-                <div className="flex items-center gap-4">
-                  {data.realtor.photo && (
-                    <img
-                      src={data.realtor.photo.url}
-                      alt={data.realtor.name}
-                      className="w-16 h-16 rounded-full object-cover"
-                    />
-                  )}
-                  <div>
-                    <div className="font-semibold">{data.realtor.name}</div>
-                    <div className="text-gray-600">{data.realtor.agency}</div>
-                    <div className="text-gray-600">{data.realtor.phone}</div>
-                  </div>
-                </div>
-              </div>
-            )}
-            <h3 className="text-lg font-semibold mb-4">Контактная информация</h3>
 
-            <button className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors mb-3">
-              Показать телефон
-            </button>
-            <button className="w-full border border-blue-600 text-blue-600 py-3 px-4 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
-              Написать сообщение
-            </button>
-            <div className="mt-12"></div>
+
+<div className="bg-white rounded-lg shadow-sm p-6">
+  {data.realtor && (
+    <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+      <h3 className="text-lg font-semibold mb-3">Риелтор</h3>
+      <Link href={`/realtors/${data.realtor.slug}`} className="block">
+        <div className="flex items-center gap-4 hover:opacity-80 transition-opacity">
+          {data.realtor.photo && (
+            <img
+              src={data.realtor.photo.url}
+              alt={data.realtor.name}
+              className="w-16 h-16 rounded-full object-cover cursor-pointer"
+            />
+          )}
+          <div>
+            <div className="font-semibold text-blue-600 hover:underline">
+              {data.realtor.name}
+            </div>
+            <div className="text-gray-600">{data.realtor.agency}</div>
+            <div className="text-gray-600">{data.realtor.phone}</div>
           </div>
+        </div>
+      </Link>
+    </div>
+  )}
 
+  <h3 className="text-lg font-semibold mb-4">Контактная информация</h3>
+
+  <button className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors mb-3">
+    Показать телефон
+  </button>
+
+  {data.realtor ? (
+    <Link href={`/realtors/${data.realtor.slug}`} className="block w-full">
+      <button className="w-full border border-blue-600 text-blue-600 py-3 px-4 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
+        Написать сообщение
+      </button>
+    </Link>
+  ) : (
+    <button
+      className="w-full border border-gray-300 text-gray-500 py-3 px-4 rounded-lg font-semibold cursor-not-allowed"
+      disabled
+    >
+      Написать сообщение
+    </button>
+  )}
+
+  <div className="mt-12"></div>
+</div>
           {/* Удобства */}
           {data.amenities && data.amenities.length > 0 && (
             <div className="bg-white rounded-lg shadow-sm p-6">

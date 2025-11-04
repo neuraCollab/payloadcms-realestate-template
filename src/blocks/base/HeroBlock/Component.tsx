@@ -18,7 +18,7 @@ export const HeroBlock = ({
   const [before, after] = highlight ? headline.split(highlight) : [headline, null]
 
   return (
-    <section className="px-4 py-16 text-center">
+    <section className="px-4 my-[-32px] text-center">
       <div className="max-w-4xl mx-auto space-y-4">
         {/* Бейдж */}
         {badgeText && (

@@ -26,7 +26,7 @@ export const PropertyHeroBlock: React.FC<PropertyHeroBlockType> = ({ property })
   }
 
   return (
-    <section className="relative h-[80vh] overflow-hidden">
+    <section className="relative h-[60vh] overflow-hidden">
       {/* Основное изображение */}
       <div className="absolute inset-0">
         <img
