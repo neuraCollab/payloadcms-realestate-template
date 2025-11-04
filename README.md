@@ -1,142 +1,138 @@
 # Real Estate Template (Next.js + Payload CMS)
 
-Современный шаблон для сайта недвижимости на базе Next.js 15, Payload CMS и Tailwind CSS. Подходит как стартовый проект для агентств и маркетплейсов недвижимости: каталог объектов, страницы проектов, блог, поиск и интеграция с админкой Payload.
+A modern real estate website template based on Next.js 15, Payload CMS, and Tailwind CSS. Suitable as a starter project for real estate agencies and marketplaces: a property catalog, project pages, blog, search, and integration with the Payload admin panel.
 
 ### Click on image to watch demo
 [![Demo Video](assets/image.png)](https://www.youtube.com/watch?v=jh0KOi1ZXtg)
 
 
-## Ключевые технологии
+## Key technologies
 - **Next.js 15** (App Router, RSC)
 - **React 19** + **TypeScript**
-- **Payload CMS** (+ плагины: SEO, Search, Redirects, Nested Docs, Form Builder, Admin Bar, Live Preview)
-- **PostgreSQL** (адаптер `@payloadcms/db-postgres`)
+- **Payload CMS** (+ plugins: SEO, Search, Redirects, Nested Docs, Form Builder, Admin Bar, Live Preview)
+- **PostgreSQL** (adapter `@payloadcms/db-postgres`)
 - **Tailwind CSS** (+ `tailwindcss-animate`, `@tailwindcss/typography`)
 - **UI**: Radix UI, Lucide Icons, Flowbite
-- **Изображения**: `sharp`
-- **Карта**: Leaflet + React Leaflet
+- **Images**: `sharp`
+- **Map**: Leaflet + React Leaflet
 - **Sitemap**: `next-sitemap`
 
-## Что входит
-- **Каталог недвижимости**: объекты, типы (квартиры, коммерция, земли, ЖК), агенты, отзывы
-- **Страницы и блог**: посты, категории, пагинация, SEO
-- **Поиск и фильтры**: страницы поиска и листинги по типам
-- **Сео и редиректы**: плагины Payload для SEO и редиректов
-- **Сидинг контента**: API-роут для быстрого наполнения демо-данными
-- **Админка Payload**: глобалы `Header` и `Footer`, коллекции и медиа
-- **Sitemap**: карты для страниц и постов
+## What's included
+- **Real Estate Catalog**: properties, types (apartments, commercial, land, residential complexes), agents, reviews
+- **Pages and Blog**: posts, categories, pagination, SEO
+- **Search and Filters**: search pages and listings by type
+- **SEO and Redirects**: Payload plugins for SEO and redirects
+- **Content Seeding**: API route for quickly populating demo data
+- **Payload Admin**: `Header` and `Footer` globals, collections, and media
+- **Sitemap**: maps for pages and posts
 
-## Структура проекта
-- `src/app/(frontend)` — клиентские страницы
-  - `page.tsx` — главная
-  - `properties`, `posts`, `search`, `[slug]` — ключевые разделы
-  - `(realestate)` — листинги по типам: `flats`, `commercial`, `lands`, `residential-complexes`
-  - `(sitemaps)` — `pages-sitemap.xml`, `posts-sitemap.xml`
-  - `next/exit-preview`, `next/preview`, `next/seed` — служебные роуты
-- `src/collections` — коллекции Payload: `Properties`, `Agents`, `Flats`, `Commercial`, `Lands`, `ResidentialComplex`, `Pages`, `Posts`, `Categories`, `Media`, `Testimonials`, `Reviews`, `Messages`, `Users`
-- `src/blocks` — конструктор блоков для страниц (базовые, формы, блоки для недвижимости)
-- `src/Header`, `src/Footer` — глобальные зоны с конфигами Payload
-- `src/payload.config.ts` — конфигурация Payload (PostgreSQL, плагины, коллекции, глобалы)
+## Project Structure
+- `src/app/(frontend)` — client pages
+- `page.tsx` — main page
+- `properties` `posts`, `search`, `[slug]` — key sections
+- `(realestate)` — listings by type: `flats`, `commercial`, `lands`, `residential-complexes`
+- `(sitemaps)` — `pages-sitemap.xml`, `posts-sitemap.xml`
+- `next/exit-preview`, `next/preview`, `next/seed` — utility routes
+- `src/collections` — Payload collections: `Properties`, `Agents`, `Flats`, `Commercial`, `Lands`, `ResidentialComplex`, `Pages`, `Posts`, `Categories`, `Media`, `Testimonials`, `Reviews`, `Messages`, `Users`
+- `src/blocks` — page block constructor (base, forms, property blocks)
+- `src/Header`, `src/Footer` — global zones with Payload configs
+- `src/payload.config.ts` — Payload configuration (PostgreSQL, plugins, collections, globals)
 
-## Быстрый старт (pnpm)
-1) Установите зависимости
+## Quick Start (pnpm)
+1) Install dependencies
 ```bash
 pnpm install
 ```
 
-2) Создайте `.env` в корне
+2) Create `.env` in the root
 ```env
 PAYLOAD_SECRET=your-strong-secret
 DATABASE_URI=postgres://user:password@localhost:5432/dbname
-# Опционально для превью и крон-задач
+# Optional for previews and cron jobs
 CRON_SECRET=some-cron-token
 ```
 
-3) Запустите инфраструктуру (PostgreSQL и веб-интерфейс)
+3) Start the infrastructure (PostgreSQL and web interface)
 ```bash
 docker compose up -d --build
 ```
 
-4) Запуск в dev-режиме
+4) Run in dev mode
 ```bash
 pnpm dev
 ```
 - Frontend: http://localhost:3000
-- Админка Payload: http://localhost:3000/admin
+- Admin Payload: http://localhost:3000/admin
 
-5) Билд и прод-режим
+5) Build and Prod mode
 ```bash
 pnpm build
 pnpm start
 ```
 
-6) Сидинг демо-данных (опционально)
-- Откройте: `GET http://localhost:3000/next/seed`
+6) Seeding demo data (optional)
+- Open: `GET http://localhost:3000/next/seed`
 
-## Запуск в Docker
-Предоставлен `Dockerfile` и `docker-compose.yml`.
+## Run in Docker
+`Dockerfile` and `docker-compose.yml` are provided.
 
-Быстрый старт:
+Quick start:
 ```bash
-# Заполните .env как в примере выше
+# Fill in .env as in the example above
 docker compose up -d --build
 ```
-- Приложение и админка будут доступны на `http://localhost:3000` (проверьте маппинги в `docker-compose.yml`).
+- The application and admin panel will be available at `http://localhost:3000` (check the mappings in `docker-compose.yml`).
 
-## Импорт/экспорт базы данных (PostgreSQL в Docker)
+## Database Import/Export (PostgreSQL in Docker)
 
-### Импорт из локального SQL-бэкапа `./db/mydb_backup.sql`
+### Import from a local SQL backup `./db/mydb_backup.sql`
 ```bash
-# Скопировать файл в контейнер
+# Copy file to container
 docker cp ./db/mydb_backup.sql my_postgres:/tmp/mydb_backup.sql
 
-# Импортировать в базу (замените пользователя/БД при необходимости)
+# Import into database (replace user/DB if necessary)
 docker exec -it my_postgres psql -U admin -d mydb -f /tmp/mydb_backup.sql
 ```
 
-### Экспорт бэкапа из контейнера
+### Export backup from container
 
-1. Создать дамп внутри контейнера
+1. Create dump inside container
 ```bash
 docker exec -t my_postgres pg_dump -U admin -d mydb -f /tmp/mydb_backup.sql
 ```
 
-2. Скопировать на хост
+2. Copy to host
 ```bash
 docker cp my_postgres:/tmp/mydb_backup.sql ./mydb_backup.sql
 ```
 
-## Основные коллекции (Payload CMS)
-- **Properties** — объекты недвижимости (поля: цена, площадь, спальни/ванные, адрес, медиа, особенности)
-- **Flats / Commercial / Lands / ResidentialComplex** — типизированные разделы и листинги
-- **Agents** — агенты и контактные данные
-- **Pages** — статические страницы из блоков
-- **Posts / Categories** — блог
-- **Media** — медиафайлы
-- **Testimonials / Reviews** — отзывы и рейтинги
-- **Messages** — входящие сообщения с форм
-- **Users** — пользователи админки
+## Main Collections (Payload CMS)
+- **Properties** — real estate properties (fields: price, area, bedrooms/baths, address, media, features)
+- **Flats / Commercial / Lands / Residential Complex** — typed sections and listings
+- **Agents** — agents and contact information
+- **Pages** — static pages from blocks
+- **Posts / Categories** — blog
+- **Media** — media files
+- **Testimonials / Reviews** — reviews and ratings
+- **Messages** — incoming messages from forms
+- **Users** — admin users
 
-## Страницы и функциональность
-- **Главная**: промо-блоки, подборки объектов
-- **Каталог**: `/(frontend)/properties`, фильтры и пагинация
-- **Детальная объекта**: `/(frontend)/properties/[slug]`
-- **Поиск**: `/(frontend)/search`
-- **Блог**: `/(frontend)/posts` и `/(frontend)/posts/[slug]`
-- **Страницы из CMS**: `/[slug]`
+## Pages and Functionality
+- **Home**: promo blocks, property selections
+- **Catalog**: `/(frontend)/properties`, filters and pagination
+- **Object details**: `/(frontend)/properties/[slug]`
+- **Search**: `/(frontend)/search`
+- **Blog**: `/(frontend)/posts` and `/(frontend)/posts/[slug]`
+- **CMS pages**: `/[slug]`
 - **Sitemaps**: `/(frontend)/(sitemaps)/...`
 
-## Скрипты
-- `pnpm dev` — запуск разработки (Turbopack)
-- `pnpm build` — сборка
-- `pnpm start` — старт прод-режима
-- `pnpm generate:types` — генерация типов Payload
-- `pnpm generate:importmap` — генерация import map для админки
-- `pnpm lint` / `pnpm lint:fix` — линтинг
+## Scripts
+- `pnpm dev` — start development (Turbopack)
+- `pnpm build` — build
+- `pnpm start` — start prod mode
+- `pnpm generate:types` — generate payload types
+- `pnpm generate:importmap` — generate import map for the admin panel
+- `pnpm lint` / `pnpm lint:fix` — linting
 
-## Заметки по конфигурации
-- База данных: по умолчанию настроен адаптер **PostgreSQL** (`DATABASE_URI`). В коде есть закомментированный пример MongoDB-адаптера.
-- Глобалы: `Header`, `Footer` управляются из Payload.
-- Live Preview настроен с брейкпоинтами для Mobile/Tablet/Desktop.
-- SEO / Redirects / Search плагины в `src/plugins` подключены через `src/payload.config.ts`.
- 
+## Configuration notes
+- Database: The PostgreSQL adapter (`DATABASE_URI`) is configured by default. The code contains a commented example of a MongoDB adapter.
