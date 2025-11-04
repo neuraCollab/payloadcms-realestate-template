@@ -1,149 +1,142 @@
-# Real Estate Website
+# Real Estate Template (Next.js + Payload CMS)
 
-Современный веб-сайт для агентства недвижимости, построенный с использованием Next.js, Payload CMS и Tailwind CSS.
+Современный шаблон для сайта недвижимости на базе Next.js 15, Payload CMS и Tailwind CSS. Подходит как стартовый проект для агентств и маркетплейсов недвижимости: каталог объектов, страницы проектов, блог, поиск и интеграция с админкой Payload.
 
-## Функциональность
+### Click on image to watch demo
+[![Demo Video](assets/image.png)](https://www.youtube.com/watch?v=jh0KOi1ZXtg)
 
-### Блоки страниц
 
-1. **Hero Block**
-   - Главный баннер с изображением и текстом
-   - Настраиваемый заголовок и подзаголовок
-   - Кнопки призыва к действию
+## Ключевые технологии
+- **Next.js 15** (App Router, RSC)
+- **React 19** + **TypeScript**
+- **Payload CMS** (+ плагины: SEO, Search, Redirects, Nested Docs, Form Builder, Admin Bar, Live Preview)
+- **PostgreSQL** (адаптер `@payloadcms/db-postgres`)
+- **Tailwind CSS** (+ `tailwindcss-animate`, `@tailwindcss/typography`)
+- **UI**: Radix UI, Lucide Icons, Flowbite
+- **Изображения**: `sharp`
+- **Карта**: Leaflet + React Leaflet
+- **Sitemap**: `next-sitemap`
 
-2. **Properties Block**
-   - Отображение списка объектов недвижимости
-   - Фильтрация по:
-     - Цене
-     - Типу недвижимости (продажа/аренда)
-     - Количеству спален
-     - Количеству ванных
-     - Площади
-   - Поиск по названию
-   - Пагинация
-   - Сетка/список отображения
+## Что входит
+- **Каталог недвижимости**: объекты, типы (квартиры, коммерция, земли, ЖК), агенты, отзывы
+- **Страницы и блог**: посты, категории, пагинация, SEO
+- **Поиск и фильтры**: страницы поиска и листинги по типам
+- **Сео и редиректы**: плагины Payload для SEO и редиректов
+- **Сидинг контента**: API-роут для быстрого наполнения демо-данными
+- **Админка Payload**: глобалы `Header` и `Footer`, коллекции и медиа
+- **Sitemap**: карты для страниц и постов
 
-3. **Property Hero Block**
-   - Детальный баннер для страницы объекта
-   - Основное изображение
-   - Информация о цене и типе
-   - Кнопки для связи с агентом и записи на просмотр
+## Структура проекта
+- `src/app/(frontend)` — клиентские страницы
+  - `page.tsx` — главная
+  - `properties`, `posts`, `search`, `[slug]` — ключевые разделы
+  - `(realestate)` — листинги по типам: `flats`, `commercial`, `lands`, `residential-complexes`
+  - `(sitemaps)` — `pages-sitemap.xml`, `posts-sitemap.xml`
+  - `next/exit-preview`, `next/preview`, `next/seed` — служебные роуты
+- `src/collections` — коллекции Payload: `Properties`, `Agents`, `Flats`, `Commercial`, `Lands`, `ResidentialComplex`, `Pages`, `Posts`, `Categories`, `Media`, `Testimonials`, `Reviews`, `Messages`, `Users`
+- `src/blocks` — конструктор блоков для страниц (базовые, формы, блоки для недвижимости)
+- `src/Header`, `src/Footer` — глобальные зоны с конфигами Payload
+- `src/payload.config.ts` — конфигурация Payload (PostgreSQL, плагины, коллекции, глобалы)
 
-4. **Property Features Block**
-   - Детальная информация об объекте
-   - Основные характеристики (спальни, ванные, площадь)
-   - Дополнительные характеристики
-   - Список особенностей и удобств
-   - Описание объекта
-
-5. **Vision Block**
-   - Отображение видения компании
-   - Список преимуществ с иконками
-   - Кнопка призыва к действию
-
-6. **How It Works Block**
-   - Пошаговый процесс работы
-   - Иконки и описания для каждого шага
-   - Визуальное соединение шагов
-
-7. **Blog Block**
-   - Отображение последних постов
-   - Категории постов
-   - Ссылка на все посты
-
-8. **FAQ Block**
-   - Часто задаваемые вопросы
-   - Аккордеон для ответов
-   - Настраиваемые вопросы и ответы
-
-9. **Contact Us Form Block**
-   - Форма обратной связи
-   - Валидация полей
-   - Интеграция с Payload CMS
-
-### Административная панель
-
-- Управление объектами недвижимости
-- Управление страницами и блоками
-- Управление блогом
-- Управление пользователями
-- Управление медиафайлами
-
-## Установка и запуск
-
-1. Клонируйте репозиторий:
+## Быстрый старт (pnpm)
+1) Установите зависимости
 ```bash
-git clone [url-репозитория]
-cd [папка-проекта]
+pnpm install
 ```
 
-2. Установите зависимости:
-```bash
-npm install
-```
-
-3. Создайте файл `.env` в корне проекта:
+2) Создайте `.env` в корне
 ```env
-PAYLOAD_SECRET=your-secret-key
-MONGODB_URI=your-mongodb-uri
+PAYLOAD_SECRET=your-strong-secret
+DATABASE_URI=postgres://user:password@localhost:5432/dbname
+# Опционально для превью и крон-задач
+CRON_SECRET=some-cron-token
 ```
 
-4. Запустите сервер разработки:
+3) Запустите инфраструктуру (PostgreSQL и веб-интерфейс)
 ```bash
-npm run dev
+docker compose up -d --build
 ```
 
-5. Откройте [http://localhost:3000](http://localhost:3000) в браузере
+4) Запуск в dev-режиме
+```bash
+pnpm dev
+```
+- Frontend: http://localhost:3000
+- Админка Payload: http://localhost:3000/admin
 
-## Использование
+5) Билд и прод-режим
+```bash
+pnpm build
+pnpm start
+```
 
-### Создание страницы
+6) Сидинг демо-данных (опционально)
+- Откройте: `GET http://localhost:3000/next/seed`
 
-1. Войдите в административную панель
-2. Перейдите в раздел "Pages"
-3. Нажмите "Create New"
-4. Заполните основные поля:
-   - Title (заголовок)
-   - Slug (URL)
-5. Добавьте нужные блоки в секции "Layout"
-6. Настройте каждый блок:
-   - Для Properties Block выберите объекты недвижимости
-   - Для Property Features Block выберите конкретный объект
-   - Настройте заголовки и другие параметры блоков
-7. Сохраните страницу
+## Запуск в Docker
+Предоставлен `Dockerfile` и `docker-compose.yml`.
 
-### Управление объектами недвижимости
+Быстрый старт:
+```bash
+# Заполните .env как в примере выше
+docker compose up -d --build
+```
+- Приложение и админка будут доступны на `http://localhost:3000` (проверьте маппинги в `docker-compose.yml`).
 
-1. Перейдите в раздел "Properties"
-2. Создайте новый объект:
-   - Заполните основную информацию (название, адрес, цена)
-   - Добавьте изображения
-   - Укажите характеристики (спальни, ванные, площадь)
-   - Добавьте особенности и удобства
-   - Напишите описание
-3. Установите статус (активный, проданный, черновик)
-4. Сохраните объект
+## Импорт/экспорт базы данных (PostgreSQL в Docker)
 
-### Настройка блога
+### Импорт из локального SQL-бэкапа `./db/mydb_backup.sql`
+```bash
+# Скопировать файл в контейнер
+docker cp ./db/mydb_backup.sql my_postgres:/tmp/mydb_backup.sql
 
-1. Перейдите в раздел "Posts"
-2. Создайте новый пост:
-   - Заполните заголовок и slug
-   - Добавьте изображение
-   - Выберите категории
-   - Напишите контент
-3. Установите статус публикации
-4. Сохраните пост
+# Импортировать в базу (замените пользователя/БД при необходимости)
+docker exec -it my_postgres psql -U admin -d mydb -f /tmp/mydb_backup.sql
+```
 
-## Технологии
+### Экспорт бэкапа из контейнера
 
-- Next.js 14
-- Payload CMS
-- Tailwind CSS
-- DaisyUI
-- MongoDB
-- TypeScript
+1. Создать дамп внутри контейнера
+```bash
+docker exec -t my_postgres pg_dump -U admin -d mydb -f /tmp/mydb_backup.sql
+```
 
-## Лицензия
+2. Скопировать на хост
+```bash
+docker cp my_postgres:/tmp/mydb_backup.sql ./mydb_backup.sql
+```
 
-MIT
+## Основные коллекции (Payload CMS)
+- **Properties** — объекты недвижимости (поля: цена, площадь, спальни/ванные, адрес, медиа, особенности)
+- **Flats / Commercial / Lands / ResidentialComplex** — типизированные разделы и листинги
+- **Agents** — агенты и контактные данные
+- **Pages** — статические страницы из блоков
+- **Posts / Categories** — блог
+- **Media** — медиафайлы
+- **Testimonials / Reviews** — отзывы и рейтинги
+- **Messages** — входящие сообщения с форм
+- **Users** — пользователи админки
+
+## Страницы и функциональность
+- **Главная**: промо-блоки, подборки объектов
+- **Каталог**: `/(frontend)/properties`, фильтры и пагинация
+- **Детальная объекта**: `/(frontend)/properties/[slug]`
+- **Поиск**: `/(frontend)/search`
+- **Блог**: `/(frontend)/posts` и `/(frontend)/posts/[slug]`
+- **Страницы из CMS**: `/[slug]`
+- **Sitemaps**: `/(frontend)/(sitemaps)/...`
+
+## Скрипты
+- `pnpm dev` — запуск разработки (Turbopack)
+- `pnpm build` — сборка
+- `pnpm start` — старт прод-режима
+- `pnpm generate:types` — генерация типов Payload
+- `pnpm generate:importmap` — генерация import map для админки
+- `pnpm lint` / `pnpm lint:fix` — линтинг
+
+## Заметки по конфигурации
+- База данных: по умолчанию настроен адаптер **PostgreSQL** (`DATABASE_URI`). В коде есть закомментированный пример MongoDB-адаптера.
+- Глобалы: `Header`, `Footer` управляются из Payload.
+- Live Preview настроен с брейкпоинтами для Mobile/Tablet/Desktop.
+- SEO / Redirects / Search плагины в `src/plugins` подключены через `src/payload.config.ts`.
+ 
