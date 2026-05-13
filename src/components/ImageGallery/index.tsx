@@ -23,7 +23,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
 
   if (!images || images.length === 0) {
     return (
-      <div className="bg-gray-100 rounded-lg w-full h-64 flex items-center justify-center">
+      <div className="bg-surface-container rounded-md w-full h-64 flex items-center justify-center">
         <span className="text-gray-400">Нет изображений</span>
       </div>
     )
@@ -37,7 +37,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
       <div className="space-y-4">
         {/* Главное изображение */}
         <div
-          className="relative bg-gray-100 rounded-lg overflow-hidden cursor-zoom-in"
+          className="relative bg-surface-container rounded-md overflow-hidden cursor-zoom-in"
           onClick={() => setIsModalOpen(true)}
         >
           {mainImageUrl ? (
@@ -72,8 +72,8 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
                 onClick={() => setSelectedImage(index)}
                 className={`flex-shrink-0 relative w-20 h-20 rounded-md overflow-hidden border-2 transition-all ${
                   selectedImage === index
-                    ? 'border-blue-500 ring-2 ring-blue-200'
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? 'border-primary ring-2 ring-primary-container'
+                    : 'border-border hover:border-on-surface-variant'
                 }`}
               >
                 {image.image?.url ? (

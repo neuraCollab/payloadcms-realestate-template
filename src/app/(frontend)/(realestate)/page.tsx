@@ -2,7 +2,6 @@
 import Link from 'next/link'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
-import { UnifiedFilter } from '@/components/Filters/UnifiedFilter'
 
 export default async function RealEstateHomePage() {
   const payload = await getPayload({ config })
@@ -26,7 +25,6 @@ export default async function RealEstateHomePage() {
     <div>
       <h1 className="text-3xl font-bold mb-8">Недвижимость</h1>
 
-      <UnifiedFilter />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {stats.map((stat) => (
