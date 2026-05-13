@@ -18,11 +18,11 @@ const features = [
 export const PropertyFeaturesBlock: React.FC<PropertyFeaturesBlockType> = ({ property }) => {
   if (!property) {
     return (
-      <section className="py-16 bg-base-100">
+      <section className="py-16 bg-background">
         <div className="container mx-auto max-w-6xl px-4">
           <div className="text-center">
             <h2 className="text-3xl font-normal mb-4">No Property Selected</h2>
-            <p className="text-base-content/70">Please select a property to view its features.</p>
+            <p className="text-muted-foreground">Please select a property to view its features.</p>
           </div>
         </div>
       </section>
@@ -30,42 +30,42 @@ export const PropertyFeaturesBlock: React.FC<PropertyFeaturesBlockType> = ({ pro
   }
 
   return (
-    <section className="py-16 bg-base-100">
+    <section className="py-16 bg-background">
       <div className="container mx-auto max-w-6xl px-4">
         <h2 className="text-3xl font-normal mb-8">Property Details</h2>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
           {/* Основные характеристики */}
-          <div className="card bg-base-200">
-            <div className="card-body items-center text-center">
+          <div className="rounded-md bg-muted">
+            <div className="p-4 flex flex-col items-center text-center">
               <Bed className="w-8 h-8 text-primary mb-2" />
-              <div className="text-sm text-base-content/70">Bedrooms</div>
+              <div className="text-sm text-muted-foreground">Bedrooms</div>
               <div className="text-xl font-medium">{property.bedrooms}</div>
             </div>
           </div>
 
-          <div className="card bg-base-200">
-            <div className="card-body items-center text-center">
+          <div className="rounded-md bg-muted">
+            <div className="p-4 flex flex-col items-center text-center">
               <Bath className="w-8 h-8 text-primary mb-2" />
-              <div className="text-sm text-base-content/70">Bathrooms</div>
+              <div className="text-sm text-muted-foreground">Bathrooms</div>
               <div className="text-xl font-medium">{property.bathrooms}</div>
             </div>
           </div>
 
-          <div className="card bg-base-200">
-            <div className="card-body items-center text-center">
+          <div className="rounded-md bg-muted">
+            <div className="p-4 flex flex-col items-center text-center">
               <Maximize className="w-8 h-8 text-primary mb-2" />
-              <div className="text-sm text-base-content/70">Total Area</div>
+              <div className="text-sm text-muted-foreground">Total Area</div>
               <div className="text-xl font-medium">{property.area} sq.ft</div>
             </div>
           </div>
 
           {/* Дополнительные характеристики */}
           {features.map((feature, index) => (
-            <div key={index} className="card bg-base-200">
-              <div className="card-body items-center text-center">
+            <div key={index} className="rounded-md bg-muted">
+              <div className="p-4 flex flex-col items-center text-center">
                 <feature.icon className="w-8 h-8 text-primary mb-2" />
-                <div className="text-sm text-base-content/70">{feature.label}</div>
+                <div className="text-sm text-muted-foreground">{feature.label}</div>
                 <div className="text-xl font-medium">{feature.value}</div>
               </div>
             </div>
@@ -92,7 +92,7 @@ export const PropertyFeaturesBlock: React.FC<PropertyFeaturesBlockType> = ({ pro
           <div className="mt-12">
             <h3 className="text-2xl font-normal mb-6">Description</h3>
             <div className="prose max-w-none">
-              <div className="text-base-content/70 leading-relaxed">
+              <div className="text-muted-foreground leading-relaxed">
                 {typeof property.description === 'string'
                   ? property.description
                   : (property.description as any)?.root?.children?.[0]?.text || ''}

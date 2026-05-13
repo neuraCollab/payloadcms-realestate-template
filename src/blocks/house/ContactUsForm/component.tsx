@@ -53,7 +53,7 @@ export const ContactUsFormBlock: React.FC<ContactUsFormBlockType> = ({ label, ti
   }
 
   return (
-    <section className="py-24 px-4 bg-base-100">
+    <section className="py-24 px-4 bg-background">
       <div className="container mx-auto max-w-6xl">
         {/* Заголовок */}
         <div className="text-center mb-16">
@@ -77,7 +77,7 @@ export const ContactUsFormBlock: React.FC<ContactUsFormBlockType> = ({ label, ti
                 <span className="label-text">Subject*</span>
               </label>
               <select
-                className="select select-bordered w-full"
+                className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 value={formData.subject}
                 onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                 required
@@ -96,7 +96,7 @@ export const ContactUsFormBlock: React.FC<ContactUsFormBlockType> = ({ label, ti
               </label>
               <input
                 type="text"
-                className="input input-bordered w-full"
+                className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 value={formData.fullName}
                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                 placeholder="Mitchell"
@@ -111,7 +111,7 @@ export const ContactUsFormBlock: React.FC<ContactUsFormBlockType> = ({ label, ti
               </label>
               <input
                 type="tel"
-                className="input input-bordered w-full"
+                className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 placeholder="+123 456 789 00"
@@ -126,7 +126,7 @@ export const ContactUsFormBlock: React.FC<ContactUsFormBlockType> = ({ label, ti
               </label>
               <input
                 type="email"
-                className="input input-bordered w-full"
+                className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 placeholder="test@gmail.com"
@@ -140,7 +140,7 @@ export const ContactUsFormBlock: React.FC<ContactUsFormBlockType> = ({ label, ti
                 <span className="label-text">Your Message*</span>
               </label>
               <textarea
-                className="textarea textarea-bordered w-full h-32"
+                className="flex min-h-32 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 placeholder="Explain it in details..."
@@ -149,7 +149,7 @@ export const ContactUsFormBlock: React.FC<ContactUsFormBlockType> = ({ label, ti
             </div>
 
             {/* Кнопка отправки */}
-            <button type="submit" className="btn btn-primary w-full">
+            <button type="submit" className="inline-flex h-10 w-full items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90">
               Submit
             </button>
           </form>

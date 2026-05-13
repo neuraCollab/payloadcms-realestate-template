@@ -5,6 +5,8 @@ node_modules
 .env
 .next
 .vercel
+.superpowers/
+.pnpm-store/
 
 # Payload default media upload directory
 public/media/

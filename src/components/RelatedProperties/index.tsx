@@ -34,16 +34,16 @@ export const RelatedProperties: React.FC<RelatedPropertiesProps> = ({
   }
 
   return (
-    <section className="px-4 py-16 bg-gray-50">
+    <section className="px-4 py-16 bg-surface-container-low">
       <div className="max-w-6xl mx-auto">
         <div 
           className="text-center mb-12 opacity-0 animate-fadeInUp"
           style={{ animationDelay: '0.1s', animationFillMode: 'forwards' }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-on-surface mb-4">
             Похожие объекты
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-on-surface-variant max-w-2xl mx-auto">
             Откройте для себя другие объекты, которые могут вас заинтересовать
           </p>
         </div>
@@ -69,7 +69,7 @@ export const RelatedProperties: React.FC<RelatedPropertiesProps> = ({
         >
           <a 
             href="/properties" 
-            className="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all duration-200 font-medium"
+            className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-all duration-200 font-medium"
           >
             Все объекты
           </a>
@@ -90,7 +90,7 @@ const PropertyCard: React.FC<{ property: Property }> = ({ property }) => {
 
   return (
     <a href={`/properties/${property.slug}`} className="block group">
-      <div className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 transform hover:translate-y-[-4px] overflow-hidden">
+      <div className="bg-card rounded-md shadow-e1 hover:shadow-e2 transition-all duration-300 transform hover:translate-y-[-4px] overflow-hidden">
         <div className="relative aspect-[4/3] overflow-hidden">
           <img
             src={
@@ -113,16 +113,16 @@ const PropertyCard: React.FC<{ property: Property }> = ({ property }) => {
         </div>
 
         <div className="p-4">
-          <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
+          <div className="flex items-center gap-2 text-sm text-on-surface-variant mb-2">
             <MapPin className="w-4 h-4 flex-shrink-0" />
             <span className="truncate">{property.address}</span>
           </div>
 
-          <h3 className="text-lg font-semibold text-gray-900 mb-3 line-clamp-2 group-hover:text-primary transition-colors duration-200">
+          <h3 className="text-lg font-semibold text-on-surface mb-3 line-clamp-2 group-hover:text-primary transition-colors duration-200">
             {property.title}
           </h3>
 
-          <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+          <div className="flex items-center gap-4 text-sm text-on-surface-variant mb-4">
             <div className="flex items-center gap-1">
               <Bed className="w-4 h-4" />
               <span>{property.bedrooms} спален</span>

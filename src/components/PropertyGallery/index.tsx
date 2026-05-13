@@ -14,7 +14,7 @@ export const PropertyGallery: React.FC<PropertyGalleryProps> = ({ images }) => {
 
   if (!images || images.length === 0) {
     return (
-      <div className="aspect-[16/9] bg-gray-200 rounded-lg flex items-center justify-center">
+      <div className="aspect-[16/9] bg-surface-container rounded-md flex items-center justify-center">
         <span className="text-gray-500">Изображения недоступны</span>
       </div>
     )
@@ -44,7 +44,7 @@ export const PropertyGallery: React.FC<PropertyGalleryProps> = ({ images }) => {
   return (
     <div className="space-y-4">
       {/* Main Image */}
-      <div className="relative aspect-[16/9] bg-gray-100 rounded-lg overflow-hidden">
+      <div className="relative aspect-[16/9] bg-surface-container rounded-md overflow-hidden">
         <img
           src={getImageUrl(images[selectedImage]?.image)}
           alt={`Property image ${selectedImage + 1}`}
@@ -81,8 +81,8 @@ export const PropertyGallery: React.FC<PropertyGalleryProps> = ({ images }) => {
             <button
               key={imageItem.id || index}
               onClick={() => setSelectedImage(index)}
-              className={`aspect-square rounded-lg overflow-hidden border-2 transition-all duration-200 ${
-                selectedImage === index ? 'border-primary' : 'border-transparent hover:border-gray-300'
+              className={`aspect-square rounded overflow-hidden border-2 transition-all duration-200 ${
+                selectedImage === index ? 'border-primary' : 'border-transparent hover:border-border'
               }`}
             >
               <img

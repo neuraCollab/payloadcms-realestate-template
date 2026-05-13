@@ -68,7 +68,7 @@ export function RealtorReviewForm({ realtorId }: { realtorId: string }) {
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="input input-bordered w-full"
+          className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           placeholder="Иван Иванов"
           required
         />
@@ -84,7 +84,7 @@ export function RealtorReviewForm({ realtorId }: { realtorId: string }) {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="input input-bordered w-full"
+          className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           placeholder="ivan@example.com"
         />
       </div>
@@ -119,7 +119,7 @@ export function RealtorReviewForm({ realtorId }: { realtorId: string }) {
           id="comment"
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-          className="textarea textarea-bordered w-full"
+          className="flex min-h-20 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           placeholder="Расскажите о своём опыте работы с риелтором..."
           rows={4}
           required
@@ -127,7 +127,7 @@ export function RealtorReviewForm({ realtorId }: { realtorId: string }) {
       </div>
 
       {/* Кнопка */}
-      <button type="submit" className="btn btn-primary w-full" disabled={submitting}>
+      <button type="submit" className="inline-flex h-10 w-full items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50" disabled={submitting}>
         {submitting ? 'Отправка...' : 'Отправить отзыв'}
       </button>
     </form>
