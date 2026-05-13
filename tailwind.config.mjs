@@ -1,8 +1,5 @@
 import tailwindcssAnimate from 'tailwindcss-animate'
 import typography from '@tailwindcss/typography'
-// import { plugin } from 'flowbite-react/tailwind'
-import flowbitePlugin from 'flowbite/plugin'
-import daisyui from 'daisyui'
 
 /** @type {import('tailwindcss').Config} */
 const config = {
@@ -13,55 +10,7 @@ const config = {
     './src/**/*.{ts,tsx}',
   ],
   darkMode: ['selector', '[data-theme="dark"]'],
-  plugins: [tailwindcssAnimate, typography, flowbitePlugin, daisyui],
-  daisyui: {
-    themes: [
-      {
-        tropicallight: {
-          primary: '#00C2A0', // Tropical teal
-          'primary-content': '#ffffff', // Белый текст на primary
-
-          secondary: '#FFD166', // Sun yellow
-          'secondary-content': '#000000', // Чёрный текст на secondary (жёлтом)
-
-          accent: '#551e19ff', // Coral
-          'accent-content': '#ffffff', // Белый текст на accent
-
-          neutral: '#2A2E37', // Deep gray
-          'neutral-content': '#ffffff',
-
-          'base-100': '#F6FFF8', // Light background
-          'base-200': '#E0F0E5', // Slightly darker for borders/cards
-          'base-300': '#C0DCC8',
-          'base-content': '#2A2E37', // Основной текст — тёмный на светлом фоне
-
-          info: '#3ABFF8',
-          'info-content': '#000000',
-
-          success: '#43E97B',
-          'success-content': '#000000',
-
-          warning: '#FFD166',
-          'warning-content': '#000000',
-
-          error: '#FF6F61',
-          'error-content': '#ffffff',
-
-          '--rounded-box': '1rem',
-          '--rounded-btn': '0.5rem',
-          '--rounded-badge': '1.9rem',
-          '--animation-btn': '0.25s',
-          '--animation-input': '0.2s',
-          '--btn-text-case': 'uppercase',
-          '--navbar-padding': '0.5rem',
-          '--border-btn': '1px',
-        },
-      },
-      'synthwave',
-      'bumblebee',
-    ],
-    darkTheme: 'synthwave', // Set this if you want to override default dark mode behavior
-  },
+  plugins: [tailwindcssAnimate, typography],
   prefix: '',
   safelist: [
     'lg:col-span-4',
