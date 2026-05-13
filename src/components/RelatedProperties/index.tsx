@@ -36,40 +36,23 @@ export const RelatedProperties: React.FC<RelatedPropertiesProps> = ({
   return (
     <section className="px-4 py-16 bg-surface-container-low">
       <div className="max-w-6xl mx-auto">
-        <div 
-          className="text-center mb-12 opacity-0 animate-fadeInUp"
-          style={{ animationDelay: '0.1s', animationFillMode: 'forwards' }}
-        >
-          <h2 className="text-3xl md:text-4xl font-bold text-on-surface mb-4">
-            Похожие объекты
-          </h2>
-          <p className="text-on-surface-variant max-w-2xl mx-auto">
+        <div className="text-center mb-10">
+          <h2 className="text-headline text-on-surface mb-2">Похожие объекты</h2>
+          <p className="text-body text-on-surface-variant max-w-2xl mx-auto">
             Откройте для себя другие объекты, которые могут вас заинтересовать
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {relatedProperties.map((property, index) => (
-            <div 
-              key={property.id}
-              className="opacity-0 animate-fadeInUp"
-              style={{ 
-                animationDelay: `${0.3 + index * 0.1}s`,
-                animationFillMode: 'forwards'
-              }}
-            >
-              <PropertyCard property={property} />
-            </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {relatedProperties.map((property) => (
+            <PropertyCard key={property.id} property={property} />
           ))}
         </div>
 
-        <div 
-          className="text-center mt-8 opacity-0 animate-fadeInUp"
-          style={{ animationDelay: '0.7s', animationFillMode: 'forwards' }}
-        >
-          <a 
-            href="/properties" 
-            className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-all duration-200 font-medium"
+        <div className="text-center mt-8">
+          <a
+            href="/properties"
+            className="inline-flex items-center h-10 px-6 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors text-body-sm font-medium"
           >
             Все объекты
           </a>
@@ -101,12 +84,8 @@ const PropertyCard: React.FC<{ property: Property }> = ({ property }) => {
             alt={property.title}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
-          <div className="absolute top-4 left-4">
-            <span
-              className={`px-3 py-1 rounded-full text-sm font-medium text-white ${
-                property.type === 'sale' ? 'bg-green-500' : 'bg-blue-500'
-              }`}
-            >
+          <div className="absolute top-3 left-3">
+            <span className="px-2.5 py-1 rounded-full text-label uppercase tracking-wide bg-card/95 text-primary backdrop-blur-sm">
               {property.type === 'sale' ? 'Продажа' : 'Аренда'}
             </span>
           </div>
@@ -118,7 +97,7 @@ const PropertyCard: React.FC<{ property: Property }> = ({ property }) => {
             <span className="truncate">{property.address}</span>
           </div>
 
-          <h3 className="text-lg font-semibold text-on-surface mb-3 line-clamp-2 group-hover:text-primary transition-colors duration-200">
+          <h3 className="text-title text-on-surface mb-3 line-clamp-2 group-hover:text-primary transition-colors duration-200">
             {property.title}
           </h3>
 

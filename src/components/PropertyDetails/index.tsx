@@ -3,6 +3,9 @@ import { Check, MapPin, Calendar, Home, Bed, Bath, Maximize } from 'lucide-react
 import { Property } from '@/payload-types'
 import RichText from '@/components/RichText'
 import { formatDateTime } from '@/utilities/formatDateTime'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 
 interface PropertyDetailsProps {
   property: Property
@@ -37,7 +40,7 @@ export const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) =>
               className="opacity-0 animate-fadeInUp"
               style={{ animationDelay: '0.1s', animationFillMode: 'forwards' }}
             >
-              <h2 className="text-2xl font-bold text-on-surface mb-4">О недвижимости</h2>
+              <h2 className="text-title-lg text-on-surface mb-4">О недвижимости</h2>
               <div className="prose prose-lg max-w-none">
                 <RichText className='text-black' data={description} enableGutter={false} />
               </div>
@@ -50,15 +53,15 @@ export const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) =>
               className="opacity-0 animate-fadeInUp"
               style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}
             >
-              <h3 className="text-xl font-bold text-on-surface mb-4">Особенности и удобства</h3>
+              <h3 className="text-title-lg text-on-surface mb-4">Особенности и удобства</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {features.map((feature, index) => (
                   <div 
                     key={feature.id || index} 
                     className="flex items-center gap-3 p-3 bg-surface-container-low rounded-lg hover:bg-surface-container transition-colors duration-200"
                   >
-                    <div className="flex-shrink-0 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                      <Check className="w-4 h-4 text-white" />
+                    <div className="flex-shrink-0 w-6 h-6 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center">
+                      <Check className="w-3.5 h-3.5" />
                     </div>
                     <span className="text-on-surface">{feature.feature}</span>
                   </div>
@@ -72,12 +75,12 @@ export const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) =>
             className="opacity-0 animate-fadeInUp"
             style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}
           >
-            <h3 className="text-xl font-bold text-on-surface mb-4">Характеристики объекта</h3>
+            <h3 className="text-title-lg text-on-surface mb-4">Характеристики объекта</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {propertyStats.map((stat, index) => (
                 <div key={stat.label} className="bg-card rounded-md shadow-e1 p-4 text-center hover:shadow-md transition-shadow duration-200">
                   <stat.icon className="w-8 h-8 text-primary mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-on-surface mb-1">{stat.value}</div>
+                  <div className="text-title-lg text-on-surface mb-1">{stat.value}</div>
                   <div className="text-sm text-on-surface-variant">{stat.label}</div>
                 </div>
               ))}
@@ -93,7 +96,7 @@ export const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) =>
           >
             {/* Price Card */}
             <div className="bg-card rounded-md shadow-e1 p-6">
-              <div className="text-3xl font-bold text-primary mb-4">
+              <div className="text-headline text-primary mb-4">
                 {formatPrice(property.price)}
               </div>
               <div className="space-y-3 text-sm text-on-surface-variant">
@@ -116,33 +119,18 @@ export const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) =>
 
             {/* Contact Form */}
             <div className="bg-card rounded-md shadow-e1 p-6">
-              <h3 className="text-lg font-bold text-on-surface mb-4">Связаться с агентом</h3>
-              <div className="space-y-4">
-                <input
-                  type="text"
-                  placeholder="Ваше имя"
-                  className="w-full px-4 py-3 border border-border rounded-md focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-200"
-                />
-                <input
-                  type="email"
-                  placeholder="Ваш email"
-                  className="w-full px-4 py-3 border border-border rounded-md focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-200"
-                />
-                <input
-                  type="tel"
-                  placeholder="Ваш телефон"
-                  className="w-full px-4 py-3 border border-border rounded-md focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-200"
-                />
-                <textarea
+              <h3 className="text-title-lg text-on-surface mb-4">Связаться с агентом</h3>
+              <form className="space-y-3">
+                <Input type="text" placeholder="Ваше имя" />
+                <Input type="email" placeholder="Ваш email" />
+                <Input type="tel" placeholder="Ваш телефон" />
+                <Textarea
                   placeholder="Сообщение"
                   rows={4}
-                  className="w-full px-4 py-3 border border-border rounded-md focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-200 resize-none"
                   defaultValue={`Меня интересует ${property.title}`}
                 />
-                <button className="w-full bg-primary text-white py-3 rounded-lg hover:bg-primary/90 transition-all duration-200 font-medium">
-                  Отправить сообщение
-                </button>
-              </div>
+                <Button type="submit" className="w-full">Отправить сообщение</Button>
+              </form>
             </div>
 
             {/* Quick Stats */}

@@ -1,8 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
-import { ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Property, Media } from '@/payload-types'
+import { Modal } from '@/components/ui/modal'
+import { cn } from '@/utilities/ui'
 
 interface PropertyGalleryProps {
   images: Property['images']
@@ -15,7 +17,7 @@ export const PropertyGallery: React.FC<PropertyGalleryProps> = ({ images }) => {
   if (!images || images.length === 0) {
     return (
       <div className="aspect-[16/9] bg-surface-container rounded-md flex items-center justify-center">
-        <span className="text-gray-500">Изображения недоступны</span>
+        <span className="text-on-surface-variant">Изображения недоступны</span>
       </div>
     )
   }
@@ -27,22 +29,14 @@ export const PropertyGallery: React.FC<PropertyGalleryProps> = ({ images }) => {
     return '/placeholder.jpg'
   }
 
-  const nextImage = () => {
-    setSelectedImage((prev) => (prev + 1) % images.length)
-  }
+  const nextImage = () => setSelectedImage((prev) => (prev + 1) % images.length)
+  const prevImage = () => setSelectedImage((prev) => (prev - 1 + images.length) % images.length)
 
-  const prevImage = () => {
-    setSelectedImage((prev) => (prev - 1 + images.length) % images.length)
-  }
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'ArrowRight') nextImage()
-    if (e.key === 'ArrowLeft') prevImage()
-    if (e.key === 'Escape') setIsModalOpen(false)
-  }
+  const overlayButton =
+    'absolute top-1/2 -translate-y-1/2 inline-flex h-10 w-10 items-center justify-center rounded-full bg-card/95 shadow-e2 hover:bg-card transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Main Image */}
       <div className="relative aspect-[16/9] bg-surface-container rounded-md overflow-hidden">
         <img
@@ -51,25 +45,19 @@ export const PropertyGallery: React.FC<PropertyGalleryProps> = ({ images }) => {
           className="w-full h-full object-cover cursor-zoom-in"
           onClick={() => setIsModalOpen(true)}
         />
-        
+
         {images.length > 1 && (
           <>
-            <button
-              onClick={prevImage}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all duration-200"
-            >
-              <ChevronLeft className="w-6 h-6" />
+            <button type="button" onClick={prevImage} aria-label="Предыдущее" className={cn(overlayButton, 'left-3')}>
+              <ChevronLeft className="w-5 h-5 text-on-surface" />
             </button>
-            <button
-              onClick={nextImage}
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all duration-200"
-            >
-              <ChevronRight className="w-6 h-6" />
+            <button type="button" onClick={nextImage} aria-label="Следующее" className={cn(overlayButton, 'right-3')}>
+              <ChevronRight className="w-5 h-5 text-on-surface" />
             </button>
           </>
         )}
 
-        <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+        <div className="absolute bottom-3 right-3 bg-on-surface/70 text-card backdrop-blur-sm px-3 py-1 rounded-full text-label">
           {selectedImage + 1} / {images.length}
         </div>
       </div>
@@ -80,10 +68,14 @@ export const PropertyGallery: React.FC<PropertyGalleryProps> = ({ images }) => {
           {images.map((imageItem, index) => (
             <button
               key={imageItem.id || index}
+              type="button"
               onClick={() => setSelectedImage(index)}
-              className={`aspect-square rounded overflow-hidden border-2 transition-all duration-200 ${
-                selectedImage === index ? 'border-primary' : 'border-transparent hover:border-border'
-              }`}
+              aria-label={`Изображение ${index + 1}`}
+              aria-current={selectedImage === index}
+              className={cn(
+                'aspect-square rounded overflow-hidden transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                selectedImage === index ? 'ring-2 ring-primary' : 'opacity-70 hover:opacity-100',
+              )}
             >
               <img
                 src={getImageUrl(imageItem.image)}
@@ -96,50 +88,30 @@ export const PropertyGallery: React.FC<PropertyGalleryProps> = ({ images }) => {
       )}
 
       {/* Modal */}
-      {isModalOpen && (
-        <div
-          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
-          onClick={() => setIsModalOpen(false)}
-          onKeyDown={handleKeyDown}
-          tabIndex={0}
-        >
-          <button
-            onClick={() => setIsModalOpen(false)}
-            className="absolute top-4 right-4 text-white hover:text-gray-300 z-10"
-          >
-            <X className="w-8 h-8" />
-          </button>
-
-          <div className="relative max-w-7xl max-h-full" onClick={(e) => e.stopPropagation()}>
-            <img
-              src={getImageUrl(images[selectedImage]?.image)}
-              alt={`Property image ${selectedImage + 1}`}
-              className="max-w-full max-h-full object-contain"
-            />
-
-            {images.length > 1 && (
-              <>
-                <button
-                  onClick={prevImage}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-200"
-                >
-                  <ChevronLeft className="w-8 h-8" />
-                </button>
-                <button
-                  onClick={nextImage}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-200"
-                >
-                  <ChevronRight className="w-8 h-8" />
-                </button>
-              </>
-            )}
-
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 text-white px-4 py-2 rounded-full">
-              {selectedImage + 1} / {images.length}
-            </div>
-          </div>
+      <Modal
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        size="xl"
+        title={`${selectedImage + 1} / ${images.length}`}
+      >
+        <div className="relative">
+          <img
+            src={getImageUrl(images[selectedImage]?.image)}
+            alt={`Property image ${selectedImage + 1}`}
+            className="w-full max-h-[75vh] object-contain rounded"
+          />
+          {images.length > 1 && (
+            <>
+              <button type="button" onClick={prevImage} aria-label="Предыдущее" className={cn(overlayButton, 'left-3')}>
+                <ChevronLeft className="w-5 h-5 text-on-surface" />
+              </button>
+              <button type="button" onClick={nextImage} aria-label="Следующее" className={cn(overlayButton, 'right-3')}>
+                <ChevronRight className="w-5 h-5 text-on-surface" />
+              </button>
+            </>
+          )}
         </div>
-      )}
+      </Modal>
     </div>
   )
-} 
+}
