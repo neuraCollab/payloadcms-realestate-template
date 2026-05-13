@@ -31,7 +31,7 @@ export const AmenitiesBlock: React.FC<AmenitiesBlockType> = ({
   amenities,
 }) => {
   return (
-    <section className="py-24 px-4 bg-base-100">
+    <section className="py-24 px-4 bg-background">
       <div className="container mx-auto max-w-6xl">
         {/* Верхняя часть */}
         <div className="mb-12">

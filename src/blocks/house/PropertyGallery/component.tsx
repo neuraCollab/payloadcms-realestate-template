@@ -24,7 +24,7 @@ export const PropertyGalleryBlock: React.FC<PropertyGalleryBlockType> = ({ prope
   }
 
   return (
-    <section className="py-16 bg-base-100">
+    <section className="py-16 bg-background">
       <div className="container mx-auto max-w-6xl px-4">
         <h2 className="text-3xl font-normal mb-8">Property Gallery</h2>
 

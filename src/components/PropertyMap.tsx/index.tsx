@@ -99,7 +99,7 @@ export const PropertyMap: React.FC<PropertyMapProps> = ({
                   )}
                   <a
                     href={`${baseUrl}/${item.slug}`}
-                    className="btn btn-sm btn-primary mt-2"
+                    className="mt-2 inline-flex items-center rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90"
                   >
                     Подробнее
                   </a>

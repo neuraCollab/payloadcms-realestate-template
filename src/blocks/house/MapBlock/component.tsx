@@ -68,7 +68,7 @@ export const MapBlock: React.FC<MapBlockProps & { disableInnerContainer?: boolea
                   {m.price ? <div className="text-sm opacity-80">{m.price.toLocaleString()} ₽</div> : null}
                   {m.address ? <div className="text-xs opacity-70">{m.address}</div> : null}
                   {m.slug ? (
-                    <a className="btn btn-sm btn-primary mt-2" href={`/properties/${m.slug}`}>
+                    <a className="mt-2 inline-flex items-center rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90" href={`/properties/${m.slug}`}>
                       Подробнее
                     </a>
                   ) : null}

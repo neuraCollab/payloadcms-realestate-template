@@ -103,7 +103,7 @@ export function RichMessageForm({ realtorId, realtorName, propertyTitle }: Props
             placeholder="Тема *"
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
-          className="input input-bordered w-full"
+          className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           required
         />
       </div>
@@ -113,7 +113,7 @@ export function RichMessageForm({ realtorId, realtorName, propertyTitle }: Props
           placeholder="Ваше имя *"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="input input-bordered"
+          className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           required
         />
         <input
@@ -121,7 +121,7 @@ export function RichMessageForm({ realtorId, realtorName, propertyTitle }: Props
           placeholder="Email *"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="input input-bordered"
+          className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           required
         />
       </div>
@@ -148,11 +148,11 @@ export function RichMessageForm({ realtorId, realtorName, propertyTitle }: Props
           type="file"
           onChange={handleFileChange}
           accept="image/*,.pdf,.doc,.docx"
-          className="file-input file-input-bordered w-full"
+          className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-muted file:px-3 file:py-1.5 file:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
       </div>
 
-      <button type="submit" className="btn btn-primary w-full" disabled={submitting}>
+      <button type="submit" className="inline-flex h-10 w-full items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50" disabled={submitting}>
         {submitting ? 'Отправка...' : 'Отправить'}
       </button>
     </form>
