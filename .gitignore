@@ -9,7 +9,12 @@ node_modules
 .pnpm-store/
 
 # Payload default media upload directory
-public/media/
+# (the demo image set is preserved in git so it can be restored on a fresh deploy)
+public/media/*
+!public/media/.gitkeep
+!public/media/download.jpg
+!public/media/download-1.jpg
+!public/media/download-1-300x168.jpg
 
 public/robots.txt
 public/sitemap*.xml
