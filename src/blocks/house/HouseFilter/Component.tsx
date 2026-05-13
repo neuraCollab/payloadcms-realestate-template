@@ -133,10 +133,10 @@ export const UniversalFilterFormBlock = ({ label, collection, fields }: Props) =
               id={id}
               checked={!!values[field.name]}
               onCheckedChange={(checked) => setValue(field.name, checked)}
-              className="w-5 h-5 flex items-center justify-center bg-white border border-gray-300 rounded"
+              className="w-5 h-5 flex items-center justify-center bg-card border border-border rounded"
             >
               <Checkbox.Indicator>
-                <CheckIcon className="text-blue-600" />
+                <CheckIcon className="text-primary" />
               </Checkbox.Indicator>
             </Checkbox.Root>
             <label htmlFor={id}>{label}</label>
@@ -200,10 +200,10 @@ export const UniversalFilterFormBlock = ({ label, collection, fields }: Props) =
                         : current.filter((v: string) => v !== opt.value)
                       setValue(field.name, updated)
                     }}
-                    className="w-5 h-5 flex items-center justify-center bg-white border border-gray-300 rounded"
+                    className="w-5 h-5 flex items-center justify-center bg-card border border-border rounded"
                   >
                     <Checkbox.Indicator>
-                      <CheckIcon className="text-blue-600" />
+                      <CheckIcon className="text-primary" />
                     </Checkbox.Indicator>
                   </Checkbox.Root>
                   <span>{opt.label}</span>
@@ -219,7 +219,7 @@ export const UniversalFilterFormBlock = ({ label, collection, fields }: Props) =
   }
 
   return (
-    <section className="my-8 p-6 border rounded bg-white shadow-sm">
+    <section className="my-8 p-6 border rounded bg-card shadow-e1">
       <h2 className="text-xl font-semibold mb-4">{label}</h2>
       <form className="space-y-4">
         {fields.map(renderField)}
@@ -227,11 +227,11 @@ export const UniversalFilterFormBlock = ({ label, collection, fields }: Props) =
         <button
           type="submit"
           disabled={isLoading}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors w-full text-left relative"
+          className="bg-primary text-primary-foreground px-4 py-2 rounded hover:bg-primary transition-colors w-full text-left relative"
         >
           {isLoading ? (
             <span className="flex items-center">
-              <span className="animate-ping inline-block w-2 h-2 mr-2 rounded-full bg-white"></span>
+              <span className="animate-ping inline-block w-2 h-2 mr-2 rounded-full bg-card"></span>
               Загрузка...
             </span>
           ) : (

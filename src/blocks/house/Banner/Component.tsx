@@ -15,8 +15,8 @@ export const BannerBlock: React.FC<Props> = ({ className, content, style }) => {
       style={{ animationDelay: '0.1s', animationFillMode: 'forwards' }}
     >
       <div
-        className={cn('border rounded-lg py-4 px-6 flex items-center shadow-sm transition-all duration-200 hover:shadow-md', {
-          'border-gray-200 bg-gray-50 text-gray-800': style === 'info',
+        className={cn('border rounded-md py-4 px-6 flex items-center shadow-e1 transition-all duration-200 hover:shadow-e1', {
+          'border-border bg-surface-container-low text-on-surface': style === 'info',
           'border-red-200 bg-red-50 text-red-800': style === 'error',
           'border-green-200 bg-green-50 text-green-800': style === 'success',
           'border-yellow-200 bg-yellow-50 text-yellow-800': style === 'warning',

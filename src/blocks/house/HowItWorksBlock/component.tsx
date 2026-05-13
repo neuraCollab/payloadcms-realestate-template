@@ -34,7 +34,7 @@ export const HowItWorksBlock: React.FC<HowItWorksBlockType> = ({ label, title, s
           <div className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium">
             {label}
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold max-w-3xl mx-auto text-gray-900 leading-tight">
+          <h2 className="text-4xl md:text-5xl font-bold max-w-3xl mx-auto text-on-surface leading-tight">
             {title.split('advantages').map((part, i) => (
               <React.Fragment key={i}>
                 {part}
@@ -58,19 +58,19 @@ export const HowItWorksBlock: React.FC<HowItWorksBlockType> = ({ label, title, s
 
                 
 
-                <div className="flex flex-col items-center text-center space-y-4 p-6 rounded-lg hover:bg-gray-50 transition-all duration-300 transform hover:translate-y-[-4px]">
+                <div className="flex flex-col items-center text-center space-y-4 p-6 rounded-md hover:bg-surface-container-low transition-all duration-300 transform hover:translate-y-[-4px]">
                   <div className="relative">
-                    <div className="w-16 h-16 rounded-2xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm hover:shadow-md">
+                    <div className="w-16 h-16 rounded-2xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 shadow-e1 hover:shadow-e1">
                       <Icon className="w-8 h-8" />
                     </div>
-                    <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-sm font-semibold shadow-sm">
+                    <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold shadow-e1">
                       {index + 1}
                     </div>
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 group-hover:text-primary transition-colors duration-200">
+                  <h3 className="text-xl font-semibold text-on-surface group-hover:text-primary transition-colors duration-200">
                     {step.title}
                   </h3>
-                  <p className="text-gray-600 leading-relaxed">
+                  <p className="text-on-surface-variant leading-relaxed">
                     {step.description}
                   </p>
                 </div>

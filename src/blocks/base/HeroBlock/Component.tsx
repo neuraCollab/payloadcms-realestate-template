@@ -32,7 +32,7 @@ export const HeroBlock = ({
 
         {/* Заголовок */}
         <h1 
-          className="text-4xl md:text-5xl leading-tight font-bold text-gray-900 opacity-0 animate-fadeInUp"
+          className="text-4xl md:text-5xl leading-tight font-bold text-on-surface opacity-0 animate-fadeInUp"
           style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}
         >
           {before}
@@ -43,7 +43,7 @@ export const HeroBlock = ({
         {/* Подзаголовок */}
         {subheadline && (
           <p 
-            className="text-lg text-gray-600 max-w-2xl mx-auto opacity-0 animate-fadeInUp"
+            className="text-lg text-on-surface-variant max-w-2xl mx-auto opacity-0 animate-fadeInUp"
             style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}
           >
             {subheadline}
@@ -60,7 +60,7 @@ export const HeroBlock = ({
           <img 
             src={image.url} 
             alt={image.alt || 'Hero image'} 
-            className="w-full h-auto object-cover rounded-lg shadow-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-lg" 
+            className="w-full h-auto object-cover rounded-md shadow-e1 transition-all duration-300 hover:scale-[1.02] hover:shadow-e2" 
           />
         </div>
       )}

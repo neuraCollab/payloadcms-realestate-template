@@ -134,11 +134,11 @@ function UnifiedCard({ data, tab }: { data: any; tab: TabConfig }) {
   // Универсальная карточка, можно расширять под нужды
   return (
     <Link href={`/${tab.collection}/${data.id}`} className="block">
-      <div className="rounded-xl overflow-hidden shadow-md border bg-white max-w-[320px] hover:shadow-lg cursor-pointer transition p-4">
+      <div className="rounded-xl overflow-hidden shadow-e1 border bg-card max-w-[320px] hover:shadow-e2 cursor-pointer transition p-4">
         <div className="font-bold text-lg mb-2">
           {data.title || data.name || data.address || 'Объект'}
         </div>
-        <div className="text-sm text-gray-600">ID: {data.id}</div>
+        <div className="text-sm text-on-surface-variant">ID: {data.id}</div>
         {/* Можно добавить больше полей по желанию */}
       </div>
     </Link>

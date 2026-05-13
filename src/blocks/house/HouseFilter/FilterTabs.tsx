@@ -24,7 +24,7 @@ export const FilterTabs = ({ children }: Props) => {
             key={key}
             onClick={() => setActiveTab(key as TabType)}
             className={`px-3 py-1 font-medium ${
-              activeTab === key ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'
+              activeTab === key ? 'text-primary border-b-2 border-blue-600' : 'text-on-surface-variant'
             }`}
           >
             {label}

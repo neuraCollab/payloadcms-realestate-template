@@ -17,7 +17,7 @@ const PostCard: React.FC<{ post: Post; index: number }> = ({ post, index = 1 }) 
   return (
     <div className={`group animate-[fadeInUp_0.6s_ease-out_${0.3 + index * 0.1}s_forwards]`}>
       <a href={`/posts/${post.slug}`} className="block">
-        <div className="relative aspect-[4/3] overflow-hidden rounded-lg mb-4 shadow-sm hover:shadow-md transition-all duration-300">
+        <div className="relative aspect-[4/3] overflow-hidden rounded-md mb-4 shadow-e1 hover:shadow-e1 transition-all duration-300">
           <img
             src={
               typeof post.image === 'object' && post.image?.url ? post.image.url : '/placeholder.jpg'
@@ -27,17 +27,17 @@ const PostCard: React.FC<{ post: Post; index: number }> = ({ post, index = 1 }) 
           />
           {post.categories?.[0] && (
             <div className="absolute top-4 left-4">
-              <div className="px-3 py-1 bg-primary text-white text-sm rounded-full">
+              <div className="px-3 py-1 bg-primary text-primary-foreground text-sm rounded-full">
                 {typeof post.categories[0] === 'object' ? post.categories[0].title : 'Resource'}
               </div>
             </div>
           )}
         </div>
-        <h3 className="text-lg font-semibold line-clamp-2 mb-2 text-gray-900 group-hover:text-primary transition-colors duration-200">
+        <h3 className="text-lg font-semibold line-clamp-2 mb-2 text-on-surface group-hover:text-primary transition-colors duration-200">
           {post.title}
         </h3>
         {post.meta?.description && (
-          <p className="text-gray-600 line-clamp-2 text-sm leading-relaxed">
+          <p className="text-on-surface-variant line-clamp-2 text-sm leading-relaxed">
             {post.meta.description}
           </p>
         )}
@@ -64,7 +64,7 @@ export const BlogBlock: React.FC<BlogBlockType> = ({
             <div className="text-sm font-medium text-primary mb-2">{subtitle}</div>
           )}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900">{title}</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-on-surface">{title}</h2>
             {showAllLink && (
               <a 
                 href={showAllLink} 

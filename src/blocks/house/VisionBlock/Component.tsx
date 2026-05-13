@@ -33,14 +33,14 @@ export const VisionBlock: React.FC<VisionBlockType> = ({
               {subtitle}
             </div>
           )}
-          <h2 className="text-4xl md:text-5xl font-bold leading-tight text-gray-900">
+          <h2 className="text-4xl md:text-5xl font-bold leading-tight text-on-surface">
             {title}
           </h2>
 
           {buttonText && buttonLink && (
             <a 
               href={buttonLink} 
-              className="inline-flex items-center px-8 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all duration-200 transform hover:scale-105 shadow-sm hover:shadow-md"
+              className="inline-flex items-center px-8 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-all duration-200 transform hover:scale-105 shadow-e1 hover:shadow-e1"
             >
               {buttonText}
             </a>
@@ -52,16 +52,16 @@ export const VisionBlock: React.FC<VisionBlockType> = ({
           {items.map((item, index) => (
             <div
               key={index}
-              className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 hover:shadow-sm transition-all duration-300 transform hover:translate-x-2 opacity-0 animate-fadeInUp"
+              className="flex items-start gap-4 p-4 rounded-md hover:bg-surface-container-low hover:shadow-e1 transition-all duration-300 transform hover:translate-x-2 opacity-0 animate-fadeInUp"
               style={{ animationDelay: `${0.3 + index * 0.1}s` }}
             >
-                <div className="shrink-0 w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center text-xl font-semibold shadow-sm hover:shadow-md transition-all duration-200">
+                <div className="shrink-0 w-12 h-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center text-xl font-semibold shadow-e1 hover:shadow-e1 transition-all duration-200">
                   {item.icon}
                 </div>
 
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold mb-2 text-gray-900">{item.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{item.description}</p>
+                  <h3 className="text-lg font-semibold mb-2 text-on-surface">{item.title}</h3>
+                  <p className="text-on-surface-variant leading-relaxed">{item.description}</p>
                                   </div>
                 </div>
             ))}

@@ -36,7 +36,7 @@ export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
                   style={{ animationDelay: `${0.1 + index * 0.2}s`, animationFillMode: 'forwards' }}
                   key={index}
                 >
-                  <div className="text-gray-900">
+                  <div className="text-on-surface">
                     {richText && <RichText data={richText} enableGutter={false} />}
                   </div>
 

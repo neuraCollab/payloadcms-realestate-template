@@ -29,7 +29,7 @@ export const ContactHeroBlock: React.FC<ContactHeroBlockType> = ({
         {/* Заголовок */}
         <div className="text-center mb-12 opacity-0 animate-[fadeInUp_0.6s_ease-out_0.1s_forwards]">
           <div className="text-sm text-primary mb-2 font-medium">{label}</div>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+          <h2 className="text-4xl md:text-5xl font-bold text-on-surface leading-tight">
             {title.split('assistance').map((part, i) => (
               <React.Fragment key={i}>
                 {part}
@@ -40,7 +40,7 @@ export const ContactHeroBlock: React.FC<ContactHeroBlockType> = ({
         </div>
 
         {/* Основной контент */}
-        <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 animate-[fadeInUp_0.6s_ease-out_0.3s_forwards]">
+        <div className="relative rounded-2xl overflow-hidden shadow-e2 hover:shadow-e3 transition-all duration-300 opacity-0 animate-[fadeInUp_0.6s_ease-out_0.3s_forwards]">
           {/* Изображение */}
           <div className="aspect-[16/9] md:aspect-[21/9] group">
             <img
@@ -52,11 +52,11 @@ export const ContactHeroBlock: React.FC<ContactHeroBlockType> = ({
 
           {/* Контактная информация */}
           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-6 md:p-8">
-            <div className="flex flex-col md:flex-row gap-6 md:gap-8 justify-center text-white">
+            <div className="flex flex-col md:flex-row gap-6 md:gap-8 justify-center text-primary-foreground">
               {/* Email */}
               <a
                 href={`mailto:${email}`}
-                className="flex items-center gap-3 hover:text-primary transition-all duration-200 transform hover:scale-105 p-2 rounded-lg hover:bg-white/10 backdrop-blur-sm"
+                className="flex items-center gap-3 hover:text-primary transition-all duration-200 transform hover:scale-105 p-2 rounded-md hover:bg-card/10 backdrop-blur-sm"
               >
                 <Mail className="w-5 h-5 flex-shrink-0" />
                 <span className="font-medium">{email}</span>
@@ -65,14 +65,14 @@ export const ContactHeroBlock: React.FC<ContactHeroBlockType> = ({
               {/* Телефон */}
               <a
                 href={`tel:${phone}`}
-                className="flex items-center gap-3 hover:text-primary transition-all duration-200 transform hover:scale-105 p-2 rounded-lg hover:bg-white/10 backdrop-blur-sm"
+                className="flex items-center gap-3 hover:text-primary transition-all duration-200 transform hover:scale-105 p-2 rounded-md hover:bg-card/10 backdrop-blur-sm"
               >
                 <Phone className="w-5 h-5 flex-shrink-0" />
                 <span className="font-medium">{phone}</span>
               </a>
 
               {/* Локация */}
-              <div className="flex items-center gap-3 p-2 rounded-lg">
+              <div className="flex items-center gap-3 p-2 rounded-md">
                 <MapPin className="w-5 h-5 flex-shrink-0" />
                 <span className="font-medium">{location}</span>
               </div>

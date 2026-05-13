@@ -51,7 +51,7 @@ export const AmenitiesBlock: React.FC<AmenitiesBlockType> = ({
           </div>
 
           {/* Список удобств */}
-          <div className="absolute top-8 right-8 bg-white/90 backdrop-blur-sm rounded-3xl p-8 w-80">
+          <div className="absolute top-8 right-8 bg-card/90 backdrop-blur-sm rounded-3xl p-8 w-80">
             <div className="text-primary font-medium mb-4">Including:</div>
             <div className="space-y-4">
               {amenities.map((amenity, index) => {
