@@ -32,15 +32,15 @@ export const Card: React.FC<{
   return (
     <article
       className={cn(
-        'group border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-all duration-300 hover:cursor-pointer',
+        'group rounded-md overflow-hidden bg-card shadow-e1 hover:shadow-e2 transition-shadow duration-300 hover:cursor-pointer',
         className,
       )}
       ref={card.ref}
     >
       <div className="relative w-full aspect-[4/3] overflow-hidden">
         {!metaImage && (
-          <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-            <span className="text-gray-400">No image</span>
+          <div className="w-full h-full bg-surface-container flex items-center justify-center">
+            <span className="text-on-surface-variant">No image</span>
           </div>
         )}
         {metaImage && typeof metaImage !== 'string' && (
@@ -77,7 +77,7 @@ export const Card: React.FC<{
         )}
         
         {titleToUse && (
-          <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-primary transition-colors duration-200">
+          <h3 className="text-title text-on-surface mb-2 line-clamp-2 group-hover:text-primary transition-colors duration-200">
             <Link href={href} ref={link.ref} className="hover:no-underline">
               {titleToUse}
             </Link>
@@ -85,7 +85,7 @@ export const Card: React.FC<{
         )}
         
         {description && (
-          <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed">
+          <p className="text-body-sm text-on-surface-variant line-clamp-3 leading-relaxed">
             {sanitizedDescription}
           </p>
         )}
