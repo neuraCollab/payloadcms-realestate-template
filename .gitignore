@@ -8,6 +8,11 @@ node_modules
 .superpowers/
 .pnpm-store/
 
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+
 # Payload default media upload directory
 # (the demo image set is preserved in git so it can be restored on a fresh deploy)
 public/media/*

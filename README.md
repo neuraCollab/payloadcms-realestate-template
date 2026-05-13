@@ -180,6 +180,43 @@ Page factories live under `src/endpoints/seed-pages/`. Edit a `*-page.ts` file, 
 - **CMS pages**: `/[slug]`
 - **Sitemaps**: `/(frontend)/(sitemaps)/...`
 
+## End-to-end testing (Playwright)
+
+Tests live in `tests/e2e/` and target `http://localhost:3000` (override with `PLAYWRIGHT_BASE_URL`).
+
+### HTTP smoke (runs anywhere, ~17 s)
+
+The `smoke.spec.ts` file uses Playwright's HTTP `request` API and doesn't need a browser. It runs in the existing Alpine-based dev container:
+
+```bash
+docker compose exec app pnpm test:e2e:smoke
+# → 15 passed (17 s) — every route returns 200, /flats/<bad-slug> returns 404
+```
+
+### Browser UI tests (require a Debian base)
+
+The Alpine dev image cannot run headless Chromium (Playwright's binary is glibc/Debian, Alpine is musl). Run the UI specs via the official Playwright image on the host:
+
+```bash
+# From the repo root, with the dev stack already up:
+docker run --rm --network host \
+  -v "$PWD":/work -w /work \
+  mcr.microsoft.com/playwright:v1.60.0-jammy \
+  bash -c "pnpm install --no-frozen-lockfile && pnpm test:e2e --project=chromium"
+```
+
+Alternatively, run on the host directly:
+
+```bash
+pnpm install
+pnpm exec playwright install chromium
+pnpm test:e2e
+```
+
+## Course documentation
+
+- [docs/practical-work.md](docs/practical-work.md) — практические работы по ГОСТу для дисциплины «Качество и тестирование ПО»: ТЗ, ручное и автоматическое тестирование, метрическая оценка, тестирование Web-приложения.
+
 ## Scripts
 - `pnpm dev` — start development (Turbopack)
 - `pnpm build` — build
@@ -187,6 +224,10 @@ Page factories live under `src/endpoints/seed-pages/`. Edit a `*-page.ts` file, 
 - `pnpm generate:types` — generate payload types
 - `pnpm generate:importmap` — generate import map for the admin panel
 - `pnpm lint` / `pnpm lint:fix` — linting
+- `pnpm test:e2e` — Playwright e2e suite (all projects)
+- `pnpm test:e2e:smoke` — HTTP-only smoke (~17 s)
+- `pnpm test:e2e:headed` — run with browser visible
+- `pnpm test:e2e:report` — open the last HTML report
 
 ## Configuration notes
 - Database: The PostgreSQL adapter (`DATABASE_URI`) is configured by default. The code contains a commented example of a MongoDB adapter.
