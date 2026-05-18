@@ -215,7 +215,17 @@ pnpm test:e2e
 
 ## Course documentation
 
-- [docs/practical-work.md](docs/practical-work.md) — практические работы по ГОСТу для дисциплины «Качество и тестирование ПО»: ТЗ, ручное и автоматическое тестирование, метрическая оценка, тестирование Web-приложения.
+Практические (лабораторные) работы по ГОСТу для дисциплины «Качество и тестирование ПО». Каждая работа — отдельный файл:
+
+- [docs/labs/01-tz.md](docs/labs/01-tz.md) — техническое задание по ГОСТ 19.201-78
+- [docs/labs/02-manual-testing.md](docs/labs/02-manual-testing.md) — ручное тестирование, 20 тест-кейсов
+- [docs/labs/03-auto-testing.md](docs/labs/03-auto-testing.md) — автоматическое тестирование (Playwright) + покрытие
+- [docs/labs/04-oop-metrics.md](docs/labs/04-oop-metrics.md) — метрики TCC/LCC, Чидамбера-Кемерера, Лоренца-Кидда
+- [docs/labs/05-usability-anketas.md](docs/labs/05-usability-anketas.md) — две анкеты для usability-теста (ГОСТ Р ИСО 9241-11-2010)
+
+Развёртывание на сервер:
+
+- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) — полная инструкция с командами, выбором сервера и подключением домена.
 
 ## Scripts
 - `pnpm dev` — start development (Turbopack)
