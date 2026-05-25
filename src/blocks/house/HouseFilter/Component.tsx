@@ -220,7 +220,7 @@ export const UniversalFilterFormBlock = ({ label, collection, fields }: Props) =
 
   return (
     <section className="my-8 p-6 border rounded bg-card shadow-e1">
-      <h2 className="text-xl font-semibold mb-4">{label}</h2>
+      <h2 className="text-title-lg mb-4">{label}</h2>
       <form className="space-y-4">
         {fields.map(renderField)}
 

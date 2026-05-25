@@ -14,12 +14,14 @@ export type AboutHeroBlockType = {
 
 export const AboutHeroBlock: React.FC<AboutHeroBlockType> = ({ label, title, images }) => {
   return (
-    <section className="px-4 py-16">
+    <section className="px-4 py-12 md:py-20">
       <div className="max-w-6xl mx-auto">
         {/* Заголовок */}
-        <div className="text-center mb-12 opacity-0 animate-[fadeInUp_0.6s_ease-out_0.1s_forwards]">
-          <div className="text-primary mb-4 font-medium">{label}</div>
-          <h1 className="text-4xl md:text-5xl font-bold max-w-4xl mx-auto text-on-surface leading-tight">
+        <div className="text-center mb-12 space-y-4">
+          <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium">
+            {label}
+          </span>
+          <h1 className="text-headline md:text-display max-w-4xl mx-auto text-on-surface leading-tight">
             {title.split('Real Estate').map((part, i) => (
               <React.Fragment key={i}>
                 {part}

@@ -24,12 +24,12 @@ export const VisionMissionBlock: React.FC<VisionMissionBlockType> = ({
   stats,
 }) => {
   return (
-    <section className="py-24 px-4 bg-background">
+    <section className="py-12 md:py-20 px-4 bg-background">
       <div className="container mx-auto max-w-6xl">
         {/* Верхняя часть - текст */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start mb-16">
           <div>
-            <h2 className="text-4xl font-normal mb-6">{title}</h2>
+            <h2 className="text-headline mb-6">{title}</h2>
           </div>
           <div>
             <p className="text-muted-foreground leading-relaxed">{description}</p>
@@ -50,7 +50,7 @@ export const VisionMissionBlock: React.FC<VisionMissionBlockType> = ({
                 {index < stats.length - 1 && (
                   <div className="hidden md:block absolute top-1/2 right-0 w-2 h-2 rounded-full bg-primary/20 translate-x-full" />
                 )}
-                <div className="text-4xl font-normal text-primary mb-2">{stat.value}</div>
+                <div className="text-headline text-primary mb-2">{stat.value}</div>
                 <div className="text-muted-foreground">{stat.label}</div>
               </div>
             ))}

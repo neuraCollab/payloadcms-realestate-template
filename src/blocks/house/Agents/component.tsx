@@ -20,12 +20,14 @@ const SOCIAL_ICONS = {
 
 export const AgentsBlock: React.FC<AgentsBlockType> = ({ label, title, agents }) => {
   return (
-    <section className="px-4 py-16">
+    <section className="px-4 py-12 md:py-20">
       <div className="max-w-6xl mx-auto">
         {/* Заголовок */}
-        <div className="text-center mb-12 opacity-0 animate-[fadeInUp_0.6s_ease-out_0.1s_forwards]">
-          <div className="text-sm text-primary mb-2 font-medium">{label}</div>
-          <h2 className="text-4xl md:text-5xl font-bold text-on-surface leading-tight">{title}</h2>
+        <div className="text-center mb-12 space-y-4">
+          <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium">
+            {label}
+          </span>
+          <h2 className="text-headline md:text-display text-on-surface leading-tight">{title}</h2>
         </div>
 
         {/* Сетка агентов */}
@@ -42,7 +44,7 @@ export const AgentsBlock: React.FC<AgentsBlockType> = ({ label, title, agents })
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
-              <h3 className="text-xl font-semibold text-on-surface mb-2 group-hover:text-primary transition-colors duration-200">
+              <h3 className="text-title-lg text-on-surface mb-2 group-hover:text-primary transition-colors duration-200">
                 {agent.name}
               </h3>
               <p className="text-on-surface-variant mb-4">{agent.position}</p>

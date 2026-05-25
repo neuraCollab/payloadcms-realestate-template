@@ -121,10 +121,10 @@ const filteredProperties = useMemo(() => {
   const hasBathrooms = properties.some(p => p.bathrooms != null && p.bathrooms > 0)
 
   return (
-    <section className="px-4 py-16">
+    <section className="px-4 py-12 md:py-20">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-on-surface">{title}</h2>
+          <h2 className="text-headline md:text-display text-on-surface">{title}</h2>
           {showAllLink && (
             <a
               href={showAllLink}

@@ -4,7 +4,6 @@ import { aboutPage } from './about-page'
 import { agentsPage } from './agents-page'
 import { blogsPage } from './blogs-page'
 import { contactPage } from './contact-page'
-import { demoPage } from './demo-page'
 import { homeV2Page } from './home-v2-page'
 import type { PageDeps } from './shared'
 
@@ -37,7 +36,6 @@ export const seedPages = async ({
   }
 
   const pages: RequiredDataFromCollectionSlug<'pages'>[] = [
-    demoPage({ amenitiesImageId: deps.primaryImageId }),
     homeV2Page(deps),
     aboutPage(deps),
     agentsPage(deps),

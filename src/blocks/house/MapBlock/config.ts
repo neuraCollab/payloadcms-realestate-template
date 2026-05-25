@@ -54,6 +54,19 @@ export const MapBlock: Block = {
       max: 200,
       admin: { condition: (_, siblingData) => Boolean(siblingData?.autoLoad) },
     },
+    {
+      name: 'officeMarker',
+      type: 'group',
+      label: 'Маркер офиса',
+      admin: {
+        description:
+          'Если указан label, в центре карты будет показан одиночный маркер с этим подписью (объекты в этом режиме игнорируются).',
+      },
+      fields: [
+        { name: 'label', type: 'text', label: 'Подпись' },
+        { name: 'address', type: 'text', label: 'Адрес офиса' },
+      ],
+    },
   ],
 }
 

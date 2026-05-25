@@ -496,6 +496,13 @@ export interface Page {
         properties?: (number | Property)[] | null;
         autoLoad?: boolean | null;
         limit?: number | null;
+        /**
+         * Если указан label, в центре карты будет показан одиночный маркер с этим подписью (объекты в этом режиме игнорируются).
+         */
+        officeMarker?: {
+          label?: string | null;
+          address?: string | null;
+        };
         id?: string | null;
         blockName?: string | null;
       }
@@ -2024,6 +2031,12 @@ export interface PagesSelect<T extends boolean = true> {
               properties?: T;
               autoLoad?: T;
               limit?: T;
+              officeMarker?:
+                | T
+                | {
+                    label?: T;
+                    address?: T;
+                  };
               id?: T;
               blockName?: T;
             };

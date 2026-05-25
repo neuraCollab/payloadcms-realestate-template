@@ -22,10 +22,7 @@ export const HeroBlock = ({
       <div className="max-w-4xl mx-auto space-y-4">
         {/* Бейдж */}
         {badgeText && (
-          <span 
-            className="inline-block px-4 py-1 text-sm rounded-full border-2 bg-[rgb(246 246 246)] text-primary font-medium opacity-0 animate-fadeInUp"
-            style={{ animationDelay: '0.1s', animationFillMode: 'forwards' }}
-          >
+          <span className="inline-block px-4 py-2 text-sm font-medium rounded-full bg-primary/10 text-primary">
             {badgeText}
           </span>
         )}

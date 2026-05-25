@@ -37,10 +37,13 @@ export const contactPage = ({
       : []),
     {
       blockType: 'map',
-      title: 'Наши объекты на карте',
-      center: { lat: 55.751244, lng: 37.618423, zoom: 11 },
-      autoLoad: true,
-      limit: 20,
+      title: 'Наш офис на карте',
+      center: { lat: 59.9398, lng: 30.3146, zoom: 15 },
+      autoLoad: false,
+      officeMarker: {
+        label: 'Наш офис',
+        address: 'Санкт-Петербург, Дворцовая площадь, 2 (Государственный Эрмитаж)',
+      },
     },
     {
       blockType: 'faq',

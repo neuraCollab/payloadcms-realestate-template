@@ -37,14 +37,14 @@ const iconMap: Record<string, LucideIcon> = {
 
 export const FeatureBlock: React.FC<FeatureBlockType> = ({ label, title, features }) => {
   return (
-    <section className="px-4 py-16">
+    <section className="px-4 py-12 md:py-20">
       <div className="max-w-6xl mx-auto">
         {/* Заголовок */}
         <div className="text-center mb-12 space-y-4 opacity-0 animate-[fadeInUp_0.6s_ease-out_0.1s_forwards]">
           <div className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium">
             {label}
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold max-w-3xl mx-auto text-on-surface leading-tight">
+          <h2 className="text-headline md:text-display max-w-3xl mx-auto text-on-surface leading-tight">
             {title}
           </h2>
         </div>
@@ -62,7 +62,7 @@ export const FeatureBlock: React.FC<FeatureBlockType> = ({ label, title, feature
                 <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
                   <Icon className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-semibold mb-3 text-on-surface group-hover:text-primary transition-colors duration-200">
+                <h3 className="text-title-lg mb-3 text-on-surface group-hover:text-primary transition-colors duration-200">
                   {feature.title}
                 </h3>
                 <p className="text-on-surface-variant leading-relaxed">

@@ -53,12 +53,12 @@ export const ContactUsFormBlock: React.FC<ContactUsFormBlockType> = ({ label, ti
   }
 
   return (
-    <section className="py-24 px-4 bg-background">
+    <section className="py-12 md:py-20 px-4 bg-background">
       <div className="container mx-auto max-w-6xl">
         {/* Заголовок */}
         <div className="text-center mb-16">
           <div className="text-sm text-primary mb-2">{label}</div>
-          <h2 className="text-4xl font-normal">
+          <h2 className="text-headline">
             {title.split('get in touch').map((part, i) => (
               <React.Fragment key={i}>
                 {part}
@@ -77,7 +77,7 @@ export const ContactUsFormBlock: React.FC<ContactUsFormBlockType> = ({ label, ti
                 <span className="label-text">Subject*</span>
               </label>
               <select
-                className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex h-11 w-full rounded-md border border-border bg-card px-4 py-2 text-sm shadow-e1 focus-within:shadow-e2 focus-visible:shadow-e2 hover:shadow-e2 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:border-primary"
                 value={formData.subject}
                 onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                 required
@@ -96,7 +96,7 @@ export const ContactUsFormBlock: React.FC<ContactUsFormBlockType> = ({ label, ti
               </label>
               <input
                 type="text"
-                className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex h-11 w-full rounded-md border border-border bg-card px-4 py-2 text-sm shadow-e1 focus-within:shadow-e2 focus-visible:shadow-e2 hover:shadow-e2 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:border-primary"
                 value={formData.fullName}
                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                 placeholder="Mitchell"
@@ -111,7 +111,7 @@ export const ContactUsFormBlock: React.FC<ContactUsFormBlockType> = ({ label, ti
               </label>
               <input
                 type="tel"
-                className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex h-11 w-full rounded-md border border-border bg-card px-4 py-2 text-sm shadow-e1 focus-within:shadow-e2 focus-visible:shadow-e2 hover:shadow-e2 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:border-primary"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 placeholder="+123 456 789 00"
@@ -126,7 +126,7 @@ export const ContactUsFormBlock: React.FC<ContactUsFormBlockType> = ({ label, ti
               </label>
               <input
                 type="email"
-                className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex h-11 w-full rounded-md border border-border bg-card px-4 py-2 text-sm shadow-e1 focus-within:shadow-e2 focus-visible:shadow-e2 hover:shadow-e2 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:border-primary"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 placeholder="test@gmail.com"
@@ -140,7 +140,7 @@ export const ContactUsFormBlock: React.FC<ContactUsFormBlockType> = ({ label, ti
                 <span className="label-text">Your Message*</span>
               </label>
               <textarea
-                className="flex min-h-32 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex min-h-32 w-full rounded-md border border-border bg-card px-4 py-3 text-sm shadow-e1 focus-within:shadow-e2 hover:shadow-e2 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:border-primary"
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 placeholder="Explain it in details..."

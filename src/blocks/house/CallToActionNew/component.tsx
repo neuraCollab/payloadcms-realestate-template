@@ -17,7 +17,7 @@ export const CallToActionNewBlock: React.FC<CallToActionNewBlockType> = ({
   buttonLink,
 }) => {
   return (
-    <section className="px-4 py-16">
+    <section className="px-4 py-12 md:py-20">
       <div className="max-w-6xl mx-auto">
         <div className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground rounded-2xl p-8 md:p-12 text-center shadow-e2 hover:shadow-e3 transition-all duration-300 opacity-0 animate-[fadeInUp_0.6s_ease-out_0.1s_forwards]">
           {/* Метка */}
@@ -26,7 +26,7 @@ export const CallToActionNewBlock: React.FC<CallToActionNewBlockType> = ({
           </div>
 
           {/* Заголовок */}
-          <h2 className="text-3xl md:text-4xl font-bold max-w-3xl mx-auto mb-8 leading-tight opacity-0 animate-[fadeInUp_0.6s_ease-out_0.5s_forwards]">
+          <h2 className="text-headline md:text-display max-w-3xl mx-auto mb-8 leading-tight opacity-0 animate-[fadeInUp_0.6s_ease-out_0.5s_forwards]">
             {title}
           </h2>
 

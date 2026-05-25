@@ -19,7 +19,7 @@ export const NavbarBlock: React.FC<NavbarProps> = ({ logoText, links, button, av
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="opacity-0 animate-[fadeInUp_0.6s_ease-out_0.1s_forwards]">
-            <a href="/" className="text-2xl font-bold text-on-surface hover:text-primary transition-colors duration-200">
+            <a href="/" className="text-title-lg text-on-surface hover:text-primary transition-colors duration-200">
               {logoText}
             </a>
           </div>

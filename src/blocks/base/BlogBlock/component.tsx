@@ -33,7 +33,7 @@ const PostCard: React.FC<{ post: Post; index: number }> = ({ post, index = 1 }) 
             </div>
           )}
         </div>
-        <h3 className="text-lg font-semibold line-clamp-2 mb-2 text-on-surface group-hover:text-primary transition-colors duration-200">
+        <h3 className="text-title line-clamp-2 mb-2 text-on-surface group-hover:text-primary transition-colors duration-200">
           {post.title}
         </h3>
         {post.meta?.description && (
@@ -64,7 +64,7 @@ export const BlogBlock: React.FC<BlogBlockType> = ({
             <div className="text-sm font-medium text-primary mb-2">{subtitle}</div>
           )}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <h2 className="text-4xl md:text-5xl font-bold text-on-surface">{title}</h2>
+            <h2 className="text-headline md:text-display text-on-surface">{title}</h2>
             {showAllLink && (
               <a 
                 href={showAllLink} 

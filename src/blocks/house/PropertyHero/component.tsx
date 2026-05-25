@@ -47,11 +47,11 @@ export const PropertyHeroBlock: React.FC<PropertyHeroBlockType> = ({ property })
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-end">
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight opacity-0 animate-[fadeInUp_0.6s_ease-out_0.3s_forwards]">
+              <h1 className="text-headline md:text-display mb-6 leading-tight opacity-0 animate-[fadeInUp_0.6s_ease-out_0.3s_forwards]">
                 {property.title}
               </h1>
               <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 opacity-0 animate-[fadeInUp_0.6s_ease-out_0.5s_forwards]">
-                <span className="text-3xl md:text-4xl font-bold">{formatPrice(property.price)}</span>
+                <span className="text-headline md:text-display">{formatPrice(property.price)}</span>
                 <span
                   className={`inline-flex px-4 py-2 rounded-full text-sm font-semibold ${
                     property.type === 'sale' 
