@@ -18,10 +18,10 @@ const features = [
 export const PropertyFeaturesBlock: React.FC<PropertyFeaturesBlockType> = ({ property }) => {
   if (!property) {
     return (
-      <section className="py-16 bg-background">
+      <section className="py-12 md:py-20 bg-background">
         <div className="container mx-auto max-w-6xl px-4">
           <div className="text-center">
-            <h2 className="text-3xl font-normal mb-4">No Property Selected</h2>
+            <h2 className="text-title-lg mb-4">No Property Selected</h2>
             <p className="text-muted-foreground">Please select a property to view its features.</p>
           </div>
         </div>
@@ -30,9 +30,9 @@ export const PropertyFeaturesBlock: React.FC<PropertyFeaturesBlockType> = ({ pro
   }
 
   return (
-    <section className="py-16 bg-background">
+    <section className="py-12 md:py-20 bg-background">
       <div className="container mx-auto max-w-6xl px-4">
-        <h2 className="text-3xl font-normal mb-8">Property Details</h2>
+        <h2 className="text-title-lg mb-8">Property Details</h2>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
           {/* Основные характеристики */}

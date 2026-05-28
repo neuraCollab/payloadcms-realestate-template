@@ -35,12 +35,12 @@ export const TestimonialsBlock: React.FC<TestimonialsBlockType> = ({
   }
 
   return (
-    <section className="px-4 py-16">
+    <section className="px-4 py-12 md:py-20">
       <div className="max-w-2xl mx-auto">
         {/* Заголовок */}
         <div className="text-center mb-12 opacity-0 animate-[fadeInUp_0.6s_ease-out_0.1s_forwards]">
           <div className="text-sm text-primary mb-2 font-medium">{label}</div>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">{title}</h2>
+          <h2 className="text-headline md:text-display text-on-surface leading-tight">{title}</h2>
         </div>
 
         {/* Слайдер отзывов */}
@@ -48,23 +48,23 @@ export const TestimonialsBlock: React.FC<TestimonialsBlockType> = ({
           {/* Кнопки навигации */}
           <button
             onClick={prevTestimonial}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 lg:-translate-x-12 z-10 w-12 h-12 rounded-full bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center text-gray-600 hover:text-primary"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 lg:-translate-x-12 z-10 w-12 h-12 rounded-full bg-card border border-border shadow-e1 hover:shadow-e1 transition-all duration-200 flex items-center justify-center text-on-surface-variant hover:text-primary"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
           <button
             onClick={nextTestimonial}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 lg:translate-x-12 z-10 w-12 h-12 rounded-full bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center text-gray-600 hover:text-primary"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 lg:translate-x-12 z-10 w-12 h-12 rounded-full bg-card border border-border shadow-e1 hover:shadow-e1 transition-all duration-200 flex items-center justify-center text-on-surface-variant hover:text-primary"
           >
             <ChevronRight className="w-5 h-5" />
           </button>
 
           {/* Карточка отзыва */}
-          <div className="bg-gradient-to-br from-primary to-primary/90 text-white rounded-2xl p-8 md:p-12 shadow-lg hover:shadow-xl transition-all duration-300">
+          <div className="bg-gradient-to-br from-primary to-primary/90 text-primary-foreground rounded-2xl p-8 md:p-12 shadow-e2 hover:shadow-e3 transition-all duration-300">
             <div className="flex flex-col md:flex-row gap-8 items-center">
               {/* Фото */}
               <div className="shrink-0">
-                <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white/20 shadow-lg">
+                <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white/20 shadow-e2">
                   <img
                     src={testimonials[currentIndex]?.image?.url || '/placeholder.jpg'}
                     alt={testimonials[currentIndex]?.name}
@@ -85,7 +85,7 @@ export const TestimonialsBlock: React.FC<TestimonialsBlockType> = ({
                 </blockquote>
                 <div>
                   <div className="font-semibold text-lg">{testimonials[currentIndex]?.name}</div>
-                  <div className="text-white/80 text-sm">
+                  <div className="text-primary-foreground/80 text-sm">
                     {testimonials[currentIndex]?.location}
                   </div>
                 </div>
@@ -100,7 +100,7 @@ export const TestimonialsBlock: React.FC<TestimonialsBlockType> = ({
                 key={index}
                 onClick={() => setCurrentIndex(index)}
                 className={`h-2 rounded-full transition-all duration-300 ${
-                  index === currentIndex ? 'bg-primary w-8' : 'bg-gray-300 w-2 hover:bg-gray-400'
+                  index === currentIndex ? 'bg-primary w-8' : 'bg-surface-container-highest w-2 hover:bg-gray-400'
                 }`}
               />
             ))}

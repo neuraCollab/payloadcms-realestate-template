@@ -7,7 +7,7 @@ import { CallToActionBlock } from '@/blocks/base/CallToAction/Component'
 import { ContentBlock } from '@/blocks/base/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/base/MediaBlock/Component'
-import { NavbarBlock } from '@/blocks/base/Navbar/Component'
+import { NavbarBlock } from '@/blocks/base/Navbar/component'
 import { HeroBlock } from './base/HeroBlock/Component'
 import { VisionBlock } from './house/VisionBlock/Component'
 import { PropertiesBlock } from './house/PropertiesBlock/component'
@@ -23,8 +23,10 @@ import { CallToActionNewBlock } from './house/CallToActionNew/component'
 import { ContactHeroBlock } from './house/ContactHero/component'
 import { ContactUsFormBlock } from './house/ContactUsForm/component'
 import { FAQBlock } from './base/FAQ/component'
-import { UniversalFilterTabs } from './house/HouseFilter/Component'
+import { UniversalFilterTabs } from './house/HouseFilter/component'
 import { MapBlock as MapBlockComponent } from './house/MapBlock/component'
+import { QuickNavBlock } from './house/QuickNav/component'
+import { HeroSearch } from './house/HeroSearch/component'
 
 const blockComponents = {
   properties: PropertiesBlock,
@@ -50,6 +52,8 @@ const blockComponents = {
   faq: FAQBlock,
   'house-filter': UniversalFilterTabs,
   map: MapBlockComponent,
+  'quick-nav': QuickNavBlock,
+  'hero-search': HeroSearch,
 }
 
 export const RenderBlocks: React.FC<{

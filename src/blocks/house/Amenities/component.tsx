@@ -31,12 +31,14 @@ export const AmenitiesBlock: React.FC<AmenitiesBlockType> = ({
   amenities,
 }) => {
   return (
-    <section className="py-24 px-4 bg-background">
+    <section className="py-12 md:py-20 px-4 bg-background">
       <div className="container mx-auto max-w-6xl">
         {/* Верхняя часть */}
-        <div className="mb-12">
-          <div className="text-sm text-primary mb-2">{label}</div>
-          <h2 className="text-4xl font-normal max-w-2xl">{title}</h2>
+        <div className="mb-10 space-y-4">
+          <span className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium">
+            {label}
+          </span>
+          <h2 className="text-headline md:text-display max-w-2xl text-on-surface">{title}</h2>
         </div>
 
         {/* Основной контент */}
@@ -51,7 +53,7 @@ export const AmenitiesBlock: React.FC<AmenitiesBlockType> = ({
           </div>
 
           {/* Список удобств */}
-          <div className="absolute top-8 right-8 bg-white/90 backdrop-blur-sm rounded-3xl p-8 w-80">
+          <div className="absolute top-8 right-8 bg-card/90 backdrop-blur-sm rounded-3xl p-8 w-80">
             <div className="text-primary font-medium mb-4">Including:</div>
             <div className="space-y-4">
               {amenities.map((amenity, index) => {

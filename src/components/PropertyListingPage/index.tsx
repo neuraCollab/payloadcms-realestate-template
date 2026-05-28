@@ -4,6 +4,7 @@ import config from '@/payload.config'
 import { PropertyCard } from '@/components/PropertyCard'
 import { PropertyFilters } from '@/components/PropertyFilters'
 import { PropertyMap } from '@/components/PropertyMap.tsx'
+import { ViewToggle } from '@/components/ViewToggle'
 import { formatMapItems } from '@/lib/mapItems'
 import type { PropertyType } from '@/components/PropertyFilters/schemas'
 
@@ -21,25 +22,94 @@ const COLLECTION_MAP: Record<PropertyType, string> = {
   'residential-complexes': 'residential-complexes',
 }
 
+const parseNum = (v: string | undefined): number | undefined => {
+  if (!v) return undefined
+  const n = parseInt(v, 10)
+  return Number.isFinite(n) ? n : undefined
+}
+
 const buildWhere = (type: PropertyType, sp: Record<string, string | undefined>) => {
   const where: any = {}
   if (type !== 'residential-complexes') {
     where.status = { equals: 'active' }
   }
-  if (sp.city) where['location.city'] = { equals: sp.city }
-  if (sp.district) where['location.district'] = { equals: sp.district }
+
+  // ---- Общие поля (where applicable per collection) ----
+  if (sp.city) where['location.city'] = { like: sp.city }
+  if (sp.district) where['location.district'] = { like: sp.district }
   if (sp.rooms && sp.rooms !== 'all') where.rooms = { equals: sp.rooms }
   if (sp.transactionType && sp.transactionType !== 'all')
     where.transactionType = { equals: sp.transactionType }
-  if (sp.minPrice) where.price = { ...(where.price || {}), greater_than_equal: parseInt(sp.minPrice, 10) }
-  if (sp.maxPrice) where.price = { ...(where.price || {}), less_than_equal: parseInt(sp.maxPrice, 10) }
-  if (sp.commercialType && sp.commercialType !== 'all') where.commercialType = { equals: sp.commercialType }
-  if (sp.landType && sp.landType !== 'all') where.landType = { equals: sp.landType }
-  if (sp.hasUtilities && sp.hasUtilities !== 'all') where.hasUtilities = { equals: sp.hasUtilities === 'yes' }
+
+  const minPrice = parseNum(sp.minPrice)
+  const maxPrice = parseNum(sp.maxPrice)
+  if (minPrice !== undefined) where.price = { ...(where.price || {}), greater_than_equal: minPrice }
+  if (maxPrice !== undefined) where.price = { ...(where.price || {}), less_than_equal: maxPrice }
+
+  // ---- Per-type фильтры ----
+  if (type === 'flats') {
+    if (sp.propertyCategory && sp.propertyCategory !== 'all')
+      where.propertyCategory = { equals: sp.propertyCategory }
+    if (sp.buildingType && sp.buildingType !== 'all')
+      where.buildingType = { equals: sp.buildingType }
+
+    const areaMin = parseNum(sp.areaMin)
+    const areaMax = parseNum(sp.areaMax)
+    if (areaMin !== undefined)
+      where['area.total'] = { ...(where['area.total'] || {}), greater_than_equal: areaMin }
+    if (areaMax !== undefined)
+      where['area.total'] = { ...(where['area.total'] || {}), less_than_equal: areaMax }
+
+    const floorMin = parseNum(sp.floorMin)
+    const floorMax = parseNum(sp.floorMax)
+    if (floorMin !== undefined)
+      where['floorInfo.floor'] = {
+        ...(where['floorInfo.floor'] || {}),
+        greater_than_equal: floorMin,
+      }
+    if (floorMax !== undefined)
+      where['floorInfo.floor'] = {
+        ...(where['floorInfo.floor'] || {}),
+        less_than_equal: floorMax,
+      }
+
+    const yearBuiltMin = parseNum(sp.yearBuiltMin)
+    if (yearBuiltMin !== undefined) where.yearBuilt = { greater_than_equal: yearBuiltMin }
+
+    if (sp.rentalSubtype && sp.rentalSubtype !== 'all')
+      where.rentalSubtype = { equals: sp.rentalSubtype }
+    if (sp.fromOwner === 'true') where.fromOwner = { equals: true }
+    if (sp.noCommission === 'true') where.noCommission = { equals: true }
+  }
+
+  if (type === 'commercial') {
+    if (sp.commercialType && sp.commercialType !== 'all')
+      where.commercialType = { equals: sp.commercialType }
+    const areaMin = parseNum(sp.areaMin)
+    const areaMax = parseNum(sp.areaMax)
+    if (areaMin !== undefined)
+      where['area.total'] = { ...(where['area.total'] || {}), greater_than_equal: areaMin }
+    if (areaMax !== undefined)
+      where['area.total'] = { ...(where['area.total'] || {}), less_than_equal: areaMax }
+    if (sp.fromOwner === 'true') where.fromOwner = { equals: true }
+    if (sp.noCommission === 'true') where.noCommission = { equals: true }
+  }
+
+  if (type === 'lands') {
+    // `purpose` is the actual field in the Lands collection.
+    if (sp.purpose && sp.purpose !== 'all') where.purpose = { equals: sp.purpose }
+    // Lands.area is a flat number (sotka), not a group.
+    const areaMin = parseNum(sp.areaMin)
+    const areaMax = parseNum(sp.areaMax)
+    if (areaMin !== undefined) where.area = { ...(where.area || {}), greater_than_equal: areaMin }
+    if (areaMax !== undefined) where.area = { ...(where.area || {}), less_than_equal: areaMax }
+  }
+
   if (type === 'residential-complexes') {
     if (sp.status && sp.status !== 'all') where.status = { equals: sp.status }
     if (sp.type && sp.type !== 'all') where.type = { equals: sp.type }
   }
+
   return where
 }
 
@@ -82,17 +152,38 @@ export const PropertyListingPage: React.FC<Props> = async ({ type, title, search
   })
 
   const mapItems = formatMapItems(result.docs)
+  const view: 'list' | 'map' = searchParams.view === 'map' ? 'map' : 'list'
 
   return (
     <div className="space-y-6">
       <header className="flex items-end justify-between flex-wrap gap-2">
-        <h1 className="text-headline text-on-surface">{title}</h1>
-        <p className="text-body-sm text-on-surface-variant">{result.totalDocs} объектов</p>
+        <div>
+          <h1 className="text-headline text-on-surface">{title}</h1>
+          <p className="text-body-sm text-on-surface-variant">{result.totalDocs} объектов</p>
+        </div>
+        <ViewToggle />
       </header>
 
       <PropertyFilters type={type} />
 
-      {result.docs.length > 0 ? (
+      {view === 'map' ? (
+        mapItems.length > 0 ? (
+          <div className="bg-card rounded-md shadow-e1 p-4">
+            <PropertyMap
+              items={mapItems}
+              baseUrl={mapBaseUrl}
+              height="600px"
+              className="!px-0"
+            />
+          </div>
+        ) : (
+          <div className="text-center py-16 bg-card rounded-md shadow-e1">
+            <p className="text-body text-on-surface-variant">
+              Нет объектов с координатами для отображения на карте.
+            </p>
+          </div>
+        )
+      ) : result.docs.length > 0 ? (
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {result.docs.map((doc: any) => {
             const href = `/${type}/${doc.slug}`
@@ -117,13 +208,6 @@ export const PropertyListingPage: React.FC<Props> = async ({ type, title, search
           <p className="text-body text-on-surface-variant">Объекты не найдены</p>
         </div>
       )}
-
-      {mapItems.length > 0 ? (
-        <div className="bg-card rounded-md shadow-e1 p-4">
-          <h2 className="text-title-lg text-on-surface mb-3">{title} на карте</h2>
-          <PropertyMap title={`${title} на карте`} items={mapItems} baseUrl={mapBaseUrl} />
-        </div>
-      ) : null}
     </div>
   )
 }

@@ -37,14 +37,14 @@ const iconMap: Record<string, LucideIcon> = {
 
 export const FeatureBlock: React.FC<FeatureBlockType> = ({ label, title, features }) => {
   return (
-    <section className="px-4 py-16">
+    <section className="px-4 py-12 md:py-20">
       <div className="max-w-6xl mx-auto">
         {/* Заголовок */}
         <div className="text-center mb-12 space-y-4 opacity-0 animate-[fadeInUp_0.6s_ease-out_0.1s_forwards]">
           <div className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium">
             {label}
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold max-w-3xl mx-auto text-gray-900 leading-tight">
+          <h2 className="text-headline md:text-display max-w-3xl mx-auto text-on-surface leading-tight">
             {title}
           </h2>
         </div>
@@ -56,16 +56,16 @@ export const FeatureBlock: React.FC<FeatureBlockType> = ({ label, title, feature
             return (
               <div 
                 key={index} 
-                className="p-6 rounded-lg border border-gray-200 hover:border-primary/30 hover:shadow-md transition-all duration-300 transform hover:translate-y-[-4px] group opacity-0 animate-fadeInUp"
+                className="p-6 rounded-md border border-border hover:border-primary/30 hover:shadow-e1 transition-all duration-300 transform hover:translate-y-[-4px] group opacity-0 animate-fadeInUp"
                 style={{ animationDelay: `${0.3 + index * 0.1}s`, animationFillMode: 'forwards' }}
               >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
                   <Icon className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-semibold mb-3 text-gray-900 group-hover:text-primary transition-colors duration-200">
+                <h3 className="text-title-lg mb-3 text-on-surface group-hover:text-primary transition-colors duration-200">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-on-surface-variant leading-relaxed">
                   {feature.description}
                 </p>
               </div>

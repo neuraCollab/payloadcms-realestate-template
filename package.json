@@ -16,7 +16,11 @@
     "lint:fix": "cross-env NODE_OPTIONS=--no-deprecation next lint --fix",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "reinstall": "cross-env NODE_OPTIONS=--no-deprecation rm -rf node_modules && rm pnpm-lock.yaml && pnpm --ignore-workspace install",
-    "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:smoke": "playwright test smoke.spec.ts",
+    "test:e2e:report": "playwright show-report"
   },
   "dependencies": {
     "@payloadcms/admin-bar": "latest",
@@ -67,6 +71,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
+    "@playwright/test": "^1.50.0",
     "@tailwindcss/typography": "^0.5.13",
     "@types/escape-html": "^1.0.2",
     "@types/node": "22.5.4",

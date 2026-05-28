@@ -1,8 +1,10 @@
-// components/ImageGallery.tsx
 'use client'
 
 import { useState } from 'react'
 import Image from 'next/image'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { Modal } from '@/components/ui/modal'
+import { cn } from '@/utilities/ui'
 
 interface ImageGalleryProps {
   images?: Array<{
@@ -24,18 +26,19 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
   if (!images || images.length === 0) {
     return (
       <div className="bg-surface-container rounded-md w-full h-64 flex items-center justify-center">
-        <span className="text-gray-400">Нет изображений</span>
+        <span className="text-on-surface-variant">Нет изображений</span>
       </div>
     )
   }
 
   const mainImage = images[selectedImage]
   const mainImageUrl = mainImage.image?.url
+  const next = () => setSelectedImage((prev) => (prev + 1) % images.length)
+  const prev = () => setSelectedImage((prev) => (prev - 1 + images.length) % images.length)
 
   return (
     <>
-      <div className="space-y-4">
-        {/* Главное изображение */}
+      <div className="space-y-3">
         <div
           className="relative bg-surface-container rounded-md overflow-hidden cursor-zoom-in"
           onClick={() => setIsModalOpen(true)}
@@ -51,30 +54,32 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
             />
           ) : (
             <div className="w-full h-96 flex items-center justify-center">
-              <span className="text-gray-400">Изображение не найдено</span>
+              <span className="text-on-surface-variant">Изображение не найдено</span>
             </div>
           )}
 
-          {/* Счетчик изображений */}
           {images.length > 1 && (
-            <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
+            <div className="absolute top-3 right-3 bg-on-surface/70 text-card backdrop-blur-sm px-3 py-1 rounded-full text-label">
               {selectedImage + 1} / {images.length}
             </div>
           )}
         </div>
 
-        {/* Миниатюры */}
         {images.length > 1 && (
-          <div className="flex space-x-2 overflow-x-auto pb-2">
+          <div className="flex gap-2 overflow-x-auto pb-1">
             {images.map((image, index) => (
               <button
                 key={image.image?.id || index}
                 onClick={() => setSelectedImage(index)}
-                className={`flex-shrink-0 relative w-20 h-20 rounded-md overflow-hidden border-2 transition-all ${
+                type="button"
+                aria-label={`Изображение ${index + 1}`}
+                aria-current={selectedImage === index}
+                className={cn(
+                  'flex-shrink-0 relative w-20 h-20 rounded overflow-hidden transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                   selectedImage === index
-                    ? 'border-primary ring-2 ring-primary-container'
-                    : 'border-border hover:border-on-surface-variant'
-                }`}
+                    ? 'ring-2 ring-primary'
+                    : 'opacity-70 hover:opacity-100',
+                )}
               >
                 {image.image?.url ? (
                   <Image
@@ -85,8 +90,8 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-400 text-xs">No img</span>
+                  <div className="w-full h-full bg-surface-container flex items-center justify-center">
+                    <span className="text-on-surface-variant text-xs">No img</span>
                   </div>
                 )}
               </button>
@@ -95,68 +100,45 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
         )}
       </div>
 
-      {/* Модальное окно для просмотра */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4">
-          <div className="relative max-w-4xl max-h-full">
-            {/* Кнопка закрытия */}
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="absolute -top-12 right-0 text-white hover:text-gray-300 text-2xl z-10"
-            >
-              ✕
-            </button>
+      <Modal
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        size="xl"
+        title={`${selectedImage + 1} / ${images.length}`}
+      >
+        <div className="relative">
+          {mainImageUrl && (
+            <Image
+              src={mainImageUrl}
+              alt={mainImage.alt || 'Изображение объекта'}
+              width={1200}
+              height={800}
+              className="w-full max-h-[75vh] object-contain rounded"
+            />
+          )}
 
-            {/* Главное изображение в модалке */}
-            {mainImageUrl && (
-              <Image
-                src={mainImageUrl}
-                alt={mainImage.alt || 'Изображение объекта'}
-                width={1200}
-                height={800}
-                className="max-w-full max-h-[80vh] object-contain"
-              />
-            )}
-
-            {/* Навигация */}
-            {images.length > 1 && (
-              <>
-                <button
-                  onClick={() =>
-                    setSelectedImage((prev) => (prev > 0 ? prev - 1 : images.length - 1))
-                  }
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-sm"
-                >
-                  ‹
-                </button>
-                <button
-                  onClick={() =>
-                    setSelectedImage((prev) => (prev < images.length - 1 ? prev + 1 : 0))
-                  }
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-sm"
-                >
-                  ›
-                </button>
-
-                {/* Индикатор */}
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                  {images.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setSelectedImage(index)}
-                      className={`w-3 h-3 rounded-full transition-all ${
-                        selectedImage === index
-                          ? 'bg-white'
-                          : 'bg-white bg-opacity-50 hover:bg-opacity-70'
-                      }`}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
+          {images.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={prev}
+                aria-label="Предыдущее изображение"
+                className="absolute left-3 top-1/2 -translate-y-1/2 inline-flex h-10 w-10 items-center justify-center rounded-full bg-card/95 shadow-e2 hover:bg-card transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <ChevronLeft className="h-5 w-5 text-on-surface" />
+              </button>
+              <button
+                type="button"
+                onClick={next}
+                aria-label="Следующее изображение"
+                className="absolute right-3 top-1/2 -translate-y-1/2 inline-flex h-10 w-10 items-center justify-center rounded-full bg-card/95 shadow-e2 hover:bg-card transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <ChevronRight className="h-5 w-5 text-on-surface" />
+              </button>
+            </>
+          )}
         </div>
-      )}
+      </Modal>
     </>
   )
 }

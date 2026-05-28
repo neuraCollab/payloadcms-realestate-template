@@ -1,0 +1,65 @@
+import type { Payload, PayloadRequest } from 'payload'
+
+interface Args {
+  payload: Payload
+  req: PayloadRequest
+}
+
+// maxRows: 6 in header config — keep the six most useful.
+const HEADER_NAV = [
+  { label: 'Главная', url: '/home-v2' },
+  { label: 'Квартиры', url: '/flats' },
+  { label: 'Коммерческая', url: '/commercial' },
+  { label: 'О нас', url: '/about' },
+  { label: 'Блог', url: '/blogs' },
+  { label: 'Контакты', url: '/contact' },
+]
+
+const FOOTER_NAV = [
+  { label: 'О нас', url: '/about' },
+  { label: 'Команда', url: '/agents' },
+  { label: 'Блог', url: '/blogs' },
+  { label: 'Контакты', url: '/contact' },
+  { label: 'Поиск', url: '/search' },
+]
+
+export const seedGlobals = async ({ payload, req }: Args) => {
+  payload.logger.info('[seed-globals] updating header & footer…')
+
+  // Payload's link-field has `reference: required` even when type='custom'
+  // (the required flag fires regardless of admin.condition). Bypass the
+  // validator by writing directly to the Postgres tables that back the
+  // global. Schema:
+  //   header (id=1) ← header_nav_items (id, _order, _parent_id, link_type,
+  //     link_new_tab, link_url, link_label)
+  const db = (payload as any).db
+  const drizzle = db?.drizzle
+  if (!drizzle) {
+    throw new Error('Postgres adapter not available')
+  }
+
+  for (const [globalSlug, items] of [
+    ['header', HEADER_NAV],
+    ['footer', FOOTER_NAV],
+  ] as const) {
+    // Ensure the global row exists; create it if missing.
+    await drizzle.execute(
+      `INSERT INTO ${globalSlug} (id) VALUES (1) ON CONFLICT (id) DO NOTHING`,
+    )
+    // Wipe existing nav items, repopulate.
+    await drizzle.execute(`DELETE FROM ${globalSlug}_nav_items WHERE _parent_id = 1`)
+    for (let i = 0; i < items.length; i++) {
+      const it = items[i]
+      const itemId = `seed_${globalSlug}_${i}_${Date.now()}`
+      await drizzle.execute(
+        `INSERT INTO ${globalSlug}_nav_items
+           (id, _order, _parent_id, link_type, link_new_tab, link_url, link_label)
+         VALUES
+           ('${itemId}', ${i + 1}, 1, 'custom', false, '${it.url}', '${it.label.replace(/'/g, "''")}')`,
+      )
+    }
+  }
+
+  payload.logger.info('[seed-globals] done')
+  return { header: HEADER_NAV.length, footer: FOOTER_NAV.length }
+}

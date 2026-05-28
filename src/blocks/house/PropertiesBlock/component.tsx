@@ -57,11 +57,39 @@ const typeLabels: Record<string, string> = {
 export const PropertiesBlock: React.FC<PropertyBlockType> = ({
   title,
   showAllLink,
-  properties = [],
+  properties: propertiesProp = [],
   itemsPerPage = 6,
   enableFilters = false,
 }) => {
   const [currentPage, setCurrentPage] = useState(1)
+  const [fetched, setFetched] = useState<any[] | null>(null)
+
+  // Если seed не передал properties — авто-подгрузка из API (последние 12 квартир)
+  useEffect(() => {
+    if (propertiesProp.length > 0) {
+      setFetched(null)
+      return
+    }
+    let cancelled = false
+    fetch(`/api/flats?limit=12&depth=1&sort=-createdAt&where[status][equals]=active`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (cancelled || !data?.docs) return
+        const wrapped = data.docs.map((doc: any) => ({
+          relationTo: 'flats',
+          value: doc,
+        }))
+        setFetched(wrapped)
+      })
+      .catch(() => {
+        /* silent fail — пустое состояние ниже подскажет, что нет данных */
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [propertiesProp.length])
+
+  const properties = propertiesProp.length > 0 ? propertiesProp : fetched ?? []
 
   // Фильтры
   const [selectedType, setSelectedType] = useState<string>('all')
@@ -121,14 +149,14 @@ const filteredProperties = useMemo(() => {
   const hasBathrooms = properties.some(p => p.bathrooms != null && p.bathrooms > 0)
 
   return (
-    <section className="px-4 py-16">
+    <section className="px-4 py-12 md:py-20">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">{title}</h2>
+          <h2 className="text-headline md:text-display text-on-surface">{title}</h2>
           {showAllLink && (
             <a
               href={showAllLink}
-              className="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all duration-200 font-medium"
+              className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-all duration-200 font-medium"
             >
               Все объекты
             </a>
@@ -138,7 +166,7 @@ const filteredProperties = useMemo(() => {
         {/* Встроенный фильтр (аналог UnifiedFilter, но для локальной фильтрации) */}
         {/* Красивый горизонтальный фильтр */}
         {enableFilters && (
-          <div className="mb-8 p-4 bg-white rounded-full shadow-sm max-w-5xl mx-auto flex items-center gap-4">
+          <div className="mb-8 p-4 bg-card rounded-full shadow-e1 max-w-5xl mx-auto flex items-center gap-4">
             {/* Тип */}
             <div className="relative">
               <select
@@ -157,7 +185,7 @@ const filteredProperties = useMemo(() => {
                 ))}
               </select>
               <svg
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant pointer-events-none"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -211,7 +239,7 @@ const filteredProperties = useMemo(() => {
             {/* Кнопка поиска */}
             <button
               onClick={() => {}}
-              className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+              className="bg-primary text-primary-foreground p-2 rounded-full hover:bg-primary transition-colors"
             >
               <Search className="w-5 h-5" />
             </button>
@@ -219,7 +247,7 @@ const filteredProperties = useMemo(() => {
             {/* Кнопка сброса */}
             <button
               onClick={resetFilters}
-              className="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition-colors"
+              className="text-on-surface-variant hover:text-on-surface p-2 rounded-full hover:bg-surface-container transition-colors"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -235,13 +263,13 @@ const filteredProperties = useMemo(() => {
         )}
 
         {/* Результат */}
-        <div className="text-sm text-gray-600 mb-4">
+        <div className="text-sm text-on-surface-variant mb-4">
           Найдено: {filteredProperties.length} объектов
         </div>
 
         {displayedProperties.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-600">Объекты не найдены. Попробуйте изменить фильтры.</p>
+            <p className="text-on-surface-variant">Объекты не найдены. Попробуйте изменить фильтры.</p>
           </div>
         ) : (
           <>
@@ -263,10 +291,10 @@ const filteredProperties = useMemo(() => {
                     <button
                       key={i}
                       onClick={() => setCurrentPage(i + 1)}
-                      className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                      className={`px-4 py-2 rounded-md font-medium transition-colors ${
                         currentPage === i + 1
-                          ? 'bg-primary text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-surface-container text-on-surface hover:bg-surface-container-high'
                       }`}
                     >
                       {i + 1}
@@ -323,7 +351,7 @@ const PropertyCard: React.FC<{ property: any }> = ({ property: rawProperty }) =>
 
   return (
     <a href={`${baseUrl}/${property.slug}`} className="block group">
-      <div className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
+      <div className="bg-card border border-border rounded-md shadow-e1 hover:shadow-e2 transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
         <div className="relative aspect-[4/3] overflow-hidden">
           <img
             src={imageUrl}
@@ -332,8 +360,8 @@ const PropertyCard: React.FC<{ property: any }> = ({ property: rawProperty }) =>
           />
           <div className="absolute top-3 left-3">
             <span
-              className={`px-2.5 py-1 text-xs font-medium text-white rounded-full ${
-                property.transactionType === 'sale' ? 'bg-green-600' : 'bg-blue-600'
+              className={`px-2.5 py-1 text-xs font-medium text-primary-foreground rounded-full ${
+                property.transactionType === 'sale' ? 'bg-green-600' : 'bg-primary'
               }`}
             >
               {property.transactionType === 'sale' ? 'Продажа' : 'Аренда'}
@@ -341,17 +369,17 @@ const PropertyCard: React.FC<{ property: any }> = ({ property: rawProperty }) =>
           </div>
         </div>
         <div className="p-4">
-          <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-2">
+          <div className="flex items-center gap-1.5 text-xs text-on-surface-variant mb-2">
             <MapPin className="w-3.5 h-3.5" />
             <span className="truncate">
               {property.location?.district && `${property.location.district}, `}
               {property.location?.city || 'Город не указан'}
             </span>
           </div>
-          <h3 className="text-base font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-primary">
+          <h3 className="text-base font-semibold text-on-surface mb-2 line-clamp-2 group-hover:text-primary">
             {property.title}
           </h3>
-          <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-600 mb-3">
+          <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-on-surface-variant mb-3">
             {property.bedrooms != null && property.bedrooms > 0 && (
               <div className="flex items-center gap-1">
                 <Bed className="w-3.5 h-3.5" />

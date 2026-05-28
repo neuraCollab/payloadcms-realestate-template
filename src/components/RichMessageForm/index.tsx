@@ -1,11 +1,15 @@
-// components/RichMessageForm.tsx
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
+
+import { Alert } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import { FormField } from '@/components/ui/form-field'
+import { Input } from '@/components/ui/input'
 
 interface Props {
   realtorId: string
@@ -20,6 +24,7 @@ export function RichMessageForm({ realtorId, realtorName, propertyTitle }: Props
   const [file, setFile] = useState<File | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -33,29 +38,26 @@ export function RichMessageForm({ realtorId, realtorName, propertyTitle }: Props
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError(null)
+
     if (!editor?.getHTML() || !name || !email) {
-      alert('Заполните обязательные поля')
+      setError('Заполните все обязательные поля.')
       return
     }
 
     setSubmitting(true)
 
-    // 1. Загружаем файл (если есть) в Payload Media
-    let fileId = null
+    let fileId: string | null = null
     if (file) {
       const formData = new FormData()
       formData.append('file', file)
-      const mediaRes = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      })
+      const mediaRes = await fetch('/api/upload', { method: 'POST', body: formData })
       if (mediaRes.ok) {
         const media = await mediaRes.json()
         fileId = media.id
       }
     }
 
-    // 2. Отправляем сообщение
     const res = await fetch('/api/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -64,97 +66,93 @@ export function RichMessageForm({ realtorId, realtorName, propertyTitle }: Props
         subject,
         name,
         email,
-        message: editor.getHTML(), // HTML-контент
+        message: editor.getHTML(),
         property: propertyTitle,
-        attachment: fileId, // ID файла из media
+        attachment: fileId,
       }),
     })
 
     if (res.ok) {
       setSuccess(true)
-      editor.commands.setContent('<p>Сообщение отправлено!</p>')
+      editor.commands.setContent('<p></p>')
     } else {
-      alert('Ошибка отправки')
+      setError('Не удалось отправить сообщение. Попробуйте позже.')
     }
     setSubmitting(false)
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      setFile(e.target.files[0])
-    }
+    if (e.target.files?.[0]) setFile(e.target.files[0])
   }
 
   if (success) {
     return (
-      <div className="bg-green-50 p-4 rounded-lg text-green-800">
-        Сообщение отправлено! Риелтор {realtorName} скоро ответит.
-      </div>
+      <Alert variant="success" title="Сообщение отправлено">
+        Риелтор {realtorName} скоро ответит.
+      </Alert>
     )
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow space-y-4">
-      <h3 className="text-lg font-semibold">Написать риелтору</h3>
+    <form onSubmit={handleSubmit} className="space-y-5">
+      {error ? <Alert variant="error">{error}</Alert> : null}
 
-      <div>
-        <label className="block text-sm mb-1">Тема *</label>
-        <input
-            placeholder="Тема *"
+      <FormField label="Тема" htmlFor="message-subject" required>
+        <Input
+          id="message-subject"
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
-          className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          placeholder="Тема сообщения"
           required
         />
-      </div>
+      </FormField>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <input
-          placeholder="Ваше имя *"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email *"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          required
-        />
+        <FormField label="Ваше имя" htmlFor="message-name" required>
+          <Input
+            id="message-name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Иван Иванов"
+            required
+          />
+        </FormField>
+        <FormField label="Email" htmlFor="message-email" required>
+          <Input
+            id="message-email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="ivan@example.com"
+            required
+          />
+        </FormField>
       </div>
 
-      {/* Rich Text Editor */}
-      <div>
-        <label className="block text-sm mb-1">Сообщение *</label>
+      <FormField label="Сообщение" required>
         {editor ? (
-          <div className="border border-gray-300 rounded p-2 min-h-[200px]">
+          <div className="rounded-md border border-border bg-background min-h-[200px] p-3 text-body focus-within:ring-2 focus-within:ring-ring transition-shadow">
             <EditorContent editor={editor} />
           </div>
         ) : (
-          <div className="border border-gray-300 rounded p-2 min-h-[200px] bg-gray-50">
-            Загрузка редактора...
+          <div className="rounded-md border border-border bg-surface-container-low min-h-[200px] p-3 text-body-sm text-on-surface-variant">
+            Загрузка редактора…
           </div>
         )}
-        {/* Панель инструментов можно добавить отдельно */}
-      </div>
+      </FormField>
 
-      {/* Загрузка файла */}
-      <div>
-        <label className="block text-sm mb-1">Прикрепить файл (опционально)</label>
+      <FormField label="Прикрепить файл" hint="Изображения, PDF или DOC. Опционально.">
         <input
           type="file"
           onChange={handleFileChange}
           accept="image/*,.pdf,.doc,.docx"
-          className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-muted file:px-3 file:py-1.5 file:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm file:mr-3 file:rounded-full file:border-0 file:bg-primary-container file:text-on-primary-container file:px-3 file:py-1 file:text-body-sm file:font-medium hover:file:bg-primary-container/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
-      </div>
+      </FormField>
 
-      <button type="submit" className="inline-flex h-10 w-full items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50" disabled={submitting}>
-        {submitting ? 'Отправка...' : 'Отправить'}
-      </button>
+      <Button type="submit" disabled={submitting} className="w-full">
+        {submitting ? 'Отправка…' : 'Отправить'}
+      </Button>
     </form>
   )
 }

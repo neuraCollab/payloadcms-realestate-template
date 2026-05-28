@@ -82,5 +82,24 @@ export const Messages: CollectionConfig = {
         position: 'sidebar',
       },
     },
+    {
+      // Идентификатор беседы: hash(email + realtorId). Группирует входящие
+      // и исходящие сообщения в один тред для просмотра в личном кабинете.
+      name: 'threadId',
+      type: 'text',
+      label: 'ID беседы',
+      index: true,
+      admin: { position: 'sidebar', description: 'Заполняется автоматически' },
+    },
+    {
+      name: 'direction',
+      type: 'select',
+      defaultValue: 'inbound',
+      options: [
+        { label: 'От пользователя', value: 'inbound' },
+        { label: 'От риэлтора', value: 'outbound' },
+      ],
+      admin: { position: 'sidebar' },
+    },
   ],
 }

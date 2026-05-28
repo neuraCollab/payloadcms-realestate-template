@@ -49,7 +49,7 @@ export const MediaBlock: React.FC<Props> = (props) => {
         >
           <Media
             imgClassName={cn(
-              'rounded-lg shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-[1.02] w-full h-auto object-cover',
+              'rounded-md shadow-e1 hover:shadow-e1 transition-all duration-300 transform hover:scale-[1.02] w-full h-auto object-cover',
               imgClassName
             )}
             resource={media}
@@ -68,7 +68,7 @@ export const MediaBlock: React.FC<Props> = (props) => {
           )}
           style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}
         >
-          <div className="text-gray-600 text-center">
+          <div className="text-on-surface-variant text-center">
             <RichText data={caption} enableGutter={false} />
           </div>
         </div>

@@ -10,6 +10,13 @@ export type ContactUsFormBlockType = {
   form: Form
 }
 
+const SUBJECT_OPTIONS: Array<{ value: string; label: string }> = [
+  { value: 'Buy Property', label: 'Купить недвижимость' },
+  { value: 'Rent Property', label: 'Снять недвижимость' },
+  { value: 'Sell Property', label: 'Продать / сдать объект' },
+  { value: 'Other', label: 'Другое' },
+]
+
 export const ContactUsFormBlock: React.FC<ContactUsFormBlockType> = ({ label, title, form }) => {
   const [formData, setFormData] = React.useState({
     subject: 'Buy Property',
@@ -18,15 +25,18 @@ export const ContactUsFormBlock: React.FC<ContactUsFormBlockType> = ({ label, ti
     email: '',
     message: '',
   })
+  const [submitting, setSubmitting] = React.useState(false)
+  const [submitted, setSubmitted] = React.useState(false)
+  const [error, setError] = React.useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError(null)
+    setSubmitting(true)
     try {
       const response = await fetch('/api/form-submissions', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           form: form.id,
           submissionData: formData,
@@ -34,7 +44,6 @@ export const ContactUsFormBlock: React.FC<ContactUsFormBlockType> = ({ label, ti
       })
 
       if (response.ok) {
-        // Очищаем форму после успешной отправки
         setFormData({
           subject: 'Buy Property',
           fullName: '',
@@ -42,117 +51,148 @@ export const ContactUsFormBlock: React.FC<ContactUsFormBlockType> = ({ label, ti
           email: '',
           message: '',
         })
-        alert('Форма успешно отправлена!')
+        setSubmitted(true)
       } else {
-        throw new Error('Ошибка при отправке формы')
+        throw new Error('Не удалось отправить форму. Попробуйте позже.')
       }
-    } catch (error) {
-      console.error('Ошибка:', error)
-      alert('Произошла ошибка при отправке формы')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Не удалось отправить форму.')
+    } finally {
+      setSubmitting(false)
     }
   }
 
+  // Шапка с поддержкой mixed-language шаблона: если в title есть «get in touch»,
+  // подсвечивает; иначе подсвечивает «свяжемся».
+  const renderTitle = () => {
+    if (title.toLowerCase().includes('get in touch')) {
+      return title.split(/get in touch/i).map((part, i, arr) => (
+        <React.Fragment key={i}>
+          {part}
+          {i < arr.length - 1 ? <span className="text-primary">свяжемся</span> : null}
+        </React.Fragment>
+      ))
+    }
+    return title
+  }
+
   return (
-    <section className="py-24 px-4 bg-background">
+    <section className="py-12 md:py-20 px-4 bg-background">
       <div className="container mx-auto max-w-6xl">
-        {/* Заголовок */}
         <div className="text-center mb-16">
           <div className="text-sm text-primary mb-2">{label}</div>
-          <h2 className="text-4xl font-normal">
-            {title.split('get in touch').map((part, i) => (
-              <React.Fragment key={i}>
-                {part}
-                {i === 0 && <span className="text-primary">get in touch</span>}
-              </React.Fragment>
-            ))}
-          </h2>
+          <h2 className="text-headline">{renderTitle()}</h2>
         </div>
 
-        {/* Форма */}
         <div className="max-w-xl mx-auto">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Тема */}
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">Subject*</span>
-              </label>
-              <select
-                className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                value={formData.subject}
-                onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                required
+          {submitted ? (
+            <div className="rounded-md border border-emerald-200 bg-emerald-50 p-6 text-center">
+              <h3 className="text-title text-emerald-900 mb-1">Спасибо!</h3>
+              <p className="text-body-sm text-emerald-800">
+                Ваша заявка отправлена. Мы свяжемся в ближайшее время.
+              </p>
+              <button
+                type="button"
+                onClick={() => setSubmitted(false)}
+                className="mt-4 inline-flex items-center gap-1 text-body-sm text-primary hover:underline"
               >
-                <option value="Buy Property">Buy Property</option>
-                <option value="Rent Property">Rent Property</option>
-                <option value="Sell Property">Sell Property</option>
-                <option value="Other">Other</option>
-              </select>
+                Отправить ещё одну
+              </button>
             </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {error ? (
+                <div className="text-body-sm text-rose-700 bg-rose-50 border border-rose-200 rounded-md p-3">
+                  {error}
+                </div>
+              ) : null}
 
-            {/* Имя */}
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">Full Name*</span>
-              </label>
-              <input
-                type="text"
-                className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                value={formData.fullName}
-                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                placeholder="Mitchell"
-                required
-              />
-            </div>
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">Тема обращения*</span>
+                </label>
+                <select
+                  className="flex h-11 w-full rounded-md border border-border bg-card px-4 py-2 text-sm shadow-e1 focus-within:shadow-e2 focus-visible:shadow-e2 hover:shadow-e2 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:border-primary"
+                  value={formData.subject}
+                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                  required
+                >
+                  {SUBJECT_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            {/* Телефон */}
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">Phone Number*</span>
-              </label>
-              <input
-                type="tel"
-                className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                placeholder="+123 456 789 00"
-                required
-              />
-            </div>
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">Ваше имя*</span>
+                </label>
+                <input
+                  type="text"
+                  className="flex h-11 w-full rounded-md border border-border bg-card px-4 py-2 text-sm shadow-e1 focus-within:shadow-e2 focus-visible:shadow-e2 hover:shadow-e2 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:border-primary"
+                  value={formData.fullName}
+                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                  placeholder="Иван Иванов"
+                  required
+                />
+              </div>
 
-            {/* Email */}
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">Email Address*</span>
-              </label>
-              <input
-                type="email"
-                className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="test@gmail.com"
-                required
-              />
-            </div>
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">Телефон*</span>
+                </label>
+                <input
+                  type="tel"
+                  className="flex h-11 w-full rounded-md border border-border bg-card px-4 py-2 text-sm shadow-e1 focus-within:shadow-e2 focus-visible:shadow-e2 hover:shadow-e2 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:border-primary"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  placeholder="+7 (999) 123-45-67"
+                  required
+                />
+              </div>
 
-            {/* Сообщение */}
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">Your Message*</span>
-              </label>
-              <textarea
-                className="flex min-h-32 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                value={formData.message}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                placeholder="Explain it in details..."
-                required
-              />
-            </div>
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">Email*</span>
+                </label>
+                <input
+                  type="email"
+                  className="flex h-11 w-full rounded-md border border-border bg-card px-4 py-2 text-sm shadow-e1 focus-within:shadow-e2 focus-visible:shadow-e2 hover:shadow-e2 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:border-primary"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  placeholder="ivan@example.com"
+                  required
+                />
+              </div>
 
-            {/* Кнопка отправки */}
-            <button type="submit" className="inline-flex h-10 w-full items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90">
-              Submit
-            </button>
-          </form>
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">Сообщение*</span>
+                </label>
+                <textarea
+                  className="flex min-h-32 w-full rounded-md border border-border bg-card px-4 py-3 text-sm shadow-e1 focus-within:shadow-e2 hover:shadow-e2 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:border-primary"
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  placeholder="Расскажите подробнее, что вас интересует…"
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="inline-flex h-10 w-full items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {submitting ? 'Отправка…' : 'Отправить заявку'}
+              </button>
+
+              <p className="text-label text-on-surface-variant text-center">
+                Нажимая «Отправить», вы соглашаетесь с обработкой персональных данных.
+              </p>
+            </form>
+          )}
         </div>
       </div>
     </section>

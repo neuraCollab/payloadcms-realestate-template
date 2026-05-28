@@ -83,28 +83,82 @@ docker compose up -d --build
 ```
 - The application and admin panel will be available at `http://localhost:3000` (check the mappings in `docker-compose.yml`).
 
-## Database Import/Export (PostgreSQL in Docker)
+## Backup & Restore
 
-### Import from a local SQL backup `./db/mydb_backup.sql`
+The current state of the app — Postgres data **and** the media files referenced by it — is preserved in the repo so you can stand up an identical copy on another server.
+
+What's tracked in git:
+- `db/dump.sql` — full PostgreSQL dump (schema + data, produced with `pg_dump --clean --if-exists`)
+- `public/media/` — image binaries referenced by the `media` collection
+- `db/restore.sh` — one-shot restore against the running `postgres` container
+- `db/backup.sh` — refreshes `db/dump.sql` from the live database
+
+What's **not** tracked: `.env` (secrets), `node_modules`, `.next`, the Docker volumes themselves. You re-create those on the target server.
+
+### Restore on a fresh server (full deployment)
+
 ```bash
-# Copy file to container
-docker cp ./db/mydb_backup.sql my_postgres:/tmp/mydb_backup.sql
+# 1. Clone the repo
+git clone https://github.com/neuraCollab/payloadcms-realestate-template.git
+cd payloadcms-realestate-template
 
-# Import into database (replace user/DB if necessary)
-docker exec -it my_postgres psql -U admin -d mydb -f /tmp/mydb_backup.sql
+# 2. Create .env (start from the example, then edit secrets)
+cp .env.example .env
+$EDITOR .env   # set PAYLOAD_SECRET, CRON_SECRET, PREVIEW_SECRET, POSTGRES_PASSWORD, PGADMIN_DEFAULT_PASSWORD
+
+# 3. Bring up the stack (builds the Next.js dev container and starts postgres + pgadmin)
+docker compose up -d --build
+
+# 4. Wait until postgres reports healthy
+docker compose ps   # postgres should show "(healthy)"
+
+# 5. Restore the database from the committed dump
+./db/restore.sh
+
+# 6. (Media is already on disk via the git checkout — nothing else to copy.)
+
+# 7. Verify
+curl -sS -o /dev/null -w "%{http_code}\n" http://localhost:3000/        # → 200
+curl -sS -o /dev/null -w "%{http_code}\n" http://localhost:3000/admin   # → 200
 ```
 
-### Export backup from container
+After step 5 the app at `http://localhost:3000` and the Payload admin at `http://localhost:3000/admin` will reflect the exact state captured in the repo — pages, posts, media references, agents, properties, forms, and globals (header/footer).
 
-1. Create dump inside container
+> **Windows note** — `db/restore.sh` and `db/backup.sh` are bash scripts. On Windows run them through Git Bash, WSL, or Docker's bundled bash. The equivalent one-liner without the script is:
+> ```bash
+> docker exec -i my_postgres psql -U admin -d mydb < db/dump.sql
+> ```
+
+### Refresh the snapshot
+
+Anytime you add/edit content in `/admin` and want the change to travel with the next deployment, refresh the dump and commit:
+
 ```bash
-docker exec -t my_postgres pg_dump -U admin -d mydb -f /tmp/mydb_backup.sql
+./db/backup.sh
+git add db/dump.sql public/media/
+git commit -m "Refresh demo content snapshot"
 ```
 
-2. Copy to host
+### Just the DB, without the scripts
+
 ```bash
-docker cp my_postgres:/tmp/mydb_backup.sql ./mydb_backup.sql
+# Export
+docker exec my_postgres pg_dump -U admin -d mydb --clean --if-exists --no-owner --no-privileges > db/dump.sql
+
+# Import
+docker exec -i my_postgres psql -U admin -d mydb < db/dump.sql
 ```
+
+### Seeding demo pages from blocks
+
+A separate dev-only endpoint upserts the Realestic-modeled demo pages (`/home-v2`, `/about`, `/agents`, `/blogs`, `/contact`, `/demo`) by composing house/base blocks. Safe to re-run — it doesn't wipe any other collection.
+
+```bash
+curl -X POST http://localhost:3000/next/seed-pages
+# → {"success":true,"created":[],"updated":["demo","home-v2","about","agents","blogs","contact"]}
+```
+
+Page factories live under `src/endpoints/seed-pages/`. Edit a `*-page.ts` file, re-curl, refresh the route — done.
 
 ## Main Collections (Payload CMS)
 - **Properties** — real estate properties (fields: price, area, bedrooms/baths, address, media, features)
@@ -126,6 +180,53 @@ docker cp my_postgres:/tmp/mydb_backup.sql ./mydb_backup.sql
 - **CMS pages**: `/[slug]`
 - **Sitemaps**: `/(frontend)/(sitemaps)/...`
 
+## End-to-end testing (Playwright)
+
+Tests live in `tests/e2e/` and target `http://localhost:3000` (override with `PLAYWRIGHT_BASE_URL`).
+
+### HTTP smoke (runs anywhere, ~17 s)
+
+The `smoke.spec.ts` file uses Playwright's HTTP `request` API and doesn't need a browser. It runs in the existing Alpine-based dev container:
+
+```bash
+docker compose exec app pnpm test:e2e:smoke
+# → 15 passed (17 s) — every route returns 200, /flats/<bad-slug> returns 404
+```
+
+### Browser UI tests (require a Debian base)
+
+The Alpine dev image cannot run headless Chromium (Playwright's binary is glibc/Debian, Alpine is musl). Run the UI specs via the official Playwright image on the host:
+
+```bash
+# From the repo root, with the dev stack already up:
+docker run --rm --network host \
+  -v "$PWD":/work -w /work \
+  mcr.microsoft.com/playwright:v1.60.0-jammy \
+  bash -c "pnpm install --no-frozen-lockfile && pnpm test:e2e --project=chromium"
+```
+
+Alternatively, run on the host directly:
+
+```bash
+pnpm install
+pnpm exec playwright install chromium
+pnpm test:e2e
+```
+
+## Course documentation
+
+Практические (лабораторные) работы по ГОСТу для дисциплины «Качество и тестирование ПО». Каждая работа — отдельный файл:
+
+- [docs/labs/01-tz.md](docs/labs/01-tz.md) — техническое задание по ГОСТ 19.201-78
+- [docs/labs/02-manual-testing.md](docs/labs/02-manual-testing.md) — ручное тестирование, 20 тест-кейсов
+- [docs/labs/03-auto-testing.md](docs/labs/03-auto-testing.md) — автоматическое тестирование (Playwright) + покрытие
+- [docs/labs/04-oop-metrics.md](docs/labs/04-oop-metrics.md) — метрики TCC/LCC, Чидамбера-Кемерера, Лоренца-Кидда
+- [docs/labs/05-usability-anketas.md](docs/labs/05-usability-anketas.md) — две анкеты для usability-теста (ГОСТ Р ИСО 9241-11-2010)
+
+Развёртывание на сервер:
+
+- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) — полная инструкция с командами, выбором сервера и подключением домена.
+
 ## Scripts
 - `pnpm dev` — start development (Turbopack)
 - `pnpm build` — build
@@ -133,6 +234,10 @@ docker cp my_postgres:/tmp/mydb_backup.sql ./mydb_backup.sql
 - `pnpm generate:types` — generate payload types
 - `pnpm generate:importmap` — generate import map for the admin panel
 - `pnpm lint` / `pnpm lint:fix` — linting
+- `pnpm test:e2e` — Playwright e2e suite (all projects)
+- `pnpm test:e2e:smoke` — HTTP-only smoke (~17 s)
+- `pnpm test:e2e:headed` — run with browser visible
+- `pnpm test:e2e:report` — open the last HTML report
 
 ## Configuration notes
 - Database: The PostgreSQL adapter (`DATABASE_URI`) is configured by default. The code contains a commented example of a MongoDB adapter.

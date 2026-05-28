@@ -28,7 +28,7 @@ export const FAQBlock: React.FC<FAQBlockType> = ({ label, title, items }) => {
         {/* Заголовок */}
         <div className="text-center mb-12 opacity-0 animate-[fadeInUp_0.6s_ease-out_0.1s_forwards]">
           {label && <div className="text-sm text-primary mb-2 font-medium">{label}</div>}
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
+          <h2 className="text-headline md:text-display text-on-surface">
             {title.split('Answered').map((part, i) => (
               <React.Fragment key={i}>
                 {part}
@@ -43,18 +43,18 @@ export const FAQBlock: React.FC<FAQBlockType> = ({ label, title, items }) => {
           {items.map((item, index) => (
             <div
               key={index}
-              className="border border-gray-200 rounded-lg transition-all duration-300 hover:shadow-md opacity-0 animate-fadeInUp"
+              className="border border-border rounded-md transition-all duration-300 hover:shadow-e1 opacity-0 animate-fadeInUp"
               style={{ animationDelay: `${0.3 + index * 0.1}s`, animationFillMode: 'forwards' }}
             >
               <button
-                className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 rounded-lg transition-colors duration-200"
+                className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-surface-container-low rounded-md transition-colors duration-200"
                 onClick={() => toggleItem(index)}
               >
-                <span className="text-lg font-medium text-gray-900 pr-4">
+                <span className="text-lg font-medium text-on-surface pr-4">
                   {item.question}
                 </span>
                 <ChevronDown
-                  className={`w-5 h-5 text-gray-500 transform transition-transform duration-200 flex-shrink-0 ${
+                  className={`w-5 h-5 text-on-surface-variant transform transition-transform duration-200 flex-shrink-0 ${
                     openIndex === index ? 'rotate-180' : ''
                   }`}
                 />
@@ -66,7 +66,7 @@ export const FAQBlock: React.FC<FAQBlockType> = ({ label, title, items }) => {
                 }`}
               >
                 <div className="px-6 pb-4">
-                  <p className="text-gray-600 leading-relaxed">
+                  <p className="text-on-surface-variant leading-relaxed">
                     {item.answer}
                   </p>
                 </div>

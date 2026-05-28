@@ -297,5 +297,17 @@ export const Commercial: CollectionConfig = {
         { label: 'Черновик', value: 'draft' },
       ],
     },
+    {
+      name: 'fromOwner',
+      type: 'checkbox',
+      label: 'От собственника',
+      defaultValue: false,
+    },
+    {
+      name: 'noCommission',
+      type: 'checkbox',
+      label: 'Без комиссии',
+      defaultValue: false,
+    },
   ],
 }

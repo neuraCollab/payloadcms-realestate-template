@@ -81,6 +81,7 @@ export interface Config {
     lands: Land;
     reviews: Review;
     messages: Message;
+    cities: City;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -106,6 +107,7 @@ export interface Config {
     lands: LandsSelect<false> | LandsSelect<true>;
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
     messages: MessagesSelect<false> | MessagesSelect<true>;
+    cities: CitiesSelect<false> | CitiesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -496,6 +498,52 @@ export interface Page {
         properties?: (number | Property)[] | null;
         autoLoad?: boolean | null;
         limit?: number | null;
+        /**
+         * Если указан label, в центре карты будет показан одиночный маркер с этим подписью (объекты в этом режиме игнорируются).
+         */
+        officeMarker?: {
+          label?: string | null;
+          address?: string | null;
+        };
+        id?: string | null;
+        blockName?: string | null;
+      }
+    | {
+        blockType: 'quick-nav';
+        label?: string | null;
+        title: string;
+        subtitle?: string | null;
+        items?:
+          | {
+              icon:
+                | 'home'
+                | 'briefcase'
+                | 'trees'
+                | 'building'
+                | 'search'
+                | 'users'
+                | 'newspaper'
+                | 'mail'
+                | 'map'
+                | 'star'
+                | 'info'
+                | 'phone';
+              title: string;
+              description?: string | null;
+              href: string;
+              accent?: ('primary' | 'emerald' | 'amber' | 'rose' | 'sky' | 'violet') | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+      }
+    | {
+        blockType: 'hero-search';
+        badge?: string | null;
+        headline: string;
+        subheadline?: string | null;
+        image?: (number | null) | Media;
         id?: string | null;
         blockName?: string | null;
       }
@@ -1133,6 +1181,8 @@ export interface Commercial {
     email?: string | null;
   };
   status?: ('active' | 'sold' | 'unpublished' | 'draft') | null;
+  fromOwner?: boolean | null;
+  noCommission?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1210,6 +1260,12 @@ export interface Flat {
   residentialComplex?: (number | null) | ResidentialComplex;
   status?: ('active' | 'sold' | 'unpublished' | 'draft') | null;
   isFeatured?: boolean | null;
+  /**
+   * Объявление размещено собственником, а не агентством.
+   */
+  fromOwner?: boolean | null;
+  noCommission?: boolean | null;
+  rentalSubtype?: ('whole' | 'room' | 'bed') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1423,6 +1479,35 @@ export interface Message {
   phone?: string | null;
   property?: string | null;
   status?: ('new' | 'in-progress' | 'completed') | null;
+  /**
+   * Заполняется автоматически
+   */
+  threadId?: string | null;
+  direction?: ('inbound' | 'outbound') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cities".
+ */
+export interface City {
+  id: number;
+  name: string;
+  /**
+   * Латиницей, без пробелов. Используется в URL вида /kimry
+   */
+  slug: string;
+  country?: string | null;
+  region?: string | null;
+  description?: string | null;
+  heroImage?: (number | null) | Media;
+  population?: number | null;
+  coordinates?: {
+    lat?: number | null;
+    lng?: number | null;
+  };
+  isActive?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1653,6 +1738,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'messages';
         value: number | Message;
+      } | null)
+    | ({
+        relationTo: 'cities';
+        value: number | City;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2024,6 +2113,43 @@ export interface PagesSelect<T extends boolean = true> {
               properties?: T;
               autoLoad?: T;
               limit?: T;
+              officeMarker?:
+                | T
+                | {
+                    label?: T;
+                    address?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'quick-nav'?:
+          | T
+          | {
+              blockType?: T;
+              label?: T;
+              title?: T;
+              subtitle?: T;
+              items?:
+                | T
+                | {
+                    icon?: T;
+                    title?: T;
+                    description?: T;
+                    href?: T;
+                    accent?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'hero-search'?:
+          | T
+          | {
+              blockType?: T;
+              badge?: T;
+              headline?: T;
+              subheadline?: T;
+              image?: T;
               id?: T;
               blockName?: T;
             };
@@ -2450,6 +2576,9 @@ export interface FlatsSelect<T extends boolean = true> {
   residentialComplex?: T;
   status?: T;
   isFeatured?: T;
+  fromOwner?: T;
+  noCommission?: T;
+  rentalSubtype?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2546,6 +2675,8 @@ export interface CommercialSelect<T extends boolean = true> {
         email?: T;
       };
   status?: T;
+  fromOwner?: T;
+  noCommission?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2610,6 +2741,30 @@ export interface MessagesSelect<T extends boolean = true> {
   phone?: T;
   property?: T;
   status?: T;
+  threadId?: T;
+  direction?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cities_select".
+ */
+export interface CitiesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  country?: T;
+  region?: T;
+  description?: T;
+  heroImage?: T;
+  population?: T;
+  coordinates?:
+    | T
+    | {
+        lat?: T;
+        lng?: T;
+      };
+  isActive?: T;
   updatedAt?: T;
   createdAt?: T;
 }

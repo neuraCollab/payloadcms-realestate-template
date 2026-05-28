@@ -39,6 +39,8 @@ import { FAQBlock } from '../../blocks/base/FAQ/config'
 import { PropertyFeaturesBlock } from '@/blocks/house/PropertyFeatures/config'
 import { HouseFilter } from '@/blocks/house/HouseFilter/config'
 import { MapBlock } from '@/blocks/house/MapBlock/config'
+import { QuickNavBlock } from '@/blocks/house/QuickNav/config'
+import { HeroSearchBlock } from '@/blocks/house/HeroSearch/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -119,6 +121,8 @@ export const Pages: CollectionConfig<'pages'> = {
                 PropertyFeaturesBlock,
                 HouseFilter,
                 MapBlock,
+                QuickNavBlock,
+                HeroSearchBlock,
               ],
               required: true,
               admin: {

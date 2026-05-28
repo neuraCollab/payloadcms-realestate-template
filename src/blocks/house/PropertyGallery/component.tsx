@@ -24,12 +24,12 @@ export const PropertyGalleryBlock: React.FC<PropertyGalleryBlockType> = ({ prope
   }
 
   return (
-    <section className="py-16 bg-background">
+    <section className="py-12 md:py-20 bg-background">
       <div className="container mx-auto max-w-6xl px-4">
-        <h2 className="text-3xl font-normal mb-8">Property Gallery</h2>
+        <h2 className="text-title-lg mb-8">Property Gallery</h2>
 
         {/* Основное изображение */}
-        <div className="relative w-full h-[600px] mb-4 rounded-lg overflow-hidden">
+        <div className="relative w-full h-[600px] mb-4 rounded-md overflow-hidden">
           <Image
             src={getImageUrl(property.images[selectedImage])}
             alt={`Property image ${selectedImage + 1}`}
@@ -44,7 +44,7 @@ export const PropertyGalleryBlock: React.FC<PropertyGalleryBlockType> = ({ prope
             <button
               key={index}
               onClick={() => setSelectedImage(index)}
-              className={`relative w-full aspect-square rounded-lg overflow-hidden ${
+              className={`relative w-full aspect-square rounded-md overflow-hidden ${
                 selectedImage === index ? 'ring-2 ring-primary' : ''
               }`}
             >

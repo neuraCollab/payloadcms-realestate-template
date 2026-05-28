@@ -346,5 +346,31 @@ export const Flats: CollectionConfig = {
       label: 'Показать в featured',
       defaultValue: false,
     },
+    {
+      name: 'fromOwner',
+      type: 'checkbox',
+      label: 'От собственника',
+      defaultValue: false,
+      admin: {
+        description: 'Объявление размещено собственником, а не агентством.',
+      },
+    },
+    {
+      name: 'noCommission',
+      type: 'checkbox',
+      label: 'Без комиссии',
+      defaultValue: false,
+    },
+    {
+      name: 'rentalSubtype',
+      type: 'select',
+      label: 'Что сдаётся / продаётся',
+      defaultValue: 'whole',
+      options: [
+        { label: 'Квартира целиком', value: 'whole' },
+        { label: 'Комната', value: 'room' },
+        { label: 'Койко-место', value: 'bed' },
+      ],
+    },
   ],
 }

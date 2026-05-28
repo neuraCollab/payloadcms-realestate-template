@@ -1,7 +1,12 @@
-// components/RealtorReviewForm.tsx
 'use client'
-
 import { useState } from 'react'
+
+import { Alert } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import { FormField } from '@/components/ui/form-field'
+import { Input } from '@/components/ui/input'
+import { StarRating } from '@/components/ui/star-rating'
+import { Textarea } from '@/components/ui/textarea'
 
 export function RealtorReviewForm({ realtorId }: { realtorId: string }) {
   const [name, setName] = useState('')
@@ -10,11 +15,13 @@ export function RealtorReviewForm({ realtorId }: { realtorId: string }) {
   const [comment, setComment] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError(null)
     if (!name.trim() || !comment.trim() || rating < 1 || rating > 5) {
-      alert('Пожалуйста, заполните все обязательные поля корректно.')
+      setError('Пожалуйста, заполните все обязательные поля корректно.')
       return
     }
 
@@ -34,102 +41,68 @@ export function RealtorReviewForm({ realtorId }: { realtorId: string }) {
 
     if (res.ok) {
       setSuccess(true)
-      // Опционально: сбросить форму
       setName('')
       setEmail('')
       setComment('')
       setRating(5)
     } else {
-      const data = await res.json()
-      alert(data.error || 'Не удалось отправить отзыв. Попробуйте позже.')
+      const data = await res.json().catch(() => ({}))
+      setError(data.error || 'Не удалось отправить отзыв. Попробуйте позже.')
     }
     setSubmitting(false)
   }
 
   if (success) {
     return (
-      <div className="bg-green-50 text-green-800 p-4 rounded-lg border border-green-200">
-        Спасибо за ваш отзыв! Он будет опубликован после модерации.
-      </div>
+      <Alert variant="success" title="Отзыв отправлен">
+        Он будет опубликован после модерации.
+      </Alert>
     )
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow">
-      <h3 className="text-lg font-semibold mb-4">Оставить отзыв о риелторе</h3>
+    <form onSubmit={handleSubmit} className="space-y-5">
+      {error ? <Alert variant="error">{error}</Alert> : null}
 
-      {/* Имя */}
-      <div className="mb-4">
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-          Ваше имя *
-        </label>
-        <input
-          id="name"
+      <FormField label="Ваше имя" htmlFor="review-name" required>
+        <Input
+          id="review-name"
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           placeholder="Иван Иванов"
           required
         />
-      </div>
+      </FormField>
 
-      {/* Email */}
-      <div className="mb-4">
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-          Email (не публикуется)
-        </label>
-        <input
-          id="email"
+      <FormField label="Email" htmlFor="review-email" hint="Не публикуется">
+        <Input
+          id="review-email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           placeholder="ivan@example.com"
         />
-      </div>
+      </FormField>
 
-      {/* Оценка */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">Оценка *</label>
-        <div className="flex items-center gap-2">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <button
-              key={star}
-              type="button"
-              onClick={() => setRating(star)}
-              className={`w-10 h-10 rounded-full flex items-center justify-center text-lg ${
-                rating >= star ? 'bg-yellow-400 text-yellow-800' : 'bg-gray-200 text-gray-600'
-              }`}
-              aria-label={`Оценить ${star} звездой`}
-            >
-              ★
-            </button>
-          ))}
-          <span className="ml-2 text-gray-600">{rating} из 5</span>
-        </div>
-      </div>
+      <FormField label="Оценка" required>
+        <StarRating value={rating} onChange={setRating} />
+      </FormField>
 
-      {/* Отзыв */}
-      <div className="mb-6">
-        <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-1">
-          Ваш отзыв *
-        </label>
-        <textarea
-          id="comment"
+      <FormField label="Ваш отзыв" htmlFor="review-comment" required>
+        <Textarea
+          id="review-comment"
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-          className="flex min-h-20 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           placeholder="Расскажите о своём опыте работы с риелтором..."
           rows={4}
           required
         />
-      </div>
+      </FormField>
 
-      {/* Кнопка */}
-      <button type="submit" className="inline-flex h-10 w-full items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50" disabled={submitting}>
-        {submitting ? 'Отправка...' : 'Отправить отзыв'}
-      </button>
+      <Button type="submit" disabled={submitting} className="w-full">
+        {submitting ? 'Отправка…' : 'Отправить отзыв'}
+      </Button>
     </form>
   )
 }

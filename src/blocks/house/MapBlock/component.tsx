@@ -22,13 +22,16 @@ async function fetchProperties(limit: number): Promise<PropertyType[]> {
 
 export const MapBlock: React.FC<MapBlockProps & { disableInnerContainer?: boolean }> = (props) => {
   const { title, center, properties, autoLoad, limit = 20 } = props
+  const officeMarker = (props as any).officeMarker as { label?: string; address?: string } | undefined
+  const officeMode = Boolean(officeMarker?.label)
   const [items, setItems] = useState<PropertyType[]>(Array.isArray(properties) ? (properties as unknown as PropertyType[]) : [])
 
   useEffect(() => {
+    if (officeMode) return
     if ((!properties || (Array.isArray(properties) && properties.length === 0)) && autoLoad) {
       fetchProperties(limit).then((docs) => setItems(docs))
     }
-  }, [autoLoad, limit, properties])
+  }, [autoLoad, limit, properties, officeMode])
 
   const defaultCenter = useMemo(() => {
     if (center?.lat && center?.lng) return { lat: center.lat as number, lng: center.lng as number, zoom: Number(center.zoom || 12) }
@@ -52,30 +55,46 @@ export const MapBlock: React.FC<MapBlockProps & { disableInnerContainer?: boolea
 
   return (
     <section className="container mx-auto px-4">
-      {title ? <h2 className="text-2xl font-semibold mb-4">{title}</h2> : null}
-      <div className="h-[420px] w-full rounded-xl overflow-hidden border border-base-300">
+      {title ? <h2 className="text-title-lg mb-4">{title}</h2> : null}
+      <div className="h-[420px] w-full rounded-xl overflow-hidden border border-border shadow-e1">
         {/* @ts-expect-error dynamic import types */}
         <MapContainer center={[defaultCenter.lat, defaultCenter.lng]} zoom={defaultCenter.zoom} style={{ height: '100%', width: '100%' }}>
           {/* @ts-expect-error dynamic import types */}
           <TileLayer attribution='&copy; OpenStreetMap contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          {markers.map((m) => (
+
+          {officeMode ? (
             // @ts-expect-error dynamic import types
-            <Marker key={m.id} position={[m.lat, m.lng]}>
+            <Marker position={[defaultCenter.lat, defaultCenter.lng]}>
               {/* @ts-expect-error dynamic import types */}
               <Popup>
                 <div className="space-y-1">
-                  <div className="font-medium">{m.title}</div>
-                  {m.price ? <div className="text-sm opacity-80">{m.price.toLocaleString()} ₽</div> : null}
-                  {m.address ? <div className="text-xs opacity-70">{m.address}</div> : null}
-                  {m.slug ? (
-                    <a className="mt-2 inline-flex items-center rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90" href={`/properties/${m.slug}`}>
-                      Подробнее
-                    </a>
+                  <div className="font-medium">{officeMarker!.label}</div>
+                  {officeMarker?.address ? (
+                    <div className="text-xs opacity-70">{officeMarker.address}</div>
                   ) : null}
                 </div>
               </Popup>
             </Marker>
-          ))}
+          ) : (
+            markers.map((m) => (
+              // @ts-expect-error dynamic import types
+              <Marker key={m.id} position={[m.lat, m.lng]}>
+                {/* @ts-expect-error dynamic import types */}
+                <Popup>
+                  <div className="space-y-1">
+                    <div className="font-medium">{m.title}</div>
+                    {m.price ? <div className="text-sm opacity-80">{m.price.toLocaleString()} ₽</div> : null}
+                    {m.address ? <div className="text-xs opacity-70">{m.address}</div> : null}
+                    {m.slug ? (
+                      <a className="mt-2 inline-flex items-center rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90" href={`/properties/${m.slug}`}>
+                        Подробнее
+                      </a>
+                    ) : null}
+                  </div>
+                </Popup>
+              </Marker>
+            ))
+          )}
         </MapContainer>
       </div>
     </section>

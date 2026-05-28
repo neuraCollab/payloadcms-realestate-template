@@ -38,7 +38,7 @@ export const PropertyHeroBlock: React.FC<PropertyHeroBlockType> = ({ property })
       </div>
 
       {/* Информация о объекте */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white">
+      <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-primary-foreground">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center gap-2 text-sm mb-4 opacity-0 animate-[fadeInUp_0.6s_ease-out_0.1s_forwards]">
             <MapPin className="w-4 h-4" />
@@ -47,16 +47,16 @@ export const PropertyHeroBlock: React.FC<PropertyHeroBlockType> = ({ property })
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-end">
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight opacity-0 animate-[fadeInUp_0.6s_ease-out_0.3s_forwards]">
+              <h1 className="text-headline md:text-display mb-6 leading-tight opacity-0 animate-[fadeInUp_0.6s_ease-out_0.3s_forwards]">
                 {property.title}
               </h1>
               <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 opacity-0 animate-[fadeInUp_0.6s_ease-out_0.5s_forwards]">
-                <span className="text-3xl md:text-4xl font-bold">{formatPrice(property.price)}</span>
+                <span className="text-headline md:text-display">{formatPrice(property.price)}</span>
                 <span
                   className={`inline-flex px-4 py-2 rounded-full text-sm font-semibold ${
                     property.type === 'sale' 
-                      ? 'bg-green-500 text-white' 
-                      : 'bg-blue-500 text-white'
+                      ? 'bg-green-500 text-primary-foreground' 
+                      : 'bg-primary text-primary-foreground'
                   }`}
                 >
                   {property.type === 'sale' ? 'For Sale' : 'For Rent'}
@@ -65,10 +65,10 @@ export const PropertyHeroBlock: React.FC<PropertyHeroBlockType> = ({ property })
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 opacity-0 animate-[fadeInUp_0.6s_ease-out_0.7s_forwards]">
-              <button className="px-8 py-4 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+              <button className="px-8 py-4 bg-primary text-primary-foreground rounded-md font-semibold hover:bg-primary/90 transition-all duration-200 transform hover:scale-105 shadow-e2 hover:shadow-e3">
                 Contact Agent
               </button>
-              <button className="px-8 py-4 border-2 border-white text-white rounded-lg font-semibold hover:bg-white hover:text-gray-900 transition-all duration-200 transform hover:scale-105 backdrop-blur-sm">
+              <button className="px-8 py-4 border-2 border-white text-primary-foreground rounded-md font-semibold hover:bg-card hover:text-on-surface transition-all duration-200 transform hover:scale-105 backdrop-blur-sm">
                 Schedule Tour
               </button>
             </div>

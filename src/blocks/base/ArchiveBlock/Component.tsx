@@ -56,7 +56,7 @@ export const ArchiveBlock: React.FC<
     <div className="px-4 py-16" id={`block-${id}`}>
       {introContent && (
         <div className="max-w-6xl mx-auto mb-12 opacity-0 animate-[fadeInUp_0.6s_ease-out_0.1s_forwards]">
-          <div className="text-gray-900 max-w-4xl">
+          <div className="text-on-surface max-w-4xl">
             <RichText className="mb-0" data={introContent} enableGutter={false} />
           </div>
         </div>
