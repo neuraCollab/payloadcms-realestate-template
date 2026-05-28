@@ -57,11 +57,39 @@ const typeLabels: Record<string, string> = {
 export const PropertiesBlock: React.FC<PropertyBlockType> = ({
   title,
   showAllLink,
-  properties = [],
+  properties: propertiesProp = [],
   itemsPerPage = 6,
   enableFilters = false,
 }) => {
   const [currentPage, setCurrentPage] = useState(1)
+  const [fetched, setFetched] = useState<any[] | null>(null)
+
+  // Если seed не передал properties — авто-подгрузка из API (последние 12 квартир)
+  useEffect(() => {
+    if (propertiesProp.length > 0) {
+      setFetched(null)
+      return
+    }
+    let cancelled = false
+    fetch(`/api/flats?limit=12&depth=1&sort=-createdAt&where[status][equals]=active`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (cancelled || !data?.docs) return
+        const wrapped = data.docs.map((doc: any) => ({
+          relationTo: 'flats',
+          value: doc,
+        }))
+        setFetched(wrapped)
+      })
+      .catch(() => {
+        /* silent fail — пустое состояние ниже подскажет, что нет данных */
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [propertiesProp.length])
+
+  const properties = propertiesProp.length > 0 ? propertiesProp : fetched ?? []
 
   // Фильтры
   const [selectedType, setSelectedType] = useState<string>('all')

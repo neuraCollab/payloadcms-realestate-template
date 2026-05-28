@@ -80,6 +80,22 @@ export const aboutPage = ({
         },
       ],
     },
+    {
+      blockType: 'quick-nav' as const,
+      label: 'Что дальше',
+      title: 'Куда отправиться',
+      subtitle: 'Быстрые ссылки на ключевые разделы — выберите, что вас интересует.',
+      items: [
+        { icon: 'home', title: 'Квартиры', description: 'Каталог квартир для покупки и аренды', href: '/flats', accent: 'primary' as const },
+        { icon: 'briefcase', title: 'Коммерческая', description: 'Офисы, торговые помещения, склады', href: '/commercial', accent: 'sky' as const },
+        { icon: 'trees', title: 'Земля', description: 'Участки ИЖС, СНТ и под бизнес', href: '/lands', accent: 'emerald' as const },
+        { icon: 'building', title: 'ЖК', description: 'Новостройки и жилые комплексы', href: '/residential-complexes', accent: 'violet' as const },
+        { icon: 'search', title: 'Расширенный поиск', description: 'Найти объект по всем категориям сразу', href: '/search', accent: 'amber' as const },
+        { icon: 'users', title: 'Агенты', description: 'Найти своего риэлтора', href: '/agents', accent: 'rose' as const },
+        { icon: 'newspaper', title: 'Блог', description: 'Полезные материалы о недвижимости', href: '/blogs', accent: 'sky' as const },
+        { icon: 'mail', title: 'Контакты', description: 'Связаться с командой', href: '/contact', accent: 'primary' as const },
+      ],
+    },
     ctaBlock(),
   ],
   meta: {

@@ -32,12 +32,14 @@ export const ContactHeroBlock: React.FC<ContactHeroBlockType> = ({
             {label}
           </span>
           <h2 className="text-headline md:text-display text-on-surface leading-tight">
-            {title.split('assistance').map((part, i) => (
-              <React.Fragment key={i}>
-                {part}
-                {i === 0 && <span className="text-primary">assistance</span>}
-              </React.Fragment>
-            ))}
+            {title.toLowerCase().includes('assistance')
+              ? title.split(/assistance/i).map((part, i, arr) => (
+                  <React.Fragment key={i}>
+                    {part}
+                    {i < arr.length - 1 ? <span className="text-primary">помощи</span> : null}
+                  </React.Fragment>
+                ))
+              : title}
           </h2>
         </div>
 

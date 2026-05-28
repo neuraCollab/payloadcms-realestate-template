@@ -3,6 +3,7 @@ import type { Payload, PayloadRequest } from 'payload'
 import { avitoMockProvider } from './providers/avito-mock'
 import { etagiMockProvider } from './providers/etagi-mock'
 import { sutochnoMockProvider } from './providers/sutochno-mock'
+import { upsertCity } from './city-upsert'
 import type { IngestResult, ListingsProvider, SourceId } from './types'
 
 const PROVIDERS: Record<SourceId, ListingsProvider> = {
@@ -64,6 +65,12 @@ export const ingestListings = async ({
         if (existing.docs[0]) {
           result.skipped++
           continue
+        }
+
+        // Auto-create the city record if needed (used by /kimry-style URLs).
+        const cityName = (normalized.payload as any)?.location?.city
+        if (typeof cityName === 'string' && cityName) {
+          await upsertCity({ payload, req, name: cityName })
         }
 
         await payload.create({

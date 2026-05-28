@@ -11,19 +11,14 @@ export const homeV2Page = ({
   _status: 'published',
   hero: { type: 'none' },
   layout: [
-    ...(primaryImageId
-      ? [
-          {
-            blockType: 'hero' as const,
-            badgeText: 'Real Estate',
-            headline: 'Найдите дом,',
-            highlight: 'который подходит вашей жизни',
-            subheadline:
-              'От уютных квартир в центре до загородных домов — поможем подобрать недвижимость, которая отражает ваши ценности и образ жизни.',
-            image: primaryImageId,
-          },
-        ]
-      : []),
+    {
+      blockType: 'hero-search' as const,
+      badge: 'Real Estate',
+      headline: 'Найдите дом, который подходит вашей жизни',
+      subheadline:
+        'От уютных квартир в центре до загородных домов — поможем подобрать недвижимость, которая отражает ваши ценности и образ жизни.',
+      ...(primaryImageId ? { image: primaryImageId } : {}),
+    },
     {
       blockType: 'vision',
       title: 'Дом мечты, разумные инвестиции и образ жизни класса люкс',

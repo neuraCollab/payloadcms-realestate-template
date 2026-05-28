@@ -54,6 +54,8 @@ interface PropertyMapProps {
     zoom?: number
   }
   className?: string
+  /** Tailwind/CSS-friendly height for the map area. Default 420px. */
+  height?: string
 }
 
 export const PropertyMap: React.FC<PropertyMapProps> = ({
@@ -62,6 +64,7 @@ export const PropertyMap: React.FC<PropertyMapProps> = ({
   baseUrl,
   center,
   className = '',
+  height = '420px',
 }) => {
   const defaultCenter = useMemo(() => {
     if (center?.lat && center?.lng) {
@@ -78,7 +81,10 @@ export const PropertyMap: React.FC<PropertyMapProps> = ({
   return (
     <section className={`mx-auto px-4 ${className}`}>
       {title ? <h2 className="text-2xl font-semibold mb-4">{title}</h2> : null}
-      <div className="h-[420px] w-full rounded-xl overflow-hidden border border-base-300">
+      <div
+        className="w-full rounded-xl overflow-hidden border border-base-300"
+        style={{ height }}
+      >
         <MapContainer
           center={[defaultCenter.lat, defaultCenter.lng]}
           zoom={defaultCenter.zoom}

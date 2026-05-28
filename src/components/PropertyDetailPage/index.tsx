@@ -3,13 +3,14 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import Image from 'next/image'
 import { ChevronRight } from 'lucide-react'
 import ImageGallery from '@/components/ImageGallery'
 import RichText from '@/components/RichText'
 import { RealtorReviewForm } from '@/components/Forms/RealtorReviewForm'
-import { PropertyMap } from '@/components/PropertyMap.tsx'
-import { formatMapItems } from '@/lib/mapItems'
+import { PropertyMetaBar } from './PropertyMetaBar'
+import { PropertySpecs } from './PropertySpecs'
+import { PropertyAnalytics } from './PropertyAnalytics'
+import { RealtorCard } from './RealtorCard'
 import type { PropertyType } from '@/components/PropertyFilters/schemas'
 
 const COLLECTION_MAP: Record<PropertyType, string> = {
@@ -76,6 +77,12 @@ export const PropertyDetailPage: React.FC<Props> = async ({ type, slug }) => {
         <div className="lg:col-span-2 space-y-6">
           {data.images?.length ? <ImageGallery images={data.images} /> : null}
 
+          <PropertyMetaBar data={data} type={type} />
+
+          <PropertySpecs data={data} type={type} />
+
+          {type === 'flats' ? <PropertyAnalytics subject={data} /> : null}
+
           {data.description ? (
             <section className="bg-card rounded-md shadow-e1 p-6">
               <h2 className="text-title-lg text-on-surface mb-3">Описание</h2>
@@ -100,46 +107,22 @@ export const PropertyDetailPage: React.FC<Props> = async ({ type, slug }) => {
 
         <aside className="space-y-6">
           {data.realtor ? (
-            <section className="bg-card rounded-md shadow-e1 p-6">
-              <h2 className="text-title-lg text-on-surface mb-3">Риэлтор</h2>
-              <Link href={`/realtors/${data.realtor.slug}`} className="flex items-center gap-3 group">
-                {data.realtor.photo?.url ? (
-                  <Image
-                    src={data.realtor.photo.url}
-                    alt={data.realtor.name}
-                    width={56}
-                    height={56}
-                    className="rounded-full object-cover"
-                  />
-                ) : null}
-                <div>
-                  <div className="text-title text-primary group-hover:underline">{data.realtor.name}</div>
-                  {data.realtor.agency ? (
-                    <div className="text-body-sm text-on-surface-variant">{data.realtor.agency}</div>
-                  ) : null}
-                  {data.realtor.phone ? (
-                    <div className="text-body-sm text-on-surface-variant">{data.realtor.phone}</div>
-                  ) : null}
-                </div>
-              </Link>
-            </section>
+            <RealtorCard
+              realtor={data.realtor}
+              excludePropertyId={data.id}
+              propertyTitle={data.title}
+            />
           ) : null}
 
           {data.realtor?.id ? (
             <section className="bg-card rounded-md shadow-e1 p-6">
               <h2 className="text-title-lg text-on-surface mb-3">Оставить отзыв</h2>
-              <RealtorReviewForm realtorId={data.realtor.id} />
+              <RealtorReviewForm realtorId={String(data.realtor.id)} />
             </section>
           ) : null}
         </aside>
       </div>
 
-      {data.coordinates?.lat && data.coordinates?.lng ? (
-        <section className="bg-card rounded-md shadow-e1 p-4">
-          <h2 className="text-title-lg text-on-surface mb-3 px-2">На карте</h2>
-          <PropertyMap title={data.title} items={formatMapItems([data])} baseUrl={`/${type}`} />
-        </section>
-      ) : null}
     </article>
   )
 }

@@ -25,6 +25,7 @@ import { Commercial } from './collections/Commercial'
 import { Lands } from './collections/Lands'
 import { Reviews } from './collections/Reviews'
 import { Messages } from './collections/Messages'
+import { Cities } from './collections/Cities'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -90,7 +91,8 @@ export default buildConfig({
     Commercial,
     Lands,
     Reviews,
-    Messages
+    Messages,
+    Cities,
   ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
