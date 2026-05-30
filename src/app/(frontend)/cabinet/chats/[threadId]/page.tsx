@@ -8,6 +8,7 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { ChevronLeft, User as UserIcon, Phone, MessageSquare } from 'lucide-react'
 import { ReplyForm } from './ReplyForm'
+import { MessageList, type ChatMessage } from './MessageList'
 
 interface RouteParams {
   threadId: string
@@ -16,14 +17,6 @@ interface RouteParams {
 interface Args {
   params: Promise<RouteParams>
 }
-
-const formatTime = (iso: string) =>
-  new Date(iso).toLocaleString('ru-RU', {
-    day: 'numeric',
-    month: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
 
 // Extracts plain text from a Lexical doc. Best-effort — supports the simple
 // paragraph-with-text-children structure our forms produce.
@@ -115,57 +108,21 @@ export default async function ChatThreadPage({ params: paramsPromise }: Args) {
         ) : null}
       </header>
 
-      {/* Messages */}
-      <div className="space-y-3 mb-6">
-        {result.docs.map((m: any) => {
-          const isOutbound = m.direction === 'outbound'
-          const text = lexicalToText(m.message)
-          return (
-            <div
-              key={m.id}
-              className={`flex ${isOutbound ? 'justify-start' : 'justify-end'}`}
-            >
-              <div
-                className={`max-w-[80%] rounded-2xl px-4 py-2.5 shadow-e1 ${
-                  isOutbound
-                    ? 'bg-card rounded-bl-sm text-on-surface'
-                    : 'bg-primary rounded-br-sm text-primary-foreground'
-                }`}
-              >
-                {m.subject && !isOutbound ? (
-                  <div
-                    className={`text-label mb-1 ${
-                      isOutbound ? 'text-on-surface-variant' : 'text-primary-foreground/80'
-                    }`}
-                  >
-                    {m.subject}
-                  </div>
-                ) : null}
-                <div className="text-body-sm whitespace-pre-wrap">{text}</div>
-                {m.attachment && typeof m.attachment === 'object' && m.attachment.url ? (
-                  <a
-                    href={m.attachment.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`mt-2 inline-flex items-center gap-1 text-label underline ${
-                      isOutbound ? 'text-primary' : 'text-primary-foreground'
-                    }`}
-                  >
-                    Вложение
-                  </a>
-                ) : null}
-                <div
-                  className={`text-label mt-1 ${
-                    isOutbound ? 'text-on-surface-variant' : 'text-primary-foreground/70'
-                  }`}
-                >
-                  {formatTime(m.createdAt)}
-                </div>
-              </div>
-            </div>
-          )
-        })}
-      </div>
+      {/* Messages — SSR baseline; client poll picks up new realtor replies */}
+      {(() => {
+        const initial: ChatMessage[] = (result.docs as any[]).map((m) => ({
+          id: m.id,
+          subject: m.subject ?? '',
+          direction: m.direction === 'outbound' ? 'outbound' : 'inbound',
+          text: lexicalToText(m.message),
+          attachmentUrl:
+            m.attachment && typeof m.attachment === 'object'
+              ? m.attachment.url ?? null
+              : null,
+          createdAt: m.createdAt,
+        }))
+        return <MessageList threadId={threadId} initial={initial} />
+      })()}
 
       <ReplyForm
         threadId={threadId}

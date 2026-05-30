@@ -5,22 +5,26 @@ interface Args {
   req: PayloadRequest
 }
 
-// maxRows: 6 in header config — keep the six most useful.
+// maxRows: 6 in header/footer configs.
+// Все ссылки проверены против существующих routes:
+//   /home-v2, /flats, /commercial, /lands, /residential-complexes,
+//   /search, /agents, /about, /posts, /contact, /cabinet/chats
 const HEADER_NAV = [
   { label: 'Главная', url: '/home-v2' },
   { label: 'Квартиры', url: '/flats' },
   { label: 'Коммерческая', url: '/commercial' },
-  { label: 'О нас', url: '/about' },
-  { label: 'Блог', url: '/blogs' },
-  { label: 'Контакты', url: '/contact' },
+  { label: 'Земля', url: '/lands' },
+  { label: 'Агенты', url: '/agents' },
+  { label: 'Поиск', url: '/search' },
 ]
 
 const FOOTER_NAV = [
   { label: 'О нас', url: '/about' },
-  { label: 'Команда', url: '/agents' },
-  { label: 'Блог', url: '/blogs' },
-  { label: 'Контакты', url: '/contact' },
+  { label: 'Агенты', url: '/agents' },
+  { label: 'Блог', url: '/posts' },
+  { label: 'Мои переписки', url: '/cabinet/chats' },
   { label: 'Поиск', url: '/search' },
+  { label: 'Контакты', url: '/contact' },
 ]
 
 export const seedGlobals = async ({ payload, req }: Args) => {
