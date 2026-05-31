@@ -92,7 +92,7 @@ export const aboutPage = ({
         { icon: 'building', title: 'ЖК', description: 'Новостройки и жилые комплексы', href: '/residential-complexes', accent: 'violet' as const },
         { icon: 'search', title: 'Расширенный поиск', description: 'Найти объект по всем категориям сразу', href: '/search', accent: 'amber' as const },
         { icon: 'users', title: 'Агенты', description: 'Найти своего риэлтора', href: '/agents', accent: 'rose' as const },
-        { icon: 'newspaper', title: 'Блог', description: 'Полезные материалы о недвижимости', href: '/blogs', accent: 'sky' as const },
+        { icon: 'newspaper', title: 'Блог', description: 'Полезные материалы о недвижимости', href: '/posts', accent: 'sky' as const },
         { icon: 'mail', title: 'Контакты', description: 'Связаться с командой', href: '/contact', accent: 'primary' as const },
       ],
     },

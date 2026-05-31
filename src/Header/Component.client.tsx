@@ -8,6 +8,7 @@ import { Logo } from '@/components/Logo/Logo'
 import { HeaderNav } from './Nav'
 import { MobileNav } from './MobileNav'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { CabinetLink } from './CabinetLink'
 
 interface HeaderClientProps {
   data: Header
@@ -24,6 +25,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
           <HeaderNav data={data} />
         </div>
         <div className="flex items-center gap-1">
+          <CabinetLink />
           <ThemeToggle />
           <div className="md:hidden">
             <MobileNav data={data} />

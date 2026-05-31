@@ -6,6 +6,7 @@ import { cookies } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { MessageSquare, User as UserIcon, ChevronRight } from 'lucide-react'
+import { LogoutLink } from './LogoutLink'
 
 interface ThreadSummary {
   threadId: string
@@ -39,12 +40,20 @@ export default async function ChatListPage() {
             Ваши переписки появятся здесь после первого отправленного сообщения риэлтору.
             Откройте любое объявление и нажмите «Написать».
           </p>
-          <Link
-            href="/flats"
-            className="mt-6 inline-flex h-10 px-5 items-center rounded-full bg-primary text-primary-foreground text-body-sm font-medium hover:bg-primary/90"
-          >
-            К каталогу квартир
-          </Link>
+          <div className="mt-6 flex justify-center gap-2 flex-wrap">
+            <Link
+              href="/flats"
+              className="inline-flex h-10 px-5 items-center rounded-full bg-primary text-primary-foreground text-body-sm font-medium hover:bg-primary/90"
+            >
+              К каталогу квартир
+            </Link>
+            <Link
+              href="/cabinet/login"
+              className="inline-flex h-10 px-5 items-center rounded-full border border-border text-body-sm font-medium text-on-surface hover:bg-surface-container"
+            >
+              Я уже писал — войти
+            </Link>
+          </div>
         </div>
       </article>
     )
@@ -98,6 +107,7 @@ export default async function ChatListPage() {
             {threads.length === 1 ? 'беседа' : 'беседы'}
           </p>
         </div>
+        <LogoutLink />
       </header>
 
       {threads.length === 0 ? (

@@ -23,7 +23,7 @@ export const RealtorCard: React.FC<Props> = async ({
 }) => {
   const payload = await getPayload({ config })
 
-  const [activeListings, reviews] = await Promise.all([
+  const [activeListings, soldListings, reviews] = await Promise.all([
     payload.find({
       collection: 'flats',
       where: {
@@ -35,6 +35,18 @@ export const RealtorCard: React.FC<Props> = async ({
       },
       sort: '-createdAt',
       limit: 4,
+      depth: 1,
+    }),
+    payload.find({
+      collection: 'flats',
+      where: {
+        and: [
+          { realtor: { equals: realtor.id } },
+          { status: { equals: 'sold' } },
+        ],
+      },
+      sort: '-updatedAt',
+      limit: 3,
       depth: 1,
     }),
     payload.find({
@@ -153,6 +165,53 @@ export const RealtorCard: React.FC<Props> = async ({
                         <div className="text-label text-on-surface-variant">
                           {formatPrice(d.price)}
                           {d.transactionType === 'rent' ? ' / мес' : ''}
+                        </div>
+                      ) : null}
+                    </div>
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+      ) : null}
+
+      {/* Completed deals */}
+      {soldListings.docs.length > 0 ? (
+        <div className="pt-3 border-t border-border">
+          <h3 className="text-label text-on-surface-variant uppercase mb-2">
+            Завершённые сделки ({soldListings.totalDocs})
+          </h3>
+          <ul className="space-y-2">
+            {soldListings.docs.map((d: any) => {
+              const img = d.images?.[0]?.image?.url
+              return (
+                <li key={d.id}>
+                  <Link
+                    href={`/flats/${d.slug}`}
+                    className="flex items-center gap-3 group rounded-md p-1 -m-1 hover:bg-surface-container transition-colors"
+                  >
+                    <div className="w-14 h-14 rounded-md overflow-hidden bg-surface-container shrink-0 relative">
+                      {img ? (
+                        <Image
+                          src={img}
+                          alt={d.title}
+                          fill
+                          sizes="56px"
+                          className="object-cover grayscale opacity-80"
+                        />
+                      ) : null}
+                      <div className="absolute bottom-1 right-1 px-1.5 py-0.5 bg-emerald-600 text-white text-[10px] font-medium rounded">
+                        Закрыта
+                      </div>
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-body-sm text-on-surface group-hover:text-primary line-clamp-1">
+                        {d.title}
+                      </div>
+                      {typeof d.price === 'number' ? (
+                        <div className="text-label text-on-surface-variant">
+                          {formatPrice(d.price)}
                         </div>
                       ) : null}
                     </div>
