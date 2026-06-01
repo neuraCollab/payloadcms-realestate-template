@@ -547,6 +547,13 @@ export interface Page {
         id?: string | null;
         blockName?: string | null;
       }
+    | {
+        blockType: 'recently-viewed';
+        title?: string | null;
+        limit?: number | null;
+        id?: string | null;
+        blockName?: string | null;
+      }
   )[];
   meta?: {
     title?: string | null;
@@ -1224,6 +1231,17 @@ export interface Flat {
   };
   price: number;
   currency?: ('RUB' | 'USD' | 'EUR') | null;
+  /**
+   * Заполняется автоматически при изменении цены — не редактируйте вручную.
+   */
+  priceHistory?:
+    | {
+        date: string;
+        price: number;
+        currency?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   buildingType?: ('panel' | 'brick' | 'monolithic' | 'block' | 'wood') | null;
   yearBuilt?: number | null;
   ceilingHeight?: number | null;
@@ -2153,6 +2171,15 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        'recently-viewed'?:
+          | T
+          | {
+              blockType?: T;
+              title?: T;
+              limit?: T;
+              id?: T;
+              blockName?: T;
+            };
       };
   meta?:
     | T
@@ -2554,6 +2581,14 @@ export interface FlatsSelect<T extends boolean = true> {
       };
   price?: T;
   currency?: T;
+  priceHistory?:
+    | T
+    | {
+        date?: T;
+        price?: T;
+        currency?: T;
+        id?: T;
+      };
   buildingType?: T;
   yearBuilt?: T;
   ceilingHeight?: T;
