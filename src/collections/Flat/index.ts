@@ -1,4 +1,5 @@
 import { CollectionConfig } from 'payload'
+import { snapshotPriceHistory } from './hooks/snapshotPriceHistory'
 
 export const Flats: CollectionConfig = {
   slug: 'flats',
@@ -39,6 +40,7 @@ export const Flats: CollectionConfig = {
         }
         return data
       },
+      snapshotPriceHistory,
     ],
   },
   fields: [
@@ -232,6 +234,20 @@ export const Flats: CollectionConfig = {
         { label: '₽ RUB', value: 'RUB' },
         { label: '$ USD', value: 'USD' },
         { label: '€ EUR', value: 'EUR' },
+      ],
+    },
+    {
+      name: 'priceHistory',
+      type: 'array',
+      label: 'История цены',
+      admin: {
+        description:
+          'Заполняется автоматически при изменении цены — не редактируйте вручную.',
+      },
+      fields: [
+        { name: 'date', type: 'date', required: true, label: 'Дата изменения' },
+        { name: 'price', type: 'number', required: true, label: 'Цена' },
+        { name: 'currency', type: 'text', defaultValue: 'RUB', label: 'Валюта' },
       ],
     },
 

@@ -12,7 +12,9 @@ import { PropertySpecs } from './PropertySpecs'
 import { PropertyAnalytics } from './PropertyAnalytics'
 import { RealtorCard } from './RealtorCard'
 import { MortgageCalculator } from './MortgageCalculator'
+import { PriceHistoryChart } from './PriceHistoryChart'
 import { PropertyJsonLd } from './JsonLd'
+import { TrackView } from './TrackView'
 import { FavoriteButton } from '@/components/FavoriteButton'
 import type { PropertyType } from '@/components/PropertyFilters/schemas'
 
@@ -52,6 +54,7 @@ export const PropertyDetailPage: React.FC<Props> = async ({ type, slug }) => {
   return (
     <article className="max-w-6xl mx-auto space-y-6">
       <PropertyJsonLd data={data} type={type} />
+      <TrackView collection={type} id={data.id} />
       <nav aria-label="breadcrumb" className="flex items-center gap-1 text-body-sm text-on-surface-variant">
         <Link href="/" className="hover:text-on-surface">Главная</Link>
         <ChevronRight className="h-4 w-4" />
@@ -90,6 +93,10 @@ export const PropertyDetailPage: React.FC<Props> = async ({ type, slug }) => {
 
           {data.transactionType === 'sale' && typeof data.price === 'number' ? (
             <MortgageCalculator price={data.price} />
+          ) : null}
+
+          {Array.isArray(data.priceHistory) && data.priceHistory.length >= 2 ? (
+            <PriceHistoryChart history={data.priceHistory} currency={data.currency ?? 'RUB'} />
           ) : null}
 
           {type === 'flats' ? <PropertyAnalytics subject={data} /> : null}

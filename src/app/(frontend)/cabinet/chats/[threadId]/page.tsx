@@ -6,9 +6,10 @@ import { notFound } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
-import { ChevronLeft, User as UserIcon, Phone, MessageSquare } from 'lucide-react'
+import { ChevronLeft, User as UserIcon, MessageSquare } from 'lucide-react'
 import { ReplyForm } from './ReplyForm'
 import { MessageList, type ChatMessage } from './MessageList'
+import { MaskedPhone } from '@/components/MaskedPhone'
 
 interface RouteParams {
   threadId: string
@@ -64,7 +65,7 @@ export default async function ChatThreadPage({ params: paramsPromise }: Args) {
   const realtor = first.realtor && typeof first.realtor === 'object' ? first.realtor : null
 
   return (
-    <article className="pt-24 pb-24 container max-w-3xl">
+    <div className="max-w-3xl">
       <Link
         href="/cabinet/chats"
         className="inline-flex items-center gap-1 text-body-sm text-on-surface-variant hover:text-on-surface mb-4"
@@ -97,15 +98,7 @@ export default async function ChatThreadPage({ params: paramsPromise }: Args) {
             </div>
           ) : null}
         </div>
-        {realtor?.phone ? (
-          <a
-            href={`tel:${realtor.phone.replace(/\s/g, '')}`}
-            className="inline-flex items-center gap-1 h-9 px-3 rounded-full border border-border text-body-sm hover:bg-surface-container transition-colors"
-          >
-            <Phone className="w-3.5 h-3.5" />
-            {realtor.phone}
-          </a>
-        ) : null}
+        {realtor?.phone ? <MaskedPhone phone={realtor.phone} variant="inline" /> : null}
       </header>
 
       {/* Messages — SSR baseline; client poll picks up new realtor replies */}
@@ -138,7 +131,7 @@ export default async function ChatThreadPage({ params: paramsPromise }: Args) {
           <p className="text-body-sm text-on-surface-variant mt-2">Сообщений нет.</p>
         </div>
       ) : null}
-    </article>
+    </div>
   )
 }
 

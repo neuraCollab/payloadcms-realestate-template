@@ -41,6 +41,7 @@ import { HouseFilter } from '@/blocks/house/HouseFilter/config'
 import { MapBlock } from '@/blocks/house/MapBlock/config'
 import { QuickNavBlock } from '@/blocks/house/QuickNav/config'
 import { HeroSearchBlock } from '@/blocks/house/HeroSearch/config'
+import { RecentlyViewedBlock } from '@/blocks/house/RecentlyViewed/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -123,6 +124,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 MapBlock,
                 QuickNavBlock,
                 HeroSearchBlock,
+                RecentlyViewedBlock,
               ],
               required: true,
               admin: {

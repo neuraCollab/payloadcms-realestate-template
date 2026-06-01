@@ -4,7 +4,7 @@ import config from '@/payload.config'
 import { notFound } from 'next/navigation'
 import { RealtorReviewForm } from '@/components/Forms/RealtorReviewForm'
 import Image from 'next/image'
-import { RichMessageForm } from '@/components/RichMessageForm'
+import { MaskedPhone } from '@/components/MaskedPhone'
 
 export default async function RealtorProfilePage({ params }: { params: { slug: string } }) {
   const payload = await getPayload({ config })
@@ -59,7 +59,9 @@ export default async function RealtorProfilePage({ params }: { params: { slug: s
               <p className="text-lg text-gray-600 mt-1">{realtor.agency}</p>
             )}
             {realtor.phone && (
-              <p className="text-gray-700 mt-2">Телефон: {realtor.phone}</p>
+              <div className="mt-3">
+                <MaskedPhone phone={realtor.phone} variant="button" />
+              </div>
             )}
             {realtor.bio && (
               <p className="text-gray-600 mt-3 max-w-2xl">{realtor.bio}</p>
@@ -100,13 +102,7 @@ export default async function RealtorProfilePage({ params }: { params: { slug: s
         )}
       </div>
 
-      <RichMessageForm
-          realtorId={realtor.id}
-          realtorName={realtor.name}
-          propertyTitle={realtor.title}
-        />
-
-      {/* Форма */}
+      {/* Форма отзыва */}
       <div>
         <h2 className="text-2xl font-semibold mb-6">Оставить отзыв</h2>
         <RealtorReviewForm realtorId={realtor.id} />

@@ -6,7 +6,6 @@ import { cookies } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { MessageSquare, User as UserIcon, ChevronRight } from 'lucide-react'
-import { LogoutLink } from './LogoutLink'
 
 interface ThreadSummary {
   threadId: string
@@ -32,7 +31,7 @@ export default async function ChatListPage() {
 
   if (!email) {
     return (
-      <article className="pt-24 pb-24 container max-w-2xl">
+      <div>
         <div className="text-center bg-card rounded-md shadow-e1 p-10">
           <MessageSquare className="w-12 h-12 text-on-surface-variant/40 mx-auto mb-3" />
           <h1 className="text-headline text-on-surface mb-2">Личный кабинет</h1>
@@ -55,7 +54,7 @@ export default async function ChatListPage() {
             </Link>
           </div>
         </div>
-      </article>
+      </div>
     )
   }
 
@@ -98,7 +97,7 @@ export default async function ChatListPage() {
   const threads = Array.from(map.values())
 
   return (
-    <article className="pt-24 pb-24 container max-w-3xl">
+    <div>
       <header className="mb-6 flex items-end justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-headline text-on-surface">Мои переписки</h1>
@@ -107,7 +106,6 @@ export default async function ChatListPage() {
             {threads.length === 1 ? 'беседа' : 'беседы'}
           </p>
         </div>
-        <LogoutLink />
       </header>
 
       {threads.length === 0 ? (
@@ -158,7 +156,7 @@ export default async function ChatListPage() {
           ))}
         </ul>
       )}
-    </article>
+    </div>
   )
 }
 
