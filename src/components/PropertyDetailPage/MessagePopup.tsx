@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { X, Paperclip, Send, FileText } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { ConsentCheckbox } from '@/components/ConsentCheckbox'
 
 interface Props {
   open: boolean
@@ -31,6 +32,7 @@ export const MessagePopup: React.FC<Props> = ({
   const [phone, setPhone] = React.useState('')
   const [message, setMessage] = React.useState('')
   const [file, setFile] = React.useState<File | null>(null)
+  const [consent, setConsent] = React.useState(false)
   const [submitting, setSubmitting] = React.useState(false)
   const [success, setSuccess] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
@@ -96,6 +98,10 @@ export const MessagePopup: React.FC<Props> = ({
     setError(null)
     if (!name.trim() || !email.trim() || !message.trim()) {
       setError('Заполните имя, email и текст сообщения.')
+      return
+    }
+    if (!consent) {
+      setError('Для отправки сообщения требуется согласие на обработку ПДн.')
       return
     }
     setSubmitting(true)
@@ -257,6 +263,17 @@ export const MessagePopup: React.FC<Props> = ({
                 </div>
               ) : null}
 
+              {/* Consent checkbox — required by 152-ФЗ */}
+              <div className="px-3 py-2 border-t border-border">
+                <ConsentCheckbox
+                  checked={consent}
+                  onChange={setConsent}
+                  id="popup-consent"
+                  prefix="Отправляя сообщение,"
+                  termsUrl="/terms"
+                />
+              </div>
+
               {/* Editor toolbar */}
               <div className="flex items-center justify-between px-2 py-1.5 border-t border-border">
                 <button
@@ -275,7 +292,7 @@ export const MessagePopup: React.FC<Props> = ({
                 />
                 <button
                   type="submit"
-                  disabled={submitting}
+                  disabled={submitting || !consent}
                   aria-label="Отправить"
                   className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-label font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
@@ -291,9 +308,6 @@ export const MessagePopup: React.FC<Props> = ({
               </div>
             </div>
 
-            <p className="text-label text-on-surface-variant">
-              Нажимая «Отправить», вы соглашаетесь с обработкой персональных данных.
-            </p>
           </form>
         )}
       </aside>

@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { Form } from '@/payload-types'
+import { ConsentCheckbox } from '@/components/ConsentCheckbox'
 
 export type ContactUsFormBlockType = {
   blockType: 'contact-us-form'
@@ -28,6 +29,7 @@ export const ContactUsFormBlock: React.FC<ContactUsFormBlockType> = ({ label, ti
   const [submitting, setSubmitting] = React.useState(false)
   const [submitted, setSubmitted] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
+  const [consent, setConsent] = React.useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -180,17 +182,21 @@ export const ContactUsFormBlock: React.FC<ContactUsFormBlockType> = ({ label, ti
                 />
               </div>
 
+              <ConsentCheckbox
+                checked={consent}
+                onChange={setConsent}
+                id="contact-consent"
+                prefix="Отправляя заявку,"
+                termsUrl="/terms"
+              />
+
               <button
                 type="submit"
-                disabled={submitting}
+                disabled={submitting || !consent}
                 className="inline-flex h-10 w-full items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {submitting ? 'Отправка…' : 'Отправить заявку'}
               </button>
-
-              <p className="text-label text-on-surface-variant text-center">
-                Нажимая «Отправить», вы соглашаетесь с обработкой персональных данных.
-              </p>
             </form>
           )}
         </div>
