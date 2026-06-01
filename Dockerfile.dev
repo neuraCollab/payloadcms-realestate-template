@@ -5,8 +5,11 @@ WORKDIR /app
 
 RUN npm install -g pnpm@10.3.0
 
-COPY package.json pnpm-lock.yaml .npmrc* ./
-RUN pnpm install --frozen-lockfile
+COPY package.json pnpm-lock.yaml* .npmrc* ./
+# В dev-образе намеренно НЕ используем --frozen-lockfile: позволяем pnpm
+# подтянуть свежие зависимости, если package.json обновился, а локальный
+# pnpm-lock.yaml ещё не пересобран. Для прод-сборки см. Dockerfile.
+RUN pnpm install --no-frozen-lockfile
 
 COPY . .
 
