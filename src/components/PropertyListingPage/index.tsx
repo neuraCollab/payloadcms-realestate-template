@@ -5,8 +5,22 @@ import { PropertyCard } from '@/components/PropertyCard'
 import { PropertyFilters } from '@/components/PropertyFilters'
 import { PropertyMap } from '@/components/PropertyMap.tsx'
 import { ViewToggle } from '@/components/ViewToggle'
+import { ListingsPagination } from '@/components/ListingsPagination'
+import { SortSelect, type SortOption } from '@/components/SortSelect'
 import { formatMapItems } from '@/lib/mapItems'
 import type { PropertyType } from '@/components/PropertyFilters/schemas'
+
+const PAGE_SIZE = 20
+
+const SORT_OPTIONS: SortOption[] = [
+  { value: '-createdAt', label: 'Сначала новые' },
+  { value: 'price', label: 'Сначала дешевле' },
+  { value: '-price', label: 'Сначала дороже' },
+  { value: '-area.total', label: 'Большая площадь' },
+  { value: 'area.total', label: 'Малая площадь' },
+]
+
+const ALLOWED_SORTS = new Set(SORT_OPTIONS.map((o) => o.value))
 
 interface Props {
   type: PropertyType
@@ -143,11 +157,25 @@ const pickMeta = (doc: any, type: PropertyType) => {
 export const PropertyListingPage: React.FC<Props> = async ({ type, title, searchParams, mapBaseUrl }) => {
   const payload = await getPayload({ config })
   const where = buildWhere(type, searchParams)
+
+  // Sort + page from URL (validated against allowed set).
+  const sortParam = searchParams.sort && ALLOWED_SORTS.has(searchParams.sort)
+    ? searchParams.sort
+    : '-createdAt'
+  // Lands has flat `area` field, others have `area.total` — patch sort.
+  const sort = type === 'lands' && sortParam.includes('area.total')
+    ? sortParam.replace('area.total', 'area')
+    : sortParam
+
+  const pageParam = parseInt(searchParams.page ?? '1', 10) || 1
+  const page = Math.max(1, pageParam)
+
   const result = await payload.find({
     collection: COLLECTION_MAP[type] as any,
     where,
-    sort: '-createdAt',
-    limit: 20,
+    sort,
+    limit: PAGE_SIZE,
+    page,
     depth: 2,
   })
 
@@ -161,7 +189,10 @@ export const PropertyListingPage: React.FC<Props> = async ({ type, title, search
           <h1 className="text-headline text-on-surface">{title}</h1>
           <p className="text-body-sm text-on-surface-variant">{result.totalDocs} объектов</p>
         </div>
-        <ViewToggle />
+        <div className="flex items-center gap-3 flex-wrap">
+          <SortSelect options={SORT_OPTIONS} defaultValue="-createdAt" />
+          <ViewToggle />
+        </div>
       </header>
 
       <PropertyFilters type={type} />
@@ -184,25 +215,30 @@ export const PropertyListingPage: React.FC<Props> = async ({ type, title, search
           </div>
         )
       ) : result.docs.length > 0 ? (
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {result.docs.map((doc: any) => {
-            const href = `/${type}/${doc.slug}`
-            const imageUrl = doc.images?.[0]?.image?.url ?? null
-            return (
-              <PropertyCard
-                key={doc.id}
-                href={href}
-                title={doc.title}
-                address={doc.location?.address}
-                imageUrl={imageUrl}
-                badge={pickBadge(doc, type)}
-                price={doc.price}
-                priceSuffix={doc.transactionType === 'rent' ? '/ мес' : undefined}
-                meta={pickMeta(doc, type)}
-              />
-            )
-          })}
-        </div>
+        <>
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {result.docs.map((doc: any) => {
+              const href = `/${type}/${doc.slug}`
+              const imageUrl = doc.images?.[0]?.image?.url ?? null
+              return (
+                <PropertyCard
+                  key={doc.id}
+                  href={href}
+                  title={doc.title}
+                  address={doc.location?.address}
+                  imageUrl={imageUrl}
+                  badge={pickBadge(doc, type)}
+                  price={doc.price}
+                  priceSuffix={doc.transactionType === 'rent' ? '/ мес' : undefined}
+                  meta={pickMeta(doc, type)}
+                  favCollection={type}
+                  favId={doc.id}
+                />
+              )
+            })}
+          </div>
+          <ListingsPagination page={page} totalPages={result.totalPages ?? 1} />
+        </>
       ) : (
         <div className="text-center py-16 bg-card rounded-md shadow-e1">
           <p className="text-body text-on-surface-variant">Объекты не найдены</p>

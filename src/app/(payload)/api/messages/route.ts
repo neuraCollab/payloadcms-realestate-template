@@ -8,6 +8,7 @@
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { computeThreadId } from '@/lib/threadId'
+import { rateLimitOk, looksLikeBot, HONEYPOT_FIELD } from '@/lib/rateLimit'
 
 type Payload = {
   realtorId?: string
@@ -53,7 +54,9 @@ const wrapText = (text: string) => ({
   },
 })
 
-const readBody = async (req: Request): Promise<{ payload: Payload; file?: File }> => {
+const readBody = async (
+  req: Request,
+): Promise<{ payload: Payload; file?: File; honeypot?: string }> => {
   const ct = req.headers.get('content-type') ?? ''
   if (ct.includes('multipart/form-data')) {
     const form = await req.formData()
@@ -67,15 +70,27 @@ const readBody = async (req: Request): Promise<{ payload: Payload; file?: File }
       property: form.get('property')?.toString(),
     }
     const file = form.get('attachment')
-    return { payload, file: file instanceof File ? file : undefined }
+    const honeypot = form.get(HONEYPOT_FIELD)?.toString()
+    return { payload, file: file instanceof File ? file : undefined, honeypot }
   }
-  return { payload: (await req.json()) as Payload }
+  const json = (await req.json()) as Payload & Record<string, unknown>
+  return { payload: json, honeypot: (json as any)?.[HONEYPOT_FIELD] }
 }
 
 export async function POST(req: Request) {
   try {
+    // Rate limit first (cheap, fails fast).
+    const rl = rateLimitOk(req, { key: 'messages', limit: 10, windowMs: 5 * 60_000 })
+    if (!rl.ok) return rl.response
+
     const payload = await getPayload({ config })
-    const { payload: body, file } = await readBody(req)
+    const { payload: body, file, honeypot } = await readBody(req)
+
+    // Honeypot: silently 200 to bots so they think it worked.
+    if (looksLikeBot(honeypot)) {
+      return Response.json({ success: true })
+    }
+
     const { realtorId, subject, name, email, phone, message, property } = body
 
     if (!realtorId || !subject || !name || !email || !message) {

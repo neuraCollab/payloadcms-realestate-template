@@ -2,6 +2,8 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { cn } from '@/utilities/ui'
+import { FavoriteButton } from '@/components/FavoriteButton'
+import type { FavCollection } from '@/lib/favorites'
 
 export interface PropertyCardProps {
   href: string
@@ -13,6 +15,9 @@ export interface PropertyCardProps {
   priceSuffix?: string
   meta?: Array<{ label: string }>
   className?: string
+  /** Used by overlay FavoriteButton. If not passed, no fav button is shown. */
+  favCollection?: FavCollection
+  favId?: string | number
 }
 
 const formatPrice = (n: number) => n.toLocaleString('ru-RU') + ' ₽'
@@ -27,6 +32,8 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
   priceSuffix,
   meta,
   className,
+  favCollection,
+  favId,
 }) => {
   return (
     <Link
@@ -50,6 +57,11 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
           <span className="absolute top-3 left-3 bg-card/95 text-primary text-label px-2.5 py-1 rounded-full uppercase tracking-wide">
             {badge}
           </span>
+        ) : null}
+        {favCollection && favId !== undefined ? (
+          <div className="absolute top-3 right-3 z-10">
+            <FavoriteButton collection={favCollection} id={favId} />
+          </div>
         ) : null}
       </div>
       <div className="p-4">

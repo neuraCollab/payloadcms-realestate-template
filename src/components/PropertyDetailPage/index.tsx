@@ -11,6 +11,9 @@ import { PropertyMetaBar } from './PropertyMetaBar'
 import { PropertySpecs } from './PropertySpecs'
 import { PropertyAnalytics } from './PropertyAnalytics'
 import { RealtorCard } from './RealtorCard'
+import { MortgageCalculator } from './MortgageCalculator'
+import { PropertyJsonLd } from './JsonLd'
+import { FavoriteButton } from '@/components/FavoriteButton'
 import type { PropertyType } from '@/components/PropertyFilters/schemas'
 
 const COLLECTION_MAP: Record<PropertyType, string> = {
@@ -48,6 +51,7 @@ export const PropertyDetailPage: React.FC<Props> = async ({ type, slug }) => {
 
   return (
     <article className="max-w-6xl mx-auto space-y-6">
+      <PropertyJsonLd data={data} type={type} />
       <nav aria-label="breadcrumb" className="flex items-center gap-1 text-body-sm text-on-surface-variant">
         <Link href="/" className="hover:text-on-surface">Главная</Link>
         <ChevronRight className="h-4 w-4" />
@@ -63,14 +67,17 @@ export const PropertyDetailPage: React.FC<Props> = async ({ type, slug }) => {
             <p className="text-body text-on-surface-variant mt-1">{data.location.address}</p>
           ) : null}
         </div>
-        {typeof data.price === 'number' ? (
-          <div className="md:text-right">
-            <div className="text-headline text-primary">{formatPrice(data.price)}</div>
-            {data.transactionType === 'rent' ? (
-              <div className="text-body-sm text-on-surface-variant">в месяц</div>
-            ) : null}
-          </div>
-        ) : null}
+        <div className="flex items-center gap-3">
+          <FavoriteButton collection={type} id={data.id} variant="full" />
+          {typeof data.price === 'number' ? (
+            <div className="md:text-right">
+              <div className="text-headline text-primary">{formatPrice(data.price)}</div>
+              {data.transactionType === 'rent' ? (
+                <div className="text-body-sm text-on-surface-variant">в месяц</div>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -80,6 +87,10 @@ export const PropertyDetailPage: React.FC<Props> = async ({ type, slug }) => {
           <PropertyMetaBar data={data} type={type} />
 
           <PropertySpecs data={data} type={type} />
+
+          {data.transactionType === 'sale' && typeof data.price === 'number' ? (
+            <MortgageCalculator price={data.price} />
+          ) : null}
 
           {type === 'flats' ? <PropertyAnalytics subject={data} /> : null}
 
