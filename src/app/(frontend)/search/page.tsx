@@ -191,6 +191,8 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
                 price={hit.price}
                 priceSuffix={hit.transactionType === 'rent' ? '/ мес' : undefined}
                 meta={hit.meta}
+                favCollection={hit.collection}
+                favId={hit.id}
               />
             ))}
           </div>

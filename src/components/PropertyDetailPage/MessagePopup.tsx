@@ -112,6 +112,8 @@ export const MessagePopup: React.FC<Props> = ({
     form.set('message', message.trim())
     if (propertyTitle) form.set('property', propertyTitle)
     if (file) form.set('attachment', file)
+    // Honeypot: always empty for real users; bots tend to fill every input.
+    form.set('website', '')
 
     try {
       const res = await fetch('/api/messages', { method: 'POST', body: form })
@@ -188,6 +190,16 @@ export const MessagePopup: React.FC<Props> = ({
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-3">
+            {/* honeypot — hidden from real users */}
+            <input
+              type="text"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              className="absolute left-[-9999px] w-px h-px opacity-0 pointer-events-none"
+              onChange={() => {/* ignored */}}
+            />
             {error ? (
               <div className="text-body-sm text-rose-700 bg-rose-50 border border-rose-200 rounded-md p-3">
                 {error}
