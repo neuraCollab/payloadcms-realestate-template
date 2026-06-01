@@ -1,11 +1,12 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Phone, User as UserIcon, Star } from 'lucide-react'
+import { User as UserIcon, Star } from 'lucide-react'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { Button } from '@/components/ui/button'
 import { MessageButton } from './MessageButton'
+import { MaskedPhone } from '@/components/MaskedPhone'
 
 interface Props {
   realtor: any
@@ -103,21 +104,13 @@ export const RealtorCard: React.FC<Props> = async ({
         </div>
       </Link>
 
+      {/* Masked phone — top of CTAs row when present */}
+      {realtor.phone ? (
+        <MaskedPhone phone={realtor.phone} variant="button" className="w-full" />
+      ) : null}
+
       {/* CTAs */}
-      <div className="grid grid-cols-3 gap-2">
-        {realtor.phone ? (
-          <Button asChild variant="outline" className="flex-col h-auto py-2 gap-1">
-            <a href={`tel:${realtor.phone.replace(/\s/g, '')}`} aria-label="Позвонить">
-              <Phone className="w-4 h-4" />
-              <span className="text-label">Позвонить</span>
-            </a>
-          </Button>
-        ) : (
-          <Button variant="outline" disabled className="flex-col h-auto py-2 gap-1">
-            <Phone className="w-4 h-4" />
-            <span className="text-label">Позвонить</span>
-          </Button>
-        )}
+      <div className="grid grid-cols-2 gap-2">
         <Button asChild variant="outline" className="flex-col h-auto py-2 gap-1">
           <Link href={`/realtors/${realtor.slug}`} aria-label="Профиль">
             <UserIcon className="w-4 h-4" />

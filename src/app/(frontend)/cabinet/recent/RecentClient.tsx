@@ -1,34 +1,38 @@
 'use client'
 import React from 'react'
 import Link from 'next/link'
-import { Heart, Trash2 } from 'lucide-react'
-import { listFavorites, clearFavorites, type FavoriteRef } from '@/lib/favorites'
+import { Clock, Trash2 } from 'lucide-react'
+import {
+  listRecentlyViewed,
+  clearRecentlyViewed,
+  type RecentRef,
+} from '@/lib/recentlyViewed'
 import { PropertyCard } from '@/components/PropertyCard'
 
 interface FetchedDoc {
-  ref: FavoriteRef
+  ref: RecentRef
   doc: any | null
 }
 
-const CATEGORY_LABEL: Record<FavoriteRef['collection'], string> = {
-  flats: 'Квартиры',
-  commercial: 'Коммерческая',
-  lands: 'Земля',
-  'residential-complexes': 'ЖК',
-}
-
-const BADGE: Record<'sale' | 'rent' | 'daily', string> = {
+const BADGE: Record<string, string> = {
   sale: 'Продажа',
   rent: 'Аренда',
   daily: 'Посуточно',
 }
 
-export const FavoritesClient: React.FC = () => {
+const CATEGORY_LABEL: Record<RecentRef['collection'], string> = {
+  flats: 'Квартира',
+  commercial: 'Коммерческая',
+  lands: 'Земля',
+  'residential-complexes': 'ЖК',
+}
+
+export const RecentClient: React.FC = () => {
   const [items, setItems] = React.useState<FetchedDoc[]>([])
   const [loading, setLoading] = React.useState(true)
 
   const reload = React.useCallback(async () => {
-    const refs = listFavorites()
+    const refs = listRecentlyViewed()
     if (refs.length === 0) {
       setItems([])
       setLoading(false)
@@ -42,8 +46,7 @@ export const FavoritesClient: React.FC = () => {
             cache: 'no-store',
           })
           if (!res.ok) return { ref, doc: null }
-          const doc = await res.json()
-          return { ref, doc }
+          return { ref, doc: await res.json() }
         } catch {
           return { ref, doc: null }
         }
@@ -56,27 +59,21 @@ export const FavoritesClient: React.FC = () => {
   React.useEffect(() => {
     reload()
     const onChange = () => reload()
-    window.addEventListener('realty:favorites-changed', onChange)
+    window.addEventListener('realty:recent-changed', onChange)
     window.addEventListener('storage', onChange)
     return () => {
-      window.removeEventListener('realty:favorites-changed', onChange)
+      window.removeEventListener('realty:recent-changed', onChange)
       window.removeEventListener('storage', onChange)
     }
   }, [reload])
-
-  const clearAll = () => {
-    if (window.confirm('Удалить все объекты из избранного?')) {
-      clearFavorites()
-    }
-  }
 
   return (
     <div>
       <header className="mb-6 flex items-end justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-headline text-on-surface flex items-center gap-2">
-            <Heart className="w-6 h-6 text-rose-500 fill-rose-500" />
-            Избранное
+            <Clock className="w-6 h-6 text-primary" />
+            Просмотренные
           </h1>
           <p className="text-body-sm text-on-surface-variant">
             {items.length}{' '}
@@ -86,7 +83,9 @@ export const FavoritesClient: React.FC = () => {
         {items.length > 0 ? (
           <button
             type="button"
-            onClick={clearAll}
+            onClick={() => {
+              if (window.confirm('Очистить историю просмотров?')) clearRecentlyViewed()
+            }}
             className="inline-flex h-9 px-3 items-center gap-1.5 rounded-full border border-border text-body-sm text-on-surface-variant hover:bg-surface-container"
           >
             <Trash2 className="w-3.5 h-3.5" />
@@ -98,17 +97,14 @@ export const FavoritesClient: React.FC = () => {
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div
-              key={i}
-              className="bg-card rounded-md shadow-e1 p-4 animate-pulse h-72"
-            />
+            <div key={i} className="bg-card rounded-md shadow-e1 p-4 animate-pulse h-72" />
           ))}
         </div>
       ) : items.length === 0 ? (
         <div className="text-center py-16 bg-card rounded-md shadow-e1">
-          <Heart className="w-12 h-12 text-on-surface-variant/30 mx-auto mb-3" />
+          <Clock className="w-12 h-12 text-on-surface-variant/30 mx-auto mb-3" />
           <p className="text-body text-on-surface-variant">
-            Пока ничего не сохранено. Откройте любой объект и нажмите «В избранное».
+            Здесь появятся объекты, которые вы откроете на сайте.
           </p>
           <Link
             href="/flats"
@@ -128,8 +124,8 @@ export const FavoritesClient: React.FC = () => {
                 address={doc.location?.address}
                 imageUrl={doc.images?.[0]?.image?.url ?? null}
                 badge={
-                  doc.transactionType && BADGE[doc.transactionType as keyof typeof BADGE]
-                    ? BADGE[doc.transactionType as keyof typeof BADGE]
+                  doc.transactionType && BADGE[doc.transactionType]
+                    ? BADGE[doc.transactionType]
                     : undefined
                 }
                 price={doc.price}
@@ -142,16 +138,7 @@ export const FavoritesClient: React.FC = () => {
                 favCollection={ref.collection}
                 favId={ref.id}
               />
-            ) : (
-              <div
-                key={`${ref.collection}:${ref.id}`}
-                className="bg-card rounded-md shadow-e1 p-4 text-center"
-              >
-                <p className="text-body-sm text-on-surface-variant">
-                  Объект больше недоступен.
-                </p>
-              </div>
-            ),
+            ) : null,
           )}
         </div>
       )}

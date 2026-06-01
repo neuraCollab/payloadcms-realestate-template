@@ -47,6 +47,11 @@ export const homeV2Page = ({
       ],
     },
     {
+      blockType: 'recently-viewed' as const,
+      title: 'Недавно вы смотрели',
+      limit: 8,
+    },
+    {
       blockType: 'properties',
       title: 'Готовы купить дом мечты? Найдите его здесь',
       showAllLink: '/flats',

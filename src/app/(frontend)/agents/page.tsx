@@ -4,8 +4,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import { Star, MapPin, Phone, Search as SearchIcon, User as UserIcon } from 'lucide-react'
+import { Star, Search as SearchIcon, User as UserIcon } from 'lucide-react'
 import { AgentsSearch } from './AgentsSearch'
+import { MaskedPhone } from '@/components/MaskedPhone'
 
 type Args = {
   searchParams: Promise<{ q?: string; city?: string }>
@@ -142,14 +143,13 @@ const AgentRow: React.FC<{ stats: RealtorWithStats }> = ({ stats }) => {
         </div>
       </div>
       {doc.phone ? (
-        <a
-          href={`tel:${doc.phone.replace(/\s/g, '')}`}
+        <div
           onClick={(e) => e.stopPropagation()}
-          className="hidden sm:inline-flex items-center gap-1 h-9 px-3 rounded-full border border-border text-body-sm hover:bg-surface-container transition-colors"
+          onMouseDown={(e) => e.stopPropagation()}
+          className="hidden sm:block"
         >
-          <Phone className="w-3.5 h-3.5" />
-          {doc.phone}
-        </a>
+          <MaskedPhone phone={doc.phone} variant="inline" />
+        </div>
       ) : null}
     </Link>
   )

@@ -27,6 +27,7 @@ import { UniversalFilterTabs } from './house/HouseFilter/component'
 import { MapBlock as MapBlockComponent } from './house/MapBlock/component'
 import { QuickNavBlock } from './house/QuickNav/component'
 import { HeroSearch } from './house/HeroSearch/component'
+import { RecentlyViewed } from './house/RecentlyViewed/component'
 
 const blockComponents = {
   properties: PropertiesBlock,
@@ -54,6 +55,7 @@ const blockComponents = {
   map: MapBlockComponent,
   'quick-nav': QuickNavBlock,
   'hero-search': HeroSearch,
+  'recently-viewed': RecentlyViewed,
 }
 
 export const RenderBlocks: React.FC<{
