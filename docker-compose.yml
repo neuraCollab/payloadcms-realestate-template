@@ -2,7 +2,6 @@ services:
 
   postgres:
     image: postgres:15
-    container_name: my_postgres
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -20,7 +19,6 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
-    container_name: my_pgadmin
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
@@ -34,7 +32,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    container_name: my_app
     restart: unless-stopped
     ports:
       - "3000:3000"
