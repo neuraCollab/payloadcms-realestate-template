@@ -1,0 +1,64 @@
+# Production compose. Different from docker-compose.yml in:
+#   - Uses Dockerfile (multi-stage standalone build), not Dockerfile.dev
+#   - No volume-mount of source code → image is the source of truth
+#   - No pgadmin (security)
+#   - Postgres port not exposed to host (only to internal network)
+#   - App listens on 3000 internally; reverse-proxy (nginx/Caddy/Traefik)
+#     in front terminates TLS and forwards there
+#   - `restart: always` on everything
+#
+# Usage:
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# Required env vars (in .env at repo root):
+#   POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB
+#   PAYLOAD_SECRET, CRON_SECRET, PREVIEW_SECRET
+#   NEXT_PUBLIC_SERVER_URL (the public domain, https://...)
+#   NEXT_PUBLIC_MAPBOX_TOKEN (Mapbox token)
+
+services:
+  postgres:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # Inline at build time so static pages get the right server URL.
+        NEXT_PUBLIC_SERVER_URL: ${NEXT_PUBLIC_SERVER_URL}
+        NEXT_PUBLIC_MAPBOX_TOKEN: ${NEXT_PUBLIC_MAPBOX_TOKEN:-}
+        NEXT_PUBLIC_MAPBOX_STYLE: ${NEXT_PUBLIC_MAPBOX_STYLE:-mapbox://styles/mapbox/streets-v12}
+    restart: always
+    ports:
+      - '127.0.0.1:3000:3000'   # bind only to loopback; reverse-proxy fronts it
+    environment:
+      DATABASE_URI: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      PAYLOAD_SECRET: ${PAYLOAD_SECRET}
+      NEXT_PUBLIC_SERVER_URL: ${NEXT_PUBLIC_SERVER_URL}
+      NEXT_PUBLIC_MAPBOX_TOKEN: ${NEXT_PUBLIC_MAPBOX_TOKEN:-}
+      NEXT_PUBLIC_MAPBOX_STYLE: ${NEXT_PUBLIC_MAPBOX_STYLE:-mapbox://styles/mapbox/streets-v12}
+      CRON_SECRET: ${CRON_SECRET}
+      PREVIEW_SECRET: ${PREVIEW_SECRET}
+      NODE_ENV: production
+    volumes:
+      # Media uploads — persisted between deploys.
+      - ./public/media:/app/public/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
