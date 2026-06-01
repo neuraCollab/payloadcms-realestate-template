@@ -3,6 +3,7 @@ import React from 'react'
 import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { ConsentCheckbox } from '@/components/ConsentCheckbox'
 
 export const LoginForm: React.FC = () => {
   const router = useRouter()
@@ -10,6 +11,7 @@ export const LoginForm: React.FC = () => {
   const [submitting, setSubmitting] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
   const [warning, setWarning] = React.useState<string | null>(null)
+  const [consent, setConsent] = React.useState(false)
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -61,7 +63,14 @@ export const LoginForm: React.FC = () => {
         required
         autoFocus
       />
-      <Button type="submit" disabled={submitting} className="w-full">
+      <ConsentCheckbox
+        checked={consent}
+        onChange={setConsent}
+        id="login-consent"
+        prefix="Входя в кабинет,"
+        termsUrl="/terms"
+      />
+      <Button type="submit" disabled={submitting || !consent} className="w-full">
         {submitting ? 'Вход…' : 'Открыть кабинет'}
       </Button>
       <p className="text-label text-on-surface-variant">

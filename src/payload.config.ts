@@ -26,6 +26,7 @@ import { Lands } from './collections/Lands'
 import { Reviews } from './collections/Reviews'
 import { Messages } from './collections/Messages'
 import { Cities } from './collections/Cities'
+import { LegalInfo } from './globals/LegalInfo/config'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -95,7 +96,7 @@ export default buildConfig({
     Cities,
   ],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [Header, Footer],
+  globals: [Header, Footer, LegalInfo],
   plugins: [
 
     ...plugins,

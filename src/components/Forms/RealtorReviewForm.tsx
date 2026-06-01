@@ -7,6 +7,7 @@ import { FormField } from '@/components/ui/form-field'
 import { Input } from '@/components/ui/input'
 import { StarRating } from '@/components/ui/star-rating'
 import { Textarea } from '@/components/ui/textarea'
+import { ConsentCheckbox } from '@/components/ConsentCheckbox'
 
 export function RealtorReviewForm({ realtorId }: { realtorId: string }) {
   const [name, setName] = useState('')
@@ -16,12 +17,17 @@ export function RealtorReviewForm({ realtorId }: { realtorId: string }) {
   const [submitting, setSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [consent, setConsent] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
     if (!name.trim() || !comment.trim() || rating < 1 || rating > 5) {
       setError('Пожалуйста, заполните все обязательные поля корректно.')
+      return
+    }
+    if (!consent) {
+      setError('Для отправки отзыва требуется согласие на обработку ПДн.')
       return
     }
 
@@ -100,7 +106,14 @@ export function RealtorReviewForm({ realtorId }: { realtorId: string }) {
         />
       </FormField>
 
-      <Button type="submit" disabled={submitting} className="w-full">
+      <ConsentCheckbox
+        checked={consent}
+        onChange={setConsent}
+        id="review-consent"
+        prefix="Отправляя отзыв,"
+      />
+
+      <Button type="submit" disabled={submitting || !consent} className="w-full">
         {submitting ? 'Отправка…' : 'Отправить отзыв'}
       </Button>
     </form>
