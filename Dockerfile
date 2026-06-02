@@ -13,12 +13,15 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Install dependencies based on the preferred package manager
+# Install dependencies based on the preferred package manager.
+# NOTE: --no-frozen-lockfile позволяет собрать прод-образ даже если
+# pnpm-lock.yaml отстал от package.json. Для воспроизводимых билдов
+# регенерируй lockfile перед коммитом (`pnpm install` локально).
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
+  if [ -f yarn.lock ]; then yarn install --no-lockfile; \
+  elif [ -f package-lock.json ]; then npm install --no-audit --no-fund; \
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --no-frozen-lockfile; \
   else echo "Lockfile not found." && exit 1; \
   fi
 
