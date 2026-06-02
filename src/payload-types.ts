@@ -123,10 +123,12 @@ export interface Config {
   globals: {
     header: Header;
     footer: Footer;
+    'legal-info': LegalInfo;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    'legal-info': LegalInfoSelect<false> | LegalInfoSelect<true>;
   };
   locale: null;
   user: User & {
@@ -3117,6 +3119,49 @@ export interface Footer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "legal-info".
+ */
+export interface LegalInfo {
+  id: number;
+  displayName: string;
+  legalForm?: ('ooo' | 'ip' | 'self-employed' | 'ao' | 'pao') | null;
+  /**
+   * Как в ЕГРЮЛ/ЕГРИП. Например: «Общество с ограниченной ответственностью "Агентство Недвижимости Квадрат"».
+   */
+  fullName: string;
+  /**
+   * Полное ФИО директора / ИП. Используется в Пользовательском соглашении.
+   */
+  ceoName?: string | null;
+  ceoTitle?: string | null;
+  /**
+   * Только цифры, 13 (ОГРН) или 15 (ОГРНИП).
+   */
+  ogrn: string;
+  inn: string;
+  kpp?: string | null;
+  bankAccount?: string | null;
+  bankName?: string | null;
+  bankBic?: string | null;
+  legalAddress: string;
+  actualAddress?: string | null;
+  /**
+   * В формате +7 (495) 123-45-67
+   */
+  phone: string;
+  email: string;
+  workingHours?: string | null;
+  privacyPolicyUrl?: string | null;
+  termsUrl?: string | null;
+  /**
+   * По 152-ФЗ — лицо, ответственное за организацию обработки ПДн в компании.
+   */
+  dataProtectionOfficer?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -3157,6 +3202,34 @@ export interface FooterSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "legal-info_select".
+ */
+export interface LegalInfoSelect<T extends boolean = true> {
+  displayName?: T;
+  legalForm?: T;
+  fullName?: T;
+  ceoName?: T;
+  ceoTitle?: T;
+  ogrn?: T;
+  inn?: T;
+  kpp?: T;
+  bankAccount?: T;
+  bankName?: T;
+  bankBic?: T;
+  legalAddress?: T;
+  actualAddress?: T;
+  phone?: T;
+  email?: T;
+  workingHours?: T;
+  privacyPolicyUrl?: T;
+  termsUrl?: T;
+  dataProtectionOfficer?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
