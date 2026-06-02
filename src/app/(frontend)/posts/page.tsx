@@ -8,6 +8,9 @@ import { getPayload } from 'payload'
 import React from 'react'
 import PageClient from './page.client'
 
+// SSG skipped — DB unreachable at build-time inside docker compose.
+export const dynamic = 'force-dynamic'
+
 export const dynamic = 'force-static'
 export const revalidate = 600
 

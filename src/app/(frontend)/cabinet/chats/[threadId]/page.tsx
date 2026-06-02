@@ -11,6 +11,9 @@ import { ReplyForm } from './ReplyForm'
 import { MessageList, type ChatMessage } from './MessageList'
 import { MaskedPhone } from '@/components/MaskedPhone'
 
+// SSG skipped — DB unreachable at build-time inside docker compose.
+export const dynamic = 'force-dynamic'
+
 interface RouteParams {
   threadId: string
 }
