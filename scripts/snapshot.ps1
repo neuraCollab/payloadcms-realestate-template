@@ -113,22 +113,26 @@ User:    $pgUser
 Commit:  $sha
 "@ | Out-File (Join-Path $stage 'MANIFEST.txt') -Encoding utf8
 
-# Pack with tar (Windows 10+ ships it)
+# Pack with tar (Windows 10+ ships it).
+# IMPORTANT: tar runs from inside $stage, so the archive path MUST be absolute.
 $archive = Join-Path $OutDir "realty-snapshot-$stamp.tar.gz"
+$archiveAbs = [System.IO.Path]::GetFullPath((Join-Path (Get-Location) $archive))
 Write-Host "▸ Packing → $archive" -ForegroundColor Cyan
 Push-Location $stage
-tar -czf $archive *
+# Use --force-local because Windows paths contain ":" which tar otherwise
+# interprets as a remote host.
+tar -czf "$archiveAbs" --force-local *
 Pop-Location
 
 # Cleanup staging
 Remove-Item -Recurse -Force $stage
 
-$size = (Get-Item $archive).Length / 1MB
+$size = (Get-Item $archiveAbs).Length / 1MB
 Write-Host ""
-Write-Host "✅ Snapshot ready: $archive ($('{0:N1}' -f $size) MB)" -ForegroundColor Green
+Write-Host "✅ Snapshot ready: $archiveAbs ($('{0:N1}' -f $size) MB)" -ForegroundColor Green
 Write-Host ""
 Write-Host "Upload to the server and run there:" -ForegroundColor Yellow
-Write-Host "  scp '$archive' user@server:/srv/realty/"
+Write-Host "  scp '$archiveAbs' user@server:/srv/realty/"
 Write-Host "  ssh user@server"
 Write-Host "  cd /srv/realty"
 Write-Host "  ./scripts/deploy.sh realty-snapshot-$stamp.tar.gz"
