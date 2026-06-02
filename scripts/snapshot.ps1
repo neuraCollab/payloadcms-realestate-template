@@ -113,16 +113,13 @@ User:    $pgUser
 Commit:  $sha
 "@ | Out-File (Join-Path $stage 'MANIFEST.txt') -Encoding utf8
 
-# Pack with tar (Windows 10+ ships it).
-# IMPORTANT: tar runs from inside $stage, so the archive path MUST be absolute.
+# Pack with tar (Windows 10+ ships bsdtar via libarchive).
+# Use -C to set the source directory instead of cd-ing into it: this lets us
+# keep an absolute output path AND lets bsdtar handle Windows paths cleanly.
 $archive = Join-Path $OutDir "realty-snapshot-$stamp.tar.gz"
 $archiveAbs = [System.IO.Path]::GetFullPath((Join-Path (Get-Location) $archive))
 Write-Host "▸ Packing → $archive" -ForegroundColor Cyan
-Push-Location $stage
-# Use --force-local because Windows paths contain ":" which tar otherwise
-# interprets as a remote host.
-tar -czf "$archiveAbs" --force-local *
-Pop-Location
+tar -czf "$archiveAbs" -C "$stage" .
 
 # Cleanup staging
 Remove-Item -Recurse -Force $stage
