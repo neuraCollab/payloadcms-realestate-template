@@ -65,12 +65,23 @@ $stage = New-Item -ItemType Directory -Path (Join-Path $env:TEMP "realty-snap-$s
 $null = New-Item -ItemType Directory -Path $OutDir -Force
 
 Write-Host "▸ Postgres dump ($pgDb)..." -ForegroundColor Cyan
-docker compose exec -T postgres pg_dump `
-  -U $pgUser -d $pgDb --no-owner --clean --if-exists `
-  > (Join-Path $stage 'db.sql')
+$dumpPath = Join-Path $stage 'db.sql'
+# PowerShell-овский `>` пишет в UTF-16 LE с BOM, что ломает psql при
+# восстановлении (`invalid byte sequence for encoding "UTF8": 0xff`).
+# Используем cmd.exe для raw-байтового редиректа — он сохраняет вывод как есть.
+cmd.exe /c "docker compose exec -T postgres pg_dump -U $pgUser -d $pgDb --no-owner --clean --if-exists > `"$dumpPath`""
 
-if ((Get-Item (Join-Path $stage 'db.sql')).Length -lt 1024) {
-  Write-Error "❌ pg_dump produced an empty file. Check that the database has data."
+if (-not (Test-Path $dumpPath) -or (Get-Item $dumpPath).Length -lt 1024) {
+  Write-Error "❌ pg_dump produced an empty file. Check that the database has data and that compose is running."
+  exit 1
+}
+
+# Verify no BOM (extra safety).
+$head = [byte[]]::new(3)
+$fs = [System.IO.File]::OpenRead($dumpPath)
+[void]$fs.Read($head, 0, 3); $fs.Close()
+if ($head[0] -eq 0xFF -or $head[0] -eq 0xEF) {
+  Write-Warning "❌ db.sql still starts with BOM. Restoration will fail on Postgres."
   exit 1
 }
 
