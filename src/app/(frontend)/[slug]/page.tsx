@@ -14,10 +14,37 @@ import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { CityLandingPage } from '@/components/CityLandingPage'
 
-// Skip SSG: pages and cities are stored in Postgres which isn't reachable
-// during `docker build` (separate network from compose runtime). Routes
-// render on first request, then cached by Next's standard HTTP cache.
-export const dynamic = 'force-dynamic'
+export async function generateStaticParams() {
+  const payload = await getPayload({ config: configPromise })
+  const [pages, cities] = await Promise.all([
+    payload.find({
+      collection: 'pages',
+      draft: false,
+      limit: 1000,
+      overrideAccess: false,
+      pagination: false,
+      select: { slug: true },
+    }),
+    payload.find({
+      collection: 'cities',
+      where: { isActive: { equals: true } },
+      limit: 1000,
+      overrideAccess: false,
+      pagination: false,
+      select: { slug: true },
+    }),
+  ])
+
+  const pageParams = (pages.docs ?? [])
+    .filter((doc) => doc.slug !== 'home')
+    .map(({ slug }) => ({ slug }))
+
+  const cityParams = (cities.docs ?? [])
+    .filter((doc) => !!doc.slug)
+    .map(({ slug }) => ({ slug }))
+
+  return [...pageParams, ...cityParams]
+}
 
 type Args = {
   params: Promise<{
