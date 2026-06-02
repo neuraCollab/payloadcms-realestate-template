@@ -2,6 +2,9 @@ import type { Metadata } from 'next'
 import React from 'react'
 import { getCachedGlobal } from '@/utilities/getGlobals'
 
+// SSG skipped — DB unreachable at build-time inside docker compose.
+export const dynamic = 'force-dynamic'
+
 interface LegalInfo {
   displayName?: string
   fullName?: string
