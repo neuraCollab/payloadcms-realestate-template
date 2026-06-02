@@ -111,17 +111,5 @@ export default async function RealtorProfilePage({ params }: { params: { slug: s
   )
 }
 
-// Генерация статических путей (для SSG)
-export async function generateStaticParams() {
-  const payload = await getPayload({ config })
-
-  const realtors = await payload.find({
-    collection: 'users',
-    where: { role: { equals: 'realtor' } },
-    limit: 100,
-  })
-
-  return realtors.docs.map((user) => ({
-    slug: user.slug,
-  }))
-}
+// SSG skipped — DB unreachable at build-time inside docker compose.
+export const dynamic = 'force-dynamic'
