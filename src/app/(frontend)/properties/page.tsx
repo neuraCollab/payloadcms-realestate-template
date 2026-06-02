@@ -6,9 +6,6 @@ import React from 'react'
 import { PropertiesBlock } from '@/blocks/house/PropertiesBlock/component'
 import PageClient from './page.client'
 
-// SSG skipped — DB unreachable at build-time inside docker compose.
-export const dynamic = 'force-dynamic'
-
 export const metadata: Metadata = {
   title: 'Недвижимость - Каталог объектов',
   description: 'Просмотрите полную коллекцию объектов недвижимости для продажи и аренды',

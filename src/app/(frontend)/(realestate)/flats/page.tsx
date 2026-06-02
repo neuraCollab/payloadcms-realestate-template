@@ -1,8 +1,5 @@
 import { PropertyListingPage } from '@/components/PropertyListingPage'
 
-// SSG skipped — DB unreachable at build-time inside docker compose.
-export const dynamic = 'force-dynamic'
-
 export default async function FlatsListingRoute({
   searchParams,
 }: {

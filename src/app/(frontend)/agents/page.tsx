@@ -8,9 +8,6 @@ import { Star, Search as SearchIcon, User as UserIcon } from 'lucide-react'
 import { AgentsSearch } from './AgentsSearch'
 import { MaskedPhone } from '@/components/MaskedPhone'
 
-// SSG skipped — DB unreachable at build-time inside docker compose.
-export const dynamic = 'force-dynamic'
-
 type Args = {
   searchParams: Promise<{ q?: string; city?: string }>
 }

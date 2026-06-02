@@ -4,9 +4,6 @@ import config from '@/payload.config'
 import { HomeHero } from '@/components/HomeHero'
 import { RecentProperties } from '@/components/RecentProperties'
 
-// SSG skipped — DB unreachable at build-time inside docker compose.
-export const dynamic = 'force-dynamic'
-
 const STATS = [
   { key: 'flats',                     name: 'Квартиры',         href: '/flats' },
   { key: 'commercial',                name: 'Коммерческая',     href: '/commercial' },

@@ -7,9 +7,6 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { MessageSquare, User as UserIcon, ChevronRight } from 'lucide-react'
 
-// SSG skipped — DB unreachable at build-time inside docker compose.
-export const dynamic = 'force-dynamic'
-
 interface ThreadSummary {
   threadId: string
   realtorName: string
