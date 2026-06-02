@@ -1,7 +1,11 @@
 # To use this Dockerfile, you have to set `output: 'standalone'` in your next.config.js file.
 # From https://github.com/vercel/next.js/blob/canary/examples/with-docker/Dockerfile
 
-FROM node:22.12.0-alpine AS base
+# Pull from Google Container Registry mirror of DockerHub.
+# DockerHub's CloudFront CDN is blocked in some regions (e.g. RU); the GCR
+# mirror is consistently reachable. Falls back to `docker.io/library/node`
+# automatically if your registry mirror config covers Docker Hub.
+FROM mirror.gcr.io/library/node:22.12.0-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
