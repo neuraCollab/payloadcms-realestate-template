@@ -28,8 +28,10 @@ ARCHIVE_ABS="$(realpath "$ARCHIVE")"
 
 IMAGE_TAG="realty-app:latest"
 COMPOSE_FILE="docker-compose.prod.yml"
-PROJECT_NAME="$(basename "$ROOT_DIR")"
-COMPOSE_NETWORK="${PROJECT_NAME}_default"
+# Хост-порт постгреса, проброшен compose'ом на 127.0.0.1. Используется
+# build-стадией через --network=host (BuildKit не умеет в кастомные сети).
+BUILD_DB_HOST="127.0.0.1"
+BUILD_DB_PORT="5432"
 
 # ---------- Step 1: preflight ----------
 if [[ ! -f .env ]]; then
@@ -107,22 +109,29 @@ if [[ -d "$WORK/media" ]]; then
 fi
 
 # ---------- Step 5: build app image with DB access ----------
-# Используем `docker build` напрямую (не `compose build`), чтобы передать
-# --network=<compose-net> — иначе build-stage не достучится до postgres.
-echo "▸ Verifying compose network exists ($COMPOSE_NETWORK)..."
-if ! docker network inspect "$COMPOSE_NETWORK" &>/dev/null; then
-  echo "❌ Compose network '$COMPOSE_NETWORK' missing — compose project name mismatch?"
-  echo "   Actual networks:"
-  docker network ls --format '   {{.Name}}' | grep -i realty || docker network ls --format '   {{.Name}}'
-  exit 1
-fi
+# Build-стадия должна достучаться до postgres-контейнера. BuildKit
+# поддерживает только host/none/default network mode, поэтому идём через
+# host-сеть, а compose проброшен postgres на 127.0.0.1:5432.
+echo "▸ Verifying postgres is reachable on $BUILD_DB_HOST:$BUILD_DB_PORT..."
+for i in {1..30}; do
+  if (echo > /dev/tcp/${BUILD_DB_HOST}/${BUILD_DB_PORT}) >/dev/null 2>&1; then
+    echo "  ✓ reachable"
+    break
+  fi
+  if [[ $i -eq 30 ]]; then
+    echo "❌ Cannot reach postgres on ${BUILD_DB_HOST}:${BUILD_DB_PORT}."
+    echo "   Check that docker-compose.prod.yml exposes port 5432 on 127.0.0.1."
+    exit 1
+  fi
+  sleep 1
+done
 
 echo "▸ Building app image with build-time DB access..."
 echo "  (this is the slow step — 5-10 min depending on RAM)"
 
 docker build \
-  --network="$COMPOSE_NETWORK" \
-  --build-arg DATABASE_URI="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}" \
+  --network=host \
+  --build-arg DATABASE_URI="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${BUILD_DB_HOST}:${BUILD_DB_PORT}/${POSTGRES_DB}" \
   --build-arg PAYLOAD_SECRET="${PAYLOAD_SECRET}" \
   --build-arg NEXT_PUBLIC_SERVER_URL="${NEXT_PUBLIC_SERVER_URL}" \
   --build-arg NEXT_PUBLIC_MAPBOX_TOKEN="${NEXT_PUBLIC_MAPBOX_TOKEN:-}" \
