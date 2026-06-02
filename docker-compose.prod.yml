@@ -7,8 +7,10 @@
 #     in front terminates TLS and forwards there
 #   - `restart: always` on everything
 #
-# Usage:
-#   docker compose -f docker-compose.prod.yml up -d --build
+# The app image is built by ./scripts/deploy.sh (NOT by `docker compose
+# build`) because the build stage needs network access to the postgres
+# service for generateStaticParams + prerendering, which compose v2 build
+# can't provide cleanly. See deploy.sh for the full pipeline.
 #
 # Required env vars (in .env at repo root):
 #   POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB
@@ -34,14 +36,9 @@ services:
       retries: 10
 
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        # Inline at build time so static pages get the right server URL.
-        NEXT_PUBLIC_SERVER_URL: ${NEXT_PUBLIC_SERVER_URL}
-        NEXT_PUBLIC_MAPBOX_TOKEN: ${NEXT_PUBLIC_MAPBOX_TOKEN:-}
-        NEXT_PUBLIC_MAPBOX_STYLE: ${NEXT_PUBLIC_MAPBOX_STYLE:-mapbox://styles/mapbox/streets-v12}
+    # No `build:` here — the image is produced by deploy.sh and tagged
+    # realty-app:latest before compose runs.
+    image: realty-app:latest
     restart: always
     ports:
       - '127.0.0.1:3000:3000'   # bind only to loopback; reverse-proxy fronts it

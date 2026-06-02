@@ -36,10 +36,26 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry during the build.
-# ENV NEXT_TELEMETRY_DISABLED 1
+# Build-time access to the database and secrets so generateStaticParams +
+# prerender work without "missing secret key" errors. These are passed by
+# deploy.sh / docker build --build-arg, never baked into the runtime image
+# (the `runner` stage starts from `base` without them).
+ARG DATABASE_URI
+ARG PAYLOAD_SECRET
+ARG NEXT_PUBLIC_SERVER_URL
+ARG NEXT_PUBLIC_MAPBOX_TOKEN
+ARG NEXT_PUBLIC_MAPBOX_STYLE
+ARG CRON_SECRET
+ARG PREVIEW_SECRET
+ENV DATABASE_URI=$DATABASE_URI \
+    PAYLOAD_SECRET=$PAYLOAD_SECRET \
+    NEXT_PUBLIC_SERVER_URL=$NEXT_PUBLIC_SERVER_URL \
+    NEXT_PUBLIC_MAPBOX_TOKEN=$NEXT_PUBLIC_MAPBOX_TOKEN \
+    NEXT_PUBLIC_MAPBOX_STYLE=$NEXT_PUBLIC_MAPBOX_STYLE \
+    CRON_SECRET=$CRON_SECRET \
+    PREVIEW_SECRET=$PREVIEW_SECRET \
+    NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1
 
 RUN \
   if [ -f yarn.lock ]; then yarn run build; \
