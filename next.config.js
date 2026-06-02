@@ -11,6 +11,10 @@ const nextConfig = {
   // Standalone output bundles only the deps Next needs at runtime.
   // Required by Dockerfile (multi-stage prod build copies .next/standalone).
   output: 'standalone',
+  // Skip ESLint/TypeScript during build to free RAM on small VPS.
+  // Both are caught in CI / IDE — no functional impact.
+  eslint: { ignoreDuringBuilds: true },
+  typescript: { ignoreBuildErrors: true },
   images: {
     remotePatterns: [
       ...[NEXT_PUBLIC_SERVER_URL /* 'https://example.com' */].map((item) => {
