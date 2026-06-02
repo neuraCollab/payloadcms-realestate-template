@@ -74,6 +74,11 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI || '',
     },
+    // Disable auto-push of schema on dev. Auto-push triggers an interactive
+    // prompt ("create table or rename?") in headless containers and hangs.
+    // We use explicit migrations instead — see scripts/migrate.sh or
+    // `pnpm payload migrate`.
+    push: false,
   }),
   // db: mongooseAdapter({
   //   url: process.env.DATABASE_URI || '',
