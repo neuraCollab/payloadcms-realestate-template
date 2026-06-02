@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import { MapPin, Bed, Bath, Maximize } from 'lucide-react'
 import { Property, Media } from '@/payload-types'
 
@@ -50,12 +51,12 @@ export const RelatedProperties: React.FC<RelatedPropertiesProps> = ({
         </div>
 
         <div className="text-center mt-8">
-          <a
+          <Link
             href="/properties"
             className="inline-flex items-center h-10 px-6 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors text-body-sm font-medium"
           >
             Все объекты
-          </a>
+          </Link>
         </div>
       </div>
     </section>
