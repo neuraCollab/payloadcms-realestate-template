@@ -8,8 +8,10 @@ import { getPayload } from 'payload'
 import React from 'react'
 import PageClient from './page.client'
 
-export const dynamic = 'force-static'
-export const revalidate = 600
+// SSG skipped — DB unreachable at build-time inside docker compose.
+// `force-dynamic` без revalidate — страница рендерится на каждый
+// запрос, ничего не кэшируется на этапе билда.
+export const dynamic = 'force-dynamic'
 
 export default async function Page() {
   const payload = await getPayload({ config: configPromise })

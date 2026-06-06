@@ -9,8 +9,10 @@ interface Args {
 // Все ссылки проверены против существующих routes:
 //   /home-v2, /flats, /commercial, /lands, /residential-complexes,
 //   /search, /agents, /about, /posts, /contact, /cabinet/chats
+// /home-v2 закомментирован — главная одна, по корню «/». В навбаре
+// его не показываем, чтобы пользователь не упирался в 404.
 const HEADER_NAV = [
-  { label: 'Главная', url: '/home-v2' },
+  { label: 'Главная', url: '/' },
   { label: 'Квартиры', url: '/flats' },
   { label: 'Коммерческая', url: '/commercial' },
   { label: 'Земля', url: '/lands' },

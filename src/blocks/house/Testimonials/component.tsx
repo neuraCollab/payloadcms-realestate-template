@@ -81,7 +81,7 @@ export const TestimonialsBlock: React.FC<TestimonialsBlockType> = ({
                   ))}
                 </div>
                 <blockquote className="text-xl mb-6 leading-relaxed italic">
-                  "{testimonials[currentIndex]?.text}"
+                  &ldquo;{testimonials[currentIndex]?.text}&rdquo;
                 </blockquote>
                 <div>
                   <div className="font-semibold text-lg">{testimonials[currentIndex]?.name}</div>

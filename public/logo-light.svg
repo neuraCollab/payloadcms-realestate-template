@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="120" viewBox="0 0 520 120" font-family="-apple-system, 'Segoe UI', Roboto, Arial, sans-serif">
+  <defs>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#1D4ED8"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(10,20)">
+    <rect width="80" height="80" rx="22" fill="url(#blue)"/>
+    <g transform="translate(11,10)">
+      <path d="M22 42 L40 26 L58 42 L58 60 L22 60 Z" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M36 60 L36 48 L44 48 L44 60" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+    </g>
+  </g>
+  <text x="112" y="63" font-size="38" font-weight="700" fill="#1E293B" letter-spacing="-0.5">Mega<tspan fill="#1D4ED8">Domic</tspan></text>
+  <text x="114" y="91" font-size="13.5" fill="#8a93a6" letter-spacing="3">НЕДВИЖИМОСТЬ · АРЕНДА</text>
+</svg>

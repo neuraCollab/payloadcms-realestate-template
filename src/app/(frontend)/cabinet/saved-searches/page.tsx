@@ -23,7 +23,7 @@ export default function SavedSearchesPage() {
         <p className="text-body-sm text-on-surface-variant">
           URL любой страницы поиска — это сохранённый фильтр. Скопируйте его в
           закладки, и фильтр всегда будет под рукой. Когда появится модуль
-          alerts, эти URL'ы автоматически подключатся к нему.
+          alerts, эти URL&apos;ы автоматически подключатся к нему.
         </p>
         <Link
           href="/search"
@@ -38,5 +38,5 @@ export default function SavedSearchesPage() {
 }
 
 export const metadata: Metadata = {
-  title: 'Сохранённые поиски — Realty',
+  title: 'Сохранённые поиски — MegaDomic',
 }

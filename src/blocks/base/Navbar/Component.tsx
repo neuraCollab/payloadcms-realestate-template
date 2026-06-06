@@ -1,6 +1,7 @@
 // src/blocks/Navbar/Component.tsx
 'use client'
 import React, { useState } from 'react'
+import Link from 'next/link'
 import { Media } from '@/payload-types'
 
 type NavbarProps = {
@@ -19,9 +20,9 @@ export const NavbarBlock: React.FC<NavbarProps> = ({ logoText, links, button, av
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="opacity-0 animate-[fadeInUp_0.6s_ease-out_0.1s_forwards]">
-            <a href="/" className="text-title-lg text-on-surface hover:text-primary transition-colors duration-200">
+            <Link href="/" className="text-title-lg text-on-surface hover:text-primary transition-colors duration-200">
               {logoText}
-            </a>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}

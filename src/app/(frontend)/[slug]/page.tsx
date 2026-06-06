@@ -4,6 +4,7 @@ import { PayloadRedirects } from '@/components/PayloadRedirects'
 import configPromise from '@payload-config'
 import { getPayload, type RequiredDataFromCollectionSlug } from 'payload'
 import { draftMode } from 'next/headers'
+import { notFound } from 'next/navigation'
 import React, { cache } from 'react'
 import { homeStatic } from '@/endpoints/seed/home-static'
 
@@ -14,37 +15,10 @@ import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { CityLandingPage } from '@/components/CityLandingPage'
 
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const [pages, cities] = await Promise.all([
-    payload.find({
-      collection: 'pages',
-      draft: false,
-      limit: 1000,
-      overrideAccess: false,
-      pagination: false,
-      select: { slug: true },
-    }),
-    payload.find({
-      collection: 'cities',
-      where: { isActive: { equals: true } },
-      limit: 1000,
-      overrideAccess: false,
-      pagination: false,
-      select: { slug: true },
-    }),
-  ])
-
-  const pageParams = (pages.docs ?? [])
-    .filter((doc) => doc.slug !== 'home')
-    .map(({ slug }) => ({ slug }))
-
-  const cityParams = (cities.docs ?? [])
-    .filter((doc) => !!doc.slug)
-    .map(({ slug }) => ({ slug }))
-
-  return [...pageParams, ...cityParams]
-}
+// Skip SSG: pages and cities are stored in Postgres which isn't reachable
+// during `docker build` (separate network from compose runtime). Routes
+// render on first request, then cached by Next's standard HTTP cache.
+export const dynamic = 'force-dynamic'
 
 type Args = {
   params: Promise<{
@@ -52,10 +26,18 @@ type Args = {
   }>
 }
 
+// Slug'и, которые не должны рендериться как CMS-страницы (пока что
+// home-v2 закомментирован — это первая итерация-черновик главной).
+const DISABLED_PAGE_SLUGS = new Set(['home-v2'])
+
 export default async function Page({ params: paramsPromise }: Args) {
   const { isEnabled: draft } = await draftMode()
   const { slug = 'home' } = await paramsPromise
   const url = '/' + slug
+
+  if (DISABLED_PAGE_SLUGS.has(slug)) {
+    notFound()
+  }
 
   // 1. City landing page takes precedence over arbitrary page slugs.
   const city = await queryCityBySlug({ slug })

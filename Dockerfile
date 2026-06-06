@@ -1,7 +1,11 @@
 # To use this Dockerfile, you have to set `output: 'standalone'` in your next.config.js file.
 # From https://github.com/vercel/next.js/blob/canary/examples/with-docker/Dockerfile
 
-FROM node:22.12.0-alpine AS base
+# Pull from Google Container Registry mirror of DockerHub.
+# DockerHub's CloudFront CDN is blocked in some regions (e.g. RU); the GCR
+# mirror is consistently reachable. Falls back to `docker.io/library/node`
+# automatically if your registry mirror config covers Docker Hub.
+FROM mirror.gcr.io/library/node:22.12.0-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -9,12 +13,19 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Install dependencies based on the preferred package manager
+# Install dependencies based on the preferred package manager.
+# NOTE: --no-frozen-lockfile позволяет собрать прод-образ даже если
+# pnpm-lock.yaml отстал от package.json. Для воспроизводимых билдов
+# регенерируй lockfile перед коммитом (`pnpm install` локально).
+#
+# pnpm устанавливается через `npm install -g`, а НЕ через corepack:
+# corepack в Node 22.12 падает на проверке подписей последних релизов
+# pnpm («Cannot find matching keyid»). Прямая установка обходит баг.
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
+  if [ -f yarn.lock ]; then yarn install --no-lockfile; \
+  elif [ -f package-lock.json ]; then npm install --no-audit --no-fund; \
+  elif [ -f pnpm-lock.yaml ]; then npm install -g pnpm@10.3.0 && pnpm i --no-frozen-lockfile; \
   else echo "Lockfile not found." && exit 1; \
   fi
 
@@ -33,7 +44,7 @@ COPY . .
 RUN \
   if [ -f yarn.lock ]; then yarn run build; \
   elif [ -f package-lock.json ]; then npm run build; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
+  elif [ -f pnpm-lock.yaml ]; then npm install -g pnpm@10.3.0 && pnpm run build; \
   else echo "Lockfile not found." && exit 1; \
   fi
 

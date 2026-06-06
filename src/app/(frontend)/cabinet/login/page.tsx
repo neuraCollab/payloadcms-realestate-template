@@ -20,5 +20,5 @@ export default function CabinetLoginPage() {
 }
 
 export const metadata: Metadata = {
-  title: 'Вход в кабинет — Realty',
+  title: 'Вход в кабинет — MegaDomic',
 }

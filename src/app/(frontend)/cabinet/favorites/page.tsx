@@ -7,6 +7,6 @@ export default function FavoritesPage() {
 }
 
 export const metadata: Metadata = {
-  title: 'Избранное — Realty',
+  title: 'Избранное — MegaDomic',
   description: 'Сохранённые объекты недвижимости.',
 }

@@ -40,7 +40,7 @@ export async function Footer() {
   const legal = (await getCachedGlobal('legal-info', 1)()) as LegalInfoShape
   const navItems = footerData?.navItems || []
 
-  const displayName = legal?.displayName ?? 'Realty'
+  const displayName = legal?.displayName ?? 'MegaDomic'
   const privacyUrl = legal?.privacyPolicyUrl ?? '/privacy'
   const termsUrl = legal?.termsUrl ?? '/terms'
 

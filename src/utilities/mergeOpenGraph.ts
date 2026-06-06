@@ -3,14 +3,18 @@ import { getServerSideURL } from './getURL'
 
 const defaultOpenGraph: Metadata['openGraph'] = {
   type: 'website',
-  description: 'An open-source website built with Payload and Next.js.',
+  description:
+    'MegaDomic — поиск и покупка недвижимости: квартиры, дома, земля, коммерческая. Тысячи проверенных объявлений и прозрачные сделки.',
   images: [
     {
-      url: `${getServerSideURL()}/website-template-OG.webp`,
+      url: `${getServerSideURL()}/og-image.png`,
+      width: 1200,
+      height: 630,
+      alt: 'MegaDomic — недвижимость',
     },
   ],
-  siteName: 'Payload Website Template',
-  title: 'Payload Website Template',
+  siteName: 'MegaDomic',
+  title: 'MegaDomic — недвижимость',
 }
 
 export const mergeOpenGraph = (og?: Metadata['openGraph']): Metadata['openGraph'] => {

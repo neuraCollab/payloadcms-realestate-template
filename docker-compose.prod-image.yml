@@ -1,0 +1,15 @@
+# Прод-compose ПОВЕРХ docker-compose.prod.yml: только переопределяет
+# секцию `app`, чтобы вместо локальной сборки использовать готовый image.
+# Полезно когда у сервера мало RAM и сборка падает на OOM — собираешь
+# на мощной машине, переносишь tar'ом и здесь поднимаешь.
+#
+# Usage:
+#   docker compose \
+#     -f docker-compose.prod.yml \
+#     -f docker-compose.prod-image.yml \
+#     up -d
+
+services:
+  app:
+    build: !reset null
+    image: realty-app:latest   # имя должно совпадать с `docker save`

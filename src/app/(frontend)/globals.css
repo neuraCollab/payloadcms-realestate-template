@@ -6,21 +6,25 @@
 
 @layer base {
   :root {
-    /* --- Material 3 semantic color roles (light) --- */
-    --primary: 217 90% 43%;             /* #0B57D0 */
-    --primary-container: 217 91% 91%;   /* #D3E3FD */
+    /* --- MegaDomic palette (light) ---
+       primary  = #2563EB (Tailwind blue-600)
+       hover    = #1D4ED8 (blue-700) — via primary/90 alpha or container
+       surface  = #F4F6FB (мягкий синевато-белый фон)
+       on-surf  = #0F172A (slate-900, основной текст)              */
+    --primary: 221 83% 53%;             /* #2563EB */
+    --primary-container: 221 91% 94%;   /* #DBE7FE */
     --on-primary: 0 0% 100%;
-    --on-primary-container: 217 100% 13%;
-    --on-surface: 0 0% 12%;
-    --on-surface-variant: 220 7% 29%;
+    --on-primary-container: 222 47% 11%;
+    --on-surface: 222 47% 11%;          /* #0F172A */
+    --on-surface-variant: 215 16% 35%;
     --error-color: 0 75% 42%;
     --on-error: 0 0% 100%;
-    --surface-page: 220 100% 99%;
-    --surface-container-low: 220 30% 97%;
-    --surface-container: 220 19% 95%;
-    --surface-container-high: 220 14% 92%;
-    --surface-container-highest: 220 10% 90%;
-    --outline-color: 220 11% 79%;
+    --surface-page: 222 33% 97%;        /* #F4F6FB */
+    --surface-container-low: 220 40% 98%;
+    --surface-container: 220 25% 95%;
+    --surface-container-high: 220 18% 92%;
+    --surface-container-highest: 220 14% 89%;
+    --outline-color: 220 13% 82%;
 
     /* --- Shadcn/components-ui aliases mapped to the new tokens --- */
     --background: var(--surface-page);
@@ -78,6 +82,12 @@
   * {
     @apply border-border;
   }
+  /* overflow-x: clip страхует от горизонтального скролла при повороте
+     устройства, при этом не ломает position: sticky (в отличие от
+     overflow-x: hidden, который создаёт scroll-context). */
+  html, body {
+    overflow-x: clip;
+  }
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-sans), 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -109,4 +119,40 @@
   .shadow-e1 { box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 1px 3px 1px rgba(0,0,0,.04); }
   .shadow-e2 { box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 2px 6px 2px rgba(0,0,0,.06); }
   .shadow-e3 { box-shadow: 0 4px 8px 3px rgba(0,0,0,.08), 0 1px 3px rgba(0,0,0,.10); }
+
+  /* MegaDomic — анимация иконок категорий: всплытие снизу + поворот
+     по горизонтальной оси. Запускается классом .is-revealed, который
+     навешивается IntersectionObserver'ом из CategoryTiles. */
+  @keyframes md-bounce-spin {
+    0%   { transform: translateY(24px) rotateX(0deg); opacity: 0; }
+    40%  { transform: translateY(-6px) rotateX(180deg); opacity: 1; }
+    65%  { transform: translateY(2px)  rotateX(300deg); }
+    100% { transform: translateY(0)    rotateX(360deg); opacity: 1; }
+  }
+  .md-category-icon {
+    opacity: 0;
+    transform: translateY(24px);
+    transform-style: preserve-3d;
+    will-change: transform, opacity;
+  }
+  .md-category-icon.is-revealed {
+    animation: md-bounce-spin 1.1s cubic-bezier(.34,1.56,.64,1) both;
+  }
+
+  /* Staggered reveal формы и карточек главной. Используется вместе
+     с inline-style="animation-delay: ..." для каскада. */
+  .md-reveal {
+    opacity: 0;
+    animation: fadeInUp 0.55s ease-out both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .md-category-icon,
+    .md-category-icon.is-revealed,
+    .md-reveal {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
 }

@@ -85,7 +85,9 @@ export const PropertyDetailPage: React.FC<Props> = async ({ type, slug }) => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          {data.images?.length ? <ImageGallery images={data.images} /> : null}
+          {/* Галерея отрисовывается всегда: при отсутствии настоящих фото
+              ImageGallery подсовывает мок-набор (placeholders.ts). */}
+          <ImageGallery images={data.images} />
 
           <PropertyMetaBar data={data} type={type} />
 

@@ -18,7 +18,8 @@
 
 services:
   postgres:
-    image: postgres:15
+    # GCR-зеркало DockerHub для регионов, где CloudFront-CDN заблокирован
+    image: mirror.gcr.io/library/postgres:15
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}

@@ -40,7 +40,19 @@ if ! command -v docker &>/dev/null; then
   exit 1
 fi
 
-COMPOSE="docker compose -f docker-compose.prod.yml"
+# Detect compose: prefer the v2 plugin (`docker compose`), fall back to
+# the legacy standalone binary (`docker-compose`).
+if docker compose version &>/dev/null; then
+  COMPOSE="docker compose -f docker-compose.prod.yml"
+elif command -v docker-compose &>/dev/null; then
+  COMPOSE="docker-compose -f docker-compose.prod.yml"
+  echo "  ℹ Using legacy docker-compose (v1). Consider installing the plugin:"
+  echo "    sudo apt install docker-compose-plugin"
+else
+  echo "❌ Neither 'docker compose' plugin nor legacy 'docker-compose' is installed."
+  echo "   Install with:  sudo apt install docker-compose-plugin"
+  exit 1
+fi
 
 # -------- Step 2: unpack snapshot --------
 WORK="$(mktemp -d)"
@@ -56,14 +68,20 @@ fi
 
 cat "$WORK/MANIFEST.txt" 2>/dev/null || true
 
-# -------- Step 3: sync git to the snapshot's commit if available --------
-if [[ -f "$WORK/COMMIT_SHA.txt" ]]; then
+# -------- Step 3: check git SHA matches (informational only) --------
+# We deliberately don't auto-checkout: that requires interactive HTTPS auth
+# or SSH keys on the server. Manage code state with `git pull` before running
+# this script — the snapshot is only data + media.
+if [[ -f "$WORK/COMMIT_SHA.txt" ]] && [[ -d .git ]]; then
   SHA="$(cat "$WORK/COMMIT_SHA.txt" | tr -d '[:space:]')"
-  if [[ "$SHA" != 'unknown' && -d .git ]]; then
-    echo "▸ Syncing code to commit $SHA..."
-    git fetch --all --quiet || true
-    git checkout "$SHA" --quiet 2>/dev/null || \
-      echo "  ⚠ Could not checkout $SHA — staying on current HEAD"
+  CURRENT="$(git rev-parse HEAD 2>/dev/null || echo unknown)"
+  if [[ "$SHA" != 'unknown' && "$SHA" != "$CURRENT" ]]; then
+    echo "  ⚠ Snapshot was made at $SHA"
+    echo "    Server is on        $CURRENT"
+    echo "    If migrations diverge, you may need to:"
+    echo "      git fetch && git checkout $SHA"
+    echo "    and re-run this script."
+    echo ""
   fi
 fi
 
