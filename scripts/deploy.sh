@@ -1,32 +1,40 @@
 #!/usr/bin/env bash
-# Production deployment from a snapshot.tar.gz produced by snapshot.ps1
-# (or scripts/backup.sh on a Linux host).
+# Production deployment.
+#
+# Без снимка — только пересобирает образ из текущего кода и
+# перезапускает app. Полезно для обычного «code push → deploy».
+#   ./scripts/deploy.sh
+#
+# Со снимком — дополнительно восстанавливает БД и media:
+#   ./scripts/deploy.sh <snapshot.tar.gz>
 #
 # Steps:
-#   1. Verify env, docker, archive
-#   2. Pull latest code (matching the snapshot commit if present)
-#   3. Build the production image
-#   4. Bring up postgres (only), wait for healthy
-#   5. Restore db.sql + media files
-#   6. Bring up the app
-#   7. Health-check
-#
-# Usage:
-#   ./scripts/deploy.sh <snapshot.tar.gz>
+#   1. Preflight (env, docker, compose)
+#   2. [optional] Unpack snapshot, sanity-check SHA
+#   3. Postgres up + wait healthy
+#   4. [optional] Restore db.sql + media
+#   5. docker build (с доступом к Postgres через --network=host) → realty-app:latest
+#   6. App up + health-check
 #
 # Safe to re-run. Idempotent.
 
 set -euo pipefail
 
 ARCHIVE="${1:-}"
-if [[ -z "$ARCHIVE" || ! -f "$ARCHIVE" ]]; then
-  echo "❌ Usage: $0 <snapshot.tar.gz>"
+if [[ -n "$ARCHIVE" && ! -f "$ARCHIVE" ]]; then
+  echo "❌ Snapshot не найден: $ARCHIVE"
   exit 1
+fi
+RESTORE_FROM_SNAPSHOT=0
+if [[ -n "$ARCHIVE" ]]; then
+  RESTORE_FROM_SNAPSHOT=1
 fi
 
 ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
-ARCHIVE_ABS="$(realpath "$ARCHIVE")"
+if [[ $RESTORE_FROM_SNAPSHOT -eq 1 ]]; then
+  ARCHIVE_ABS="$(realpath "$ARCHIVE")"
+fi
 
 # -------- Step 1: preflight --------
 if [[ ! -f .env ]]; then
@@ -54,38 +62,42 @@ else
   exit 1
 fi
 
-# -------- Step 2: unpack snapshot --------
-WORK="$(mktemp -d)"
-trap 'rm -rf "$WORK"' EXIT
+# -------- Step 2: unpack snapshot (optional) --------
+WORK=""
+if [[ $RESTORE_FROM_SNAPSHOT -eq 1 ]]; then
+  WORK="$(mktemp -d)"
+  trap 'rm -rf "$WORK"' EXIT
 
-echo "▸ Unpacking snapshot..."
-tar -xzf "$ARCHIVE_ABS" -C "$WORK"
+  echo "▸ Unpacking snapshot..."
+  tar -xzf "$ARCHIVE_ABS" -C "$WORK"
 
-if [[ ! -f "$WORK/db.sql" ]]; then
-  echo "❌ archive is malformed: db.sql not found"
-  exit 1
-fi
+  if [[ ! -f "$WORK/db.sql" ]]; then
+    echo "❌ archive is malformed: db.sql not found"
+    exit 1
+  fi
 
-cat "$WORK/MANIFEST.txt" 2>/dev/null || true
+  cat "$WORK/MANIFEST.txt" 2>/dev/null || true
 
-# -------- Step 3: check git SHA matches (informational only) --------
-# We deliberately don't auto-checkout: that requires interactive HTTPS auth
-# or SSH keys on the server. Manage code state with `git pull` before running
-# this script — the snapshot is only data + media.
-if [[ -f "$WORK/COMMIT_SHA.txt" ]] && [[ -d .git ]]; then
-  SHA="$(cat "$WORK/COMMIT_SHA.txt" | tr -d '[:space:]')"
-  CURRENT="$(git rev-parse HEAD 2>/dev/null || echo unknown)"
-  if [[ "$SHA" != 'unknown' && "$SHA" != "$CURRENT" ]]; then
-    echo "  ⚠ Snapshot was made at $SHA"
-    echo "    Server is on        $CURRENT"
-    echo "    If migrations diverge, you may need to:"
-    echo "      git fetch && git checkout $SHA"
-    echo "    and re-run this script."
-    echo ""
+  if [[ -f "$WORK/COMMIT_SHA.txt" ]] && [[ -d .git ]]; then
+    SHA="$(cat "$WORK/COMMIT_SHA.txt" | tr -d '[:space:]')"
+    CURRENT="$(git rev-parse HEAD 2>/dev/null || echo unknown)"
+    if [[ "$SHA" != 'unknown' && "$SHA" != "$CURRENT" ]]; then
+      echo "  ⚠ Snapshot was made at $SHA"
+      echo "    Server is on        $CURRENT"
+      echo "    If migrations diverge, you may need to:"
+      echo "      git fetch && git checkout $SHA"
+      echo "    and re-run this script."
+      echo ""
+    fi
   fi
 fi
 
-# -------- Step 4: bring up Postgres (only) --------
+# -------- Step 3: bring up Postgres (always) --------
+# shellcheck disable=SC1091
+set -a
+source .env
+set +a
+
 echo "▸ Starting postgres..."
 $COMPOSE up -d postgres
 
@@ -96,37 +108,60 @@ for i in {1..30}; do
   sleep 2
 done
 
-# -------- Step 5: restore database + media --------
-# shellcheck disable=SC1091
-set -a
-source .env
-set +a
-
-echo "▸ Restoring database..."
-$COMPOSE exec -T postgres \
-  psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" \
-  < "$WORK/db.sql"
-
-echo "▸ Restoring media files..."
-if [[ -d "$WORK/media" ]]; then
-  mkdir -p public/media
-  # rsync is nicer (incremental, preserves perms) but cp is universal
-  if command -v rsync &>/dev/null; then
-    rsync -a "$WORK/media/" public/media/
+# -------- Step 4: restore database + media (optional) --------
+if [[ $RESTORE_FROM_SNAPSHOT -eq 1 ]]; then
+  # Снимок от PowerShell иногда содержит UTF-16 BOM (0xff 0xfe). psql
+  # выдаёт `invalid byte sequence for encoding "UTF8"`. Снимаем BOM
+  # «на лету» через iconv/sed, после чего пайпим в psql.
+  echo "▸ Restoring database..."
+  if head -c2 "$WORK/db.sql" | grep -q $'\xff\xfe'; then
+    echo "  ℹ detected UTF-16 BOM — converting to UTF-8 before restore"
+    iconv -f UTF-16 -t UTF-8 "$WORK/db.sql" \
+      | $COMPOSE exec -T postgres psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}"
   else
-    cp -r "$WORK/media/." public/media/
+    # Также страхуемся от обычного UTF-8 BOM (0xef 0xbb 0xbf).
+    sed -e '1s/^\xEF\xBB\xBF//' "$WORK/db.sql" \
+      | $COMPOSE exec -T postgres psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}"
   fi
-  echo "  ✓ copied $(find "$WORK/media" -type f | wc -l) files"
+
+  echo "▸ Restoring media files..."
+  if [[ -d "$WORK/media" ]]; then
+    mkdir -p public/media
+    if command -v rsync &>/dev/null; then
+      rsync -a "$WORK/media/" public/media/
+    else
+      cp -r "$WORK/media/." public/media/
+    fi
+    echo "  ✓ copied $(find "$WORK/media" -type f | wc -l) files"
+  else
+    echo "  ⚠ no media/ dir in snapshot"
+  fi
 else
-  echo "  ⚠ no media/ dir in snapshot"
+  echo "▸ Skip DB restore (no snapshot passed) — используем существующую БД."
 fi
 
-# -------- Step 6: build & start the app --------
-echo "▸ Building app image (this can take 2-5 min on first run)..."
-$COMPOSE build app
+# -------- Step 5: build app image --------
+# ВАЖНО: docker build, НЕ `compose build`. docker-compose.prod.yml
+# не содержит секции build: для app — он рассчитывает на готовый
+# realty-app:latest. Это сделано чтобы билд получил доступ к postgres
+# через --network=host для generateStaticParams во время билда.
+echo "▸ Building realty-app:latest (это 2–5 мин)..."
+docker build \
+  --network=host \
+  --build-arg DATABASE_URI="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@127.0.0.1:5432/${POSTGRES_DB}" \
+  --build-arg PAYLOAD_SECRET="${PAYLOAD_SECRET}" \
+  --build-arg NEXT_PUBLIC_SERVER_URL="${NEXT_PUBLIC_SERVER_URL}" \
+  --build-arg NEXT_PUBLIC_MAPBOX_TOKEN="${NEXT_PUBLIC_MAPBOX_TOKEN:-}" \
+  --build-arg NEXT_PUBLIC_MAPBOX_STYLE="${NEXT_PUBLIC_MAPBOX_STYLE:-mapbox://styles/mapbox/streets-v12}" \
+  --build-arg CRON_SECRET="${CRON_SECRET}" \
+  --build-arg PREVIEW_SECRET="${PREVIEW_SECRET}" \
+  -t realty-app:latest \
+  .
 
+# -------- Step 6: (re)start app --------
 echo "▸ Starting app..."
-$COMPOSE up -d app
+# Принудительный recreate — даже если image-tag не поменялся.
+$COMPOSE up -d --force-recreate app
 
 # -------- Step 7: health check --------
 echo "▸ Waiting for app to respond..."
