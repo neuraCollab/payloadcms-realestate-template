@@ -7,5 +7,5 @@ export default function CabinetRecentPage() {
 }
 
 export const metadata: Metadata = {
-  title: 'Просмотренные — Realty',
+  title: 'Просмотренные — MegaDomic',
 }

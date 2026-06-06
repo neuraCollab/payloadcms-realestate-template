@@ -7,6 +7,9 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { User as UserIcon, Mail, Calendar, MessageSquare } from 'lucide-react'
 
+// SSG skipped — DB unreachable at build-time inside docker compose.
+export const dynamic = 'force-dynamic'
+
 const formatDate = (iso?: string) => {
   if (!iso) return null
   return new Date(iso).toLocaleDateString('ru-RU', {
@@ -104,5 +107,5 @@ export default async function CabinetProfilePage() {
 }
 
 export const metadata: Metadata = {
-  title: 'Профиль — Realty',
+  title: 'Профиль — MegaDomic',
 }

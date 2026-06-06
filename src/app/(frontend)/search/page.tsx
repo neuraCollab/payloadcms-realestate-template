@@ -7,6 +7,9 @@ import { PropertyCard } from '@/components/PropertyCard'
 import { SearchFilters } from '@/components/SearchFilters'
 import PageClient from './page.client'
 
+// SSG skipped — DB unreachable at build-time inside docker compose.
+export const dynamic = 'force-dynamic'
+
 // Categories searchable from this page. Map UI value → Payload collection slug.
 const CATEGORIES = ['flats', 'commercial', 'lands', 'residential-complexes'] as const
 type Category = (typeof CATEGORIES)[number]

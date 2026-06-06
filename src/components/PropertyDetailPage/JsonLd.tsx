@@ -120,7 +120,7 @@ export const PropertyJsonLd: React.FC<Props> = ({ data, type }) => {
   const organization = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Realty',
+    name: 'MegaDomic',
     url: baseUrl,
     logo: `${baseUrl}/favicon.svg`,
   }

@@ -38,5 +38,5 @@ export default function SavedSearchesPage() {
 }
 
 export const metadata: Metadata = {
-  title: 'Сохранённые поиски — Realty',
+  title: 'Сохранённые поиски — MegaDomic',
 }

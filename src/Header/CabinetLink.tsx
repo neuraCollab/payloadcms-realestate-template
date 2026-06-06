@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import Link from 'next/link'
-import { MessageSquare, Heart } from 'lucide-react'
+import { User, Heart } from 'lucide-react'
 import { useFavorites } from '@/lib/favorites'
 
 const COOKIE = 'realty_email'
@@ -13,11 +13,12 @@ const readCookie = (name: string): string | null => {
 }
 
 /**
- * Shows favorites + cabinet shortcuts in the header.
+ * Shows favorites + cabinet shortcut in the header.
  *
- * - Heart link is always shown when there's at least one favorite.
- * - "Кабинет" link is shown when a `realty_email` cookie is present
- *   (i.e. the visitor has sent a message or signed in).
+ * - Heart link is shown when there's at least one favorite.
+ * - «Кабинет» (User icon + label) показывается ВСЕГДА — иначе
+ *   неавторизованному пользователю некуда зайти. Если cookie сессии
+ *   нет → ведёт на /cabinet/login, иначе → на /cabinet/profile.
  */
 export const CabinetLink: React.FC = () => {
   const [hasSession, setHasSession] = React.useState(false)
@@ -26,6 +27,8 @@ export const CabinetLink: React.FC = () => {
   React.useEffect(() => {
     setHasSession(!!readCookie(COOKIE))
   }, [])
+
+  const cabinetHref = hasSession ? '/cabinet/profile' : '/cabinet/login'
 
   return (
     <>
@@ -42,16 +45,14 @@ export const CabinetLink: React.FC = () => {
           </span>
         </Link>
       ) : null}
-      {hasSession ? (
-        <Link
-          href="/cabinet/chats"
-          aria-label="Личный кабинет"
-          className="inline-flex h-9 px-3 items-center gap-1.5 rounded-full text-body-sm font-medium text-on-surface-variant hover:bg-surface-container-low transition-colors"
-        >
-          <MessageSquare className="w-4 h-4" />
-          <span className="hidden lg:inline">Кабинет</span>
-        </Link>
-      ) : null}
+      <Link
+        href={cabinetHref}
+        aria-label={hasSession ? 'Личный кабинет' : 'Войти в кабинет'}
+        className="inline-flex h-9 px-3 items-center gap-1.5 rounded-full text-body-sm font-medium text-on-surface-variant hover:bg-surface-container-low transition-colors"
+      >
+        <User className="w-4 h-4" />
+        <span className="hidden lg:inline">{hasSession ? 'Кабинет' : 'Войти'}</span>
+      </Link>
     </>
   )
 }

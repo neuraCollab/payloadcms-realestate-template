@@ -23,7 +23,9 @@ import { CallToActionNewBlock } from './house/CallToActionNew/component'
 import { ContactHeroBlock } from './house/ContactHero/component'
 import { ContactUsFormBlock } from './house/ContactUsForm/component'
 import { FAQBlock } from './base/FAQ/component'
-import { UniversalFilterTabs } from './house/HouseFilter/Component'
+// Имя файла на диске: component.tsx (lowercase). Linux/Alpine
+// case-sensitive — путь должен совпадать буквально.
+import { UniversalFilterTabs } from './house/HouseFilter/component'
 import { MapBlock as MapBlockComponent } from './house/MapBlock/component'
 import { QuickNavBlock } from './house/QuickNav/component'
 import { HeroSearch } from './house/HeroSearch/component'

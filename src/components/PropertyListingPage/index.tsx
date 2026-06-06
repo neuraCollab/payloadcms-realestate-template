@@ -3,12 +3,11 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { PropertyCard } from '@/components/PropertyCard'
 import { PropertyFilters } from '@/components/PropertyFilters'
-import { PropertyMap } from '@/components/PropertyMap.tsx'
-import { ViewToggle } from '@/components/ViewToggle'
 import { ListingsPagination } from '@/components/ListingsPagination'
 import { SortSelect, type SortOption } from '@/components/SortSelect'
-import { formatMapItems } from '@/lib/mapItems'
+import { CatalogClient } from './CatalogClient'
 import type { PropertyType } from '@/components/PropertyFilters/schemas'
+import type { CatalogMapItem } from '@/components/CatalogMap'
 
 const PAGE_SIZE = 20
 
@@ -48,7 +47,6 @@ const buildWhere = (type: PropertyType, sp: Record<string, string | undefined>) 
     where.status = { equals: 'active' }
   }
 
-  // ---- Общие поля (where applicable per collection) ----
   if (sp.city) where['location.city'] = { like: sp.city }
   if (sp.district) where['location.district'] = { like: sp.district }
   if (sp.rooms && sp.rooms !== 'all') where.rooms = { equals: sp.rooms }
@@ -60,7 +58,6 @@ const buildWhere = (type: PropertyType, sp: Record<string, string | undefined>) 
   if (minPrice !== undefined) where.price = { ...(where.price || {}), greater_than_equal: minPrice }
   if (maxPrice !== undefined) where.price = { ...(where.price || {}), less_than_equal: maxPrice }
 
-  // ---- Per-type фильтры ----
   if (type === 'flats') {
     if (sp.propertyCategory && sp.propertyCategory !== 'all')
       where.propertyCategory = { equals: sp.propertyCategory }
@@ -110,9 +107,7 @@ const buildWhere = (type: PropertyType, sp: Record<string, string | undefined>) 
   }
 
   if (type === 'lands') {
-    // `purpose` is the actual field in the Lands collection.
     if (sp.purpose && sp.purpose !== 'all') where.purpose = { equals: sp.purpose }
-    // Lands.area is a flat number (sotka), not a group.
     const areaMin = parseNum(sp.areaMin)
     const areaMax = parseNum(sp.areaMax)
     if (areaMin !== undefined) where.area = { ...(where.area || {}), greater_than_equal: areaMin }
@@ -134,16 +129,24 @@ const pickBadge = (doc: any, type: PropertyType): string | undefined => {
   return undefined
 }
 
-const pickMeta = (doc: any, type: PropertyType) => {
+const pickMeta = (doc: any, type: PropertyType): Array<{ label: string }> => {
   if (type === 'flats') {
     return [
-      doc.rooms === 'studio' ? { label: 'Студия' } : doc.rooms ? { label: `${doc.rooms} комн.` } : null,
-      doc.floorInfo?.floor ? { label: `${doc.floorInfo.floor}/${doc.floorInfo.totalFloors} эт.` } : null,
+      doc.rooms === 'studio'
+        ? { label: 'Студия' }
+        : doc.rooms
+        ? { label: `${doc.rooms} комн.` }
+        : null,
+      doc.floorInfo?.floor
+        ? { label: `${doc.floorInfo.floor}/${doc.floorInfo.totalFloors} эт.` }
+        : null,
       doc.area?.total ? { label: `${doc.area.total} м²` } : null,
     ].filter(Boolean) as Array<{ label: string }>
   }
   if (type === 'lands') {
-    return [doc.area?.total ? { label: `${doc.area.total} сот.` } : null].filter(Boolean) as Array<{ label: string }>
+    return [doc.area?.total ? { label: `${doc.area.total} сот.` } : null].filter(
+      Boolean,
+    ) as Array<{ label: string }>
   }
   if (type === 'commercial') {
     return [
@@ -154,18 +157,37 @@ const pickMeta = (doc: any, type: PropertyType) => {
   return []
 }
 
-export const PropertyListingPage: React.FC<Props> = async ({ type, title, searchParams, mapBaseUrl }) => {
+// Координаты могут лежать на корне `coordinates` (старая схема) или
+// внутри `location.coordinates` (новая) — разруливаем и то, и то.
+const extractCoords = (doc: any): { lat: number; lng: number } | null => {
+  const a = doc.coordinates
+  if (typeof a?.lat === 'number' && typeof a?.lng === 'number') {
+    return { lat: a.lat, lng: a.lng }
+  }
+  const b = doc.location?.coordinates
+  if (typeof b?.lat === 'number' && typeof b?.lng === 'number') {
+    return { lat: b.lat, lng: b.lng }
+  }
+  return null
+}
+
+export const PropertyListingPage: React.FC<Props> = async ({
+  type,
+  title,
+  searchParams,
+  mapBaseUrl,
+}) => {
   const payload = await getPayload({ config })
   const where = buildWhere(type, searchParams)
 
-  // Sort + page from URL (validated against allowed set).
-  const sortParam = searchParams.sort && ALLOWED_SORTS.has(searchParams.sort)
-    ? searchParams.sort
-    : '-createdAt'
-  // Lands has flat `area` field, others have `area.total` — patch sort.
-  const sort = type === 'lands' && sortParam.includes('area.total')
-    ? sortParam.replace('area.total', 'area')
-    : sortParam
+  const sortParam =
+    searchParams.sort && ALLOWED_SORTS.has(searchParams.sort)
+      ? searchParams.sort
+      : '-createdAt'
+  const sort =
+    type === 'lands' && sortParam.includes('area.total')
+      ? sortParam.replace('area.total', 'area')
+      : sortParam
 
   const pageParam = parseInt(searchParams.page ?? '1', 10) || 1
   const page = Math.max(1, pageParam)
@@ -179,71 +201,104 @@ export const PropertyListingPage: React.FC<Props> = async ({ type, title, search
     depth: 2,
   })
 
-  const mapItems = formatMapItems(result.docs)
-  const view: 'list' | 'map' = searchParams.view === 'map' ? 'map' : 'list'
+  // Карточки для списка и метки для карты — строим один раз на сервере.
+  const cards = result.docs.map((doc: any) => ({
+    id: String(doc.id),
+    href: `/${type}/${doc.slug}`,
+    title: doc.title,
+    address: doc.location?.address,
+    imageUrl: doc.images?.[0]?.image?.url ?? null,
+    badge: pickBadge(doc, type),
+    price: typeof doc.price === 'number' ? doc.price : undefined,
+    priceSuffix: doc.transactionType === 'rent' ? '/ мес' : undefined,
+    meta: pickMeta(doc, type),
+  }))
 
-  return (
-    <div className="space-y-6">
-      <header className="flex items-end justify-between flex-wrap gap-2">
-        <div>
-          <h1 className="text-headline text-on-surface">{title}</h1>
-          <p className="text-body-sm text-on-surface-variant">{result.totalDocs} объектов</p>
-        </div>
-        <div className="flex items-center gap-3 flex-wrap">
-          <SortSelect options={SORT_OPTIONS} defaultValue="-createdAt" />
-          <ViewToggle />
-        </div>
-      </header>
+  const mapItems: CatalogMapItem[] = result.docs
+    .map((doc: any) => {
+      const coords = extractCoords(doc)
+      if (!coords) return null
+      return {
+        id: String(doc.id),
+        title: doc.title,
+        price: typeof doc.price === 'number' ? doc.price : undefined,
+        address: doc.location?.address,
+        lat: coords.lat,
+        lng: coords.lng,
+        slug: doc.slug,
+      }
+    })
+    .filter(Boolean) as CatalogMapItem[]
 
-      <PropertyFilters type={type} />
-
-      {view === 'map' ? (
-        mapItems.length > 0 ? (
-          <div className="bg-card rounded-md shadow-e1 p-4">
-            <PropertyMap
-              items={mapItems}
-              baseUrl={mapBaseUrl}
-              height="600px"
-              className="!px-0"
+  // Серверный фрагмент — обычный grid карточек + пагинация. На десктопе
+  // CatalogClient рендерит его параллельно списку слева в split-view;
+  // на мобильном (view=list) — это и есть основное содержимое.
+  const resultsSlot = (
+    <>
+      {result.docs.length > 0 ? (
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:hidden">
+          {cards.map((c) => (
+            <PropertyCard
+              key={c.id}
+              href={c.href}
+              title={c.title}
+              address={c.address}
+              imageUrl={c.imageUrl}
+              badge={c.badge}
+              price={c.price}
+              priceSuffix={c.priceSuffix}
+              meta={c.meta}
+              favCollection={type}
+              favId={c.id}
             />
-          </div>
-        ) : (
-          <div className="text-center py-16 bg-card rounded-md shadow-e1">
-            <p className="text-body text-on-surface-variant">
-              Нет объектов с координатами для отображения на карте.
-            </p>
-          </div>
-        )
-      ) : result.docs.length > 0 ? (
-        <>
-          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {result.docs.map((doc: any) => {
-              const href = `/${type}/${doc.slug}`
-              const imageUrl = doc.images?.[0]?.image?.url ?? null
-              return (
-                <PropertyCard
-                  key={doc.id}
-                  href={href}
-                  title={doc.title}
-                  address={doc.location?.address}
-                  imageUrl={imageUrl}
-                  badge={pickBadge(doc, type)}
-                  price={doc.price}
-                  priceSuffix={doc.transactionType === 'rent' ? '/ мес' : undefined}
-                  meta={pickMeta(doc, type)}
-                  favCollection={type}
-                  favId={doc.id}
-                />
-              )
-            })}
-          </div>
-          <ListingsPagination page={page} totalPages={result.totalPages ?? 1} />
-        </>
+          ))}
+        </div>
       ) : (
-        <div className="text-center py-16 bg-card rounded-md shadow-e1">
+        <div className="text-center py-16 bg-card rounded-md shadow-e1 lg:hidden">
           <p className="text-body text-on-surface-variant">Объекты не найдены</p>
         </div>
       )}
+      <ListingsPagination page={page} totalPages={result.totalPages ?? 1} />
+    </>
+  )
+
+  return (
+    <div className="space-y-4">
+      <header className="flex items-end justify-between flex-wrap gap-2">
+        <div>
+          <h1 className="text-headline text-on-surface">{title}</h1>
+          <p className="text-body-sm text-on-surface-variant">
+            {result.totalDocs} {pluralize(result.totalDocs)}
+          </p>
+        </div>
+        <div className="flex items-center gap-3 flex-wrap">
+          <SortSelect options={SORT_OPTIONS} defaultValue="-createdAt" />
+        </div>
+      </header>
+
+      {/* Десктоп: фильтры над split-view. Мобайл: открываются в bottom-sheet
+          через PropertyFiltersSheet, который рендерит CatalogClient. */}
+      <div className="hidden lg:block">
+        <PropertyFilters type={type} totalDocs={result.totalDocs} />
+      </div>
+
+      <CatalogClient
+        type={type}
+        cards={cards}
+        mapItems={mapItems}
+        totalDocs={result.totalDocs}
+        resultsSlot={resultsSlot}
+        mapBaseUrl={mapBaseUrl}
+      />
     </div>
   )
+}
+
+const pluralize = (n: number) => {
+  const last = n % 10
+  const lastTwo = n % 100
+  if (lastTwo >= 11 && lastTwo <= 14) return 'объектов'
+  if (last === 1) return 'объект'
+  if (last >= 2 && last <= 4) return 'объекта'
+  return 'объектов'
 }

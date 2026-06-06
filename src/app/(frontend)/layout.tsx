@@ -25,8 +25,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html className={cn(inter.variable)} lang="en" suppressHydrationWarning>
       <head>
         <InitTheme />
-        <link href="/favicon.ico" rel="icon" sizes="32x32" />
-        <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+        {/* MegaDomic icon set — см. /public/site.webmanifest */}
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="icon" type="image/svg+xml" href="/icon-mark.svg" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+        <meta name="theme-color" content="#1D4ED8" />
+        <meta name="apple-mobile-web-app-title" content="MegaDomic" />
       </head>
       <body>
         <Providers>
@@ -42,9 +49,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
 export const metadata: Metadata = {
   metadataBase: new URL(getServerSideURL()),
+  title: {
+    default: 'MegaDomic — недвижимость',
+    template: '%s — MegaDomic',
+  },
+  description:
+    'MegaDomic — поиск и покупка недвижимости: квартиры, дома, земля, коммерческая.',
   openGraph: mergeOpenGraph(),
   twitter: {
     card: 'summary_large_image',
-    creator: '@payloadcms',
   },
 }

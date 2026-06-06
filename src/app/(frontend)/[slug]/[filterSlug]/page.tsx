@@ -16,27 +16,8 @@ interface Args {
   searchParams: Promise<Record<string, string | undefined>>
 }
 
-// Pre-generate the popular (city × filter) combinations so they're SSG'd.
-// Falls back to SSR for any (city × filter) not in the list.
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const cities = await payload.find({
-    collection: 'cities',
-    where: { isActive: { equals: true } },
-    limit: 1000,
-    pagination: false,
-    select: { slug: true },
-  })
-
-  const params: RouteParams[] = []
-  for (const c of cities.docs ?? []) {
-    if (!c.slug) continue
-    for (const filterSlug of ALL_FILTER_SLUGS) {
-      params.push({ slug: c.slug, filterSlug })
-    }
-  }
-  return params
-}
+// SSG skipped — DB unreachable at build-time inside docker compose.
+export const dynamic = 'force-dynamic'
 
 const fetchCity = async (slug: string) => {
   const payload = await getPayload({ config: configPromise })

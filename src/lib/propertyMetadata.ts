@@ -68,7 +68,7 @@ export const buildPropertyMetadata = async (
         url: canonical,
         type: 'website',
         images: ogImage ? [{ url: ogImage, width: 1200, height: 630, alt: doc.title }] : undefined,
-        siteName: 'Realty',
+        siteName: 'MegaDomic',
         locale: 'ru_RU',
       },
       twitter: {
@@ -79,6 +79,6 @@ export const buildPropertyMetadata = async (
       },
     }
   } catch {
-    return { title: 'Объект недвижимости — Realty' }
+    return { title: 'Объект недвижимости — MegaDomic' }
   }
 }

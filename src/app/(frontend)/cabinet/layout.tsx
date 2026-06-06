@@ -15,5 +15,5 @@ export default async function CabinetLayout({
 }
 
 export const metadata: Metadata = {
-  title: 'Кабинет — Realty',
+  title: 'Кабинет — MegaDomic',
 }
