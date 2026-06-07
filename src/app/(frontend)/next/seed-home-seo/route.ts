@@ -1,5 +1,6 @@
 import { createLocalReq, getPayload } from 'payload'
 import config from '@payload-config'
+import { requireSeedAuth } from '@/utilities/seedAuth'
 
 export const maxDuration = 60
 
@@ -7,12 +8,12 @@ export const maxDuration = 60
  * Дефолтный контент глобала home-seo. Содержит 2 нишевых SEO-блока
  * (см. SEO-стратегию проекта) и 5 базовых FAQ.
  *
+ * Dev: open. Prod: requires `Authorization: Bearer ${CRON_SECRET}`.
  * Идемпотентно: повторный вызов обновит global теми же значениями.
  */
-export async function POST(): Promise<Response> {
-  if (process.env.NODE_ENV === 'production') {
-    return new Response('Disabled outside of development.', { status: 403 })
-  }
+export async function POST(request: Request): Promise<Response> {
+  const authErr = requireSeedAuth(request)
+  if (authErr) return authErr
 
   const payload = await getPayload({ config })
   const req = await createLocalReq({}, payload)

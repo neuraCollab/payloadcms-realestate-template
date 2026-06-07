@@ -2,6 +2,7 @@ import { createLocalReq, getPayload } from 'payload'
 import config from '@payload-config'
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import { requireSeedAuth } from '@/utilities/seedAuth'
 
 export const maxDuration = 60
 
@@ -16,10 +17,9 @@ const PHOTO_FILES = [
   'sample-3.jpg',
 ]
 
-export async function POST(): Promise<Response> {
-  if (process.env.NODE_ENV === 'production') {
-    return new Response('Disabled outside of development.', { status: 403 })
-  }
+export async function POST(request: Request): Promise<Response> {
+  const authErr = requireSeedAuth(request)
+  if (authErr) return authErr
 
   const payload = await getPayload({ config })
   const req = await createLocalReq({}, payload)

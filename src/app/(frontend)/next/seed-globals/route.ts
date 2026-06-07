@@ -2,13 +2,13 @@ import { createLocalReq, getPayload } from 'payload'
 import config from '@payload-config'
 
 import { seedGlobals } from '@/endpoints/seed-globals'
+import { requireSeedAuth } from '@/utilities/seedAuth'
 
 export const maxDuration = 60
 
-export async function POST(): Promise<Response> {
-  if (process.env.NODE_ENV === 'production') {
-    return new Response('Disabled outside of development.', { status: 403 })
-  }
+export async function POST(request: Request): Promise<Response> {
+  const authErr = requireSeedAuth(request)
+  if (authErr) return authErr
 
   const payload = await getPayload({ config })
 
