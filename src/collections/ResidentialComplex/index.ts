@@ -1,6 +1,7 @@
 // collections/ResidentialComplex.ts
 import { CollectionConfig } from 'payload'
 import { embedAfterChange, embedAfterDelete } from '../hooks/embeddings'
+import { telegramPublishAfterChange } from '../hooks/telegramPublish'
 
 export const ResidentialComplex: CollectionConfig = {
   slug: 'residential-complexes',
@@ -9,7 +10,10 @@ export const ResidentialComplex: CollectionConfig = {
     group: 'Недвижимость',
   },
   hooks: {
-    afterChange: [embedAfterChange('residential-complexes')],
+    afterChange: [
+      embedAfterChange('residential-complexes'),
+      telegramPublishAfterChange('residential-complexes'),
+    ],
     afterDelete: [embedAfterDelete('residential-complexes')],
   },
   fields: [

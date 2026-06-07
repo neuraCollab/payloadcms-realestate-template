@@ -28,6 +28,7 @@ import { Messages } from './collections/Messages'
 import { Cities } from './collections/Cities'
 import { Leads } from './collections/Leads'
 import { SavedSearches } from './collections/SavedSearches'
+import { TelegramChannels } from './collections/TelegramChannels'
 import { LegalInfo } from './globals/LegalInfo/config'
 import { HomeSeo } from './globals/HomeSeo/config'
 
@@ -104,6 +105,7 @@ export default buildConfig({
     Cities,
     Leads,
     SavedSearches,
+    TelegramChannels,
   ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer, LegalInfo, HomeSeo],

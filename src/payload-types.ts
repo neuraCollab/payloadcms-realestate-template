@@ -84,6 +84,7 @@ export interface Config {
     cities: City;
     leads: Lead;
     'saved-searches': SavedSearch;
+    'telegram-channels': TelegramChannel;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -112,6 +113,7 @@ export interface Config {
     cities: CitiesSelect<false> | CitiesSelect<true>;
     leads: LeadsSelect<false> | LeadsSelect<true>;
     'saved-searches': SavedSearchesSelect<false> | SavedSearchesSelect<true>;
+    'telegram-channels': TelegramChannelsSelect<false> | TelegramChannelsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1594,6 +1596,33 @@ export interface SavedSearch {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "telegram-channels".
+ */
+export interface TelegramChannel {
+  id: number;
+  /**
+   * Точно как пишется в location.city у объявлений (напр. «Москва»)
+   */
+  cityName: string;
+  /**
+   * Латиницей, snake/kebab. Используется в команде /channel.
+   */
+  citySlug: string;
+  /**
+   * Отрицательное число вида -1001234567890. Узнать: переслать сообщение из канала боту через web.telegram.org, скопировать chat_id.
+   */
+  channelId: string;
+  /**
+   * Для публичных каналов. Используется чтобы выдать ссылку t.me/<username>.
+   */
+  channelUsername?: string | null;
+  isActive?: boolean | null;
+  postedCount?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1831,6 +1860,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'saved-searches';
         value: number | SavedSearch;
+      } | null)
+    | ({
+        relationTo: 'telegram-channels';
+        value: number | TelegramChannel;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2907,6 +2940,20 @@ export interface SavedSearchesSelect<T extends boolean = true> {
   isActive?: T;
   lastRunAt?: T;
   lastMatchCount?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "telegram-channels_select".
+ */
+export interface TelegramChannelsSelect<T extends boolean = true> {
+  cityName?: T;
+  citySlug?: T;
+  channelId?: T;
+  channelUsername?: T;
+  isActive?: T;
+  postedCount?: T;
   updatedAt?: T;
   createdAt?: T;
 }

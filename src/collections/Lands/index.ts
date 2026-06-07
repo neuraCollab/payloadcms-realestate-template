@@ -1,6 +1,7 @@
 // collections/Lands.ts
 import { CollectionConfig } from 'payload'
 import { embedAfterChange, embedAfterDelete } from '../hooks/embeddings'
+import { telegramPublishAfterChange } from '../hooks/telegramPublish'
 
 export const Lands: CollectionConfig = {
   slug: 'lands',
@@ -9,7 +10,7 @@ export const Lands: CollectionConfig = {
     group: 'Недвижимость',
   },
   hooks: {
-    afterChange: [embedAfterChange('lands')],
+    afterChange: [embedAfterChange('lands'), telegramPublishAfterChange('lands')],
     afterDelete: [embedAfterDelete('lands')],
   },
   fields: [
