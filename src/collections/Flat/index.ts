@@ -360,9 +360,38 @@ export const Flats: CollectionConfig = {
         { label: 'Продано/Сдано', value: 'sold' },
         { label: 'Снято с публикации', value: 'unpublished' },
         { label: 'Черновик', value: 'draft' },
+        { label: 'На модерации', value: 'pending_review' },
       ],
       admin: {
         position: 'sidebar',
+      },
+    },
+    // Поля для объявлений из личного кабинета (UGC).
+    // Заполняются автоматически при submit'е через /cabinet/listings.
+    {
+      name: 'contactEmail',
+      type: 'email',
+      label: 'Email подавшего объявление',
+      admin: {
+        position: 'sidebar',
+        description: 'Cookie владельца кабинета. Используется чтобы показать «мои объявления».',
+        readOnly: true,
+      },
+      index: true,
+    },
+    {
+      name: 'submittedAt',
+      type: 'date',
+      label: 'Подано на модерацию',
+      admin: { position: 'sidebar', readOnly: true },
+    },
+    {
+      name: 'moderationNote',
+      type: 'textarea',
+      label: 'Заметка модератора',
+      admin: {
+        position: 'sidebar',
+        description: 'Если отклонено — причина. Показывается автору в кабинете.',
       },
     },
 

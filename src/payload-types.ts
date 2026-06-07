@@ -1286,7 +1286,16 @@ export interface Flat {
       }[]
     | null;
   residentialComplex?: (number | null) | ResidentialComplex;
-  status?: ('active' | 'sold' | 'unpublished' | 'draft') | null;
+  status?: ('active' | 'sold' | 'unpublished' | 'draft' | 'pending_review') | null;
+  /**
+   * Cookie владельца кабинета. Используется чтобы показать «мои объявления».
+   */
+  contactEmail?: string | null;
+  submittedAt?: string | null;
+  /**
+   * Если отклонено — причина. Показывается автору в кабинете.
+   */
+  moderationNote?: string | null;
   isFeatured?: boolean | null;
   /**
    * Объявление размещено собственником, а не агентством.
@@ -2714,6 +2723,9 @@ export interface FlatsSelect<T extends boolean = true> {
       };
   residentialComplex?: T;
   status?: T;
+  contactEmail?: T;
+  submittedAt?: T;
+  moderationNote?: T;
   isFeatured?: T;
   fromOwner?: T;
   noCommission?: T;
