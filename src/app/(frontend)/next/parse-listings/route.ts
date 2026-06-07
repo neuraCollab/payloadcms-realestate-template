@@ -3,23 +3,23 @@ import config from '@payload-config'
 
 import { ingestListings } from '@/lib/listings-parser/ingest'
 import type { SourceId } from '@/lib/listings-parser/types'
+import { requireSeedAuth } from '@/utilities/seedAuth'
 
 export const maxDuration = 60
 
 const VALID_SOURCES: SourceId[] = ['avito', 'sutochno', 'etagi']
 
 /**
- * Dev-only endpoint that ingests demo listings via the mock providers.
- * Returns 403 in production. Idempotent — re-running upserts by slug.
+ * Ingests demo listings via mock providers. Idempotent (upserts by slug).
+ * Dev: open. Prod: requires `Authorization: Bearer ${CRON_SECRET}`.
  *
  * Query params:
  *   ?source=avito         — comma-separated list (default: all three)
  *   ?per=5                — listings per source (default: 5, max: 50)
  */
 export async function POST(request: Request): Promise<Response> {
-  if (process.env.NODE_ENV === 'production') {
-    return new Response('Disabled outside of development.', { status: 403 })
-  }
+  const authErr = requireSeedAuth(request)
+  if (authErr) return authErr
 
   const url = new URL(request.url)
   const sourceParam = url.searchParams.get('source')

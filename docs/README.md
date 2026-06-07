@@ -625,6 +625,40 @@ git pull origin main
 
 После: настроить nginx + Let's Encrypt по образцу из DEPLOY-PROD.md.
 
+### Сидинг и миграции на свежем сервере (без снепшота)
+
+Если на сервере поднимается чистая БД (без переноса данных через
+снимок), порядок такой. **Важно:** prod-образ — Next standalone, в нём
+нет `pnpm` и Payload CLI. Миграции и сиды запускаются через
+HTTP-эндпоинты, защищённые Bearer `CRON_SECRET`.
+
+```bash
+SECRET=$(grep '^CRON_SECRET=' .env | cut -d= -f2)
+HOST=http://127.0.0.1:3000
+
+# 1. Применить pending миграции
+curl -X POST "$HOST/api/admin/migrate" \
+  -H "Authorization: Bearer $SECRET" \
+  -H 'Content-Type: application/json' -d '{}'
+
+# 2. Создать стартовых пользователей/глобалы (один раз)
+curl -X POST "$HOST/next/seed-globals" -H "Authorization: Bearer $SECRET"
+curl -X POST "$HOST/next/seed-cities"  -H "Authorization: Bearer $SECRET"
+
+# 3. Засеять SEO-контент главной + блог + моковые объекты SPb
+curl -X POST "$HOST/next/seed-home-seo"       -H "Authorization: Bearer $SECRET"
+curl -X POST "$HOST/next/seed-spb-listings"   -H "Authorization: Bearer $SECRET"
+curl -X POST "$HOST/next/seed-seo-posts"      -H "Authorization: Bearer $SECRET"
+
+# 4. Переиндексировать эмбеддинги (после того как TEI стал Ready)
+curl -X POST "$HOST/api/admin/reindex-embeddings" \
+  -H "Authorization: Bearer $SECRET" \
+  -H 'Content-Type: application/json' -d '{}'
+```
+
+Все эти эндпоинты идемпотентны — повторный вызов не дублирует данные.
+В dev-окружении (`NODE_ENV !== 'production'`) Bearer не требуется.
+
 ---
 
 ## Troubleshooting

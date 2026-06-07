@@ -2,18 +2,18 @@ import { createLocalReq, getPayload } from 'payload'
 import config from '@payload-config'
 
 import { seedPages } from '@/endpoints/seed-pages'
+import { requireSeedAuth } from '@/utilities/seedAuth'
 
 export const maxDuration = 60
 
 /**
- * Dev-only endpoint that seeds (or re-seeds) demo content pages built
- * from blocks. Returns 403 in production. Does not wipe any other
- * collection — safe to re-run.
+ * Seeds (or re-seeds) demo content pages built from blocks.
+ * Dev: open. Prod: requires `Authorization: Bearer ${CRON_SECRET}`.
+ * Safe to re-run.
  */
-export async function POST(): Promise<Response> {
-  if (process.env.NODE_ENV === 'production') {
-    return new Response('Disabled outside of development.', { status: 403 })
-  }
+export async function POST(request: Request): Promise<Response> {
+  const authErr = requireSeedAuth(request)
+  if (authErr) return authErr
 
   const payload = await getPayload({ config })
 
