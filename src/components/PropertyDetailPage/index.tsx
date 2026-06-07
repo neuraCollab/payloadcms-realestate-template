@@ -12,6 +12,7 @@ import { PropertySpecs } from './PropertySpecs'
 import { PropertyAnalytics } from './PropertyAnalytics'
 import { RealtorCard } from './RealtorCard'
 import { ContactCTA } from '@/components/LeadForm/ContactCTA'
+import { PropertyFaq } from './PropertyFaq'
 import { MortgageCalculator } from './MortgageCalculator'
 import { PriceHistoryChart } from './PriceHistoryChart'
 import { PropertyJsonLd } from './JsonLd'
@@ -135,6 +136,10 @@ export const PropertyDetailPage: React.FC<Props> = async ({ type, slug }) => {
               </ul>
             </section>
           ) : null}
+
+          {/* Типизированный FAQ + FAQPage JSON-LD — rich snippet
+              «People also ask» в Google + снятие возражений до контакта. */}
+          <PropertyFaq type={type} />
         </div>
 
         <aside className="space-y-6">
