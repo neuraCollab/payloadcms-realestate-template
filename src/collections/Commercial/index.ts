@@ -2,6 +2,7 @@
 import { CollectionConfig } from 'payload'
 import { embedAfterChange, embedAfterDelete } from '../hooks/embeddings'
 import { telegramPublishAfterChange } from '../hooks/telegramPublish'
+import { cityAutoCreateAfterChange } from '../hooks/cityAutoCreate'
 
 export const Commercial: CollectionConfig = {
   slug: 'commercial',
@@ -41,7 +42,11 @@ export const Commercial: CollectionConfig = {
         return data
       },
     ],
-    afterChange: [embedAfterChange('commercial'), telegramPublishAfterChange('commercial')],
+    afterChange: [
+      embedAfterChange('commercial'),
+      telegramPublishAfterChange('commercial'),
+      cityAutoCreateAfterChange,
+    ],
     afterDelete: [embedAfterDelete('commercial')],
   },
   fields: [

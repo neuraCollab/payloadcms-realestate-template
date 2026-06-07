@@ -13,18 +13,34 @@ const getPagesSitemap = unstable_cache(
 
     // `_status` нельзя запрашивать напрямую. `draft: false` уже
     // отсекает черновики.
-    const results = await payload.find({
-      collection: 'pages',
-      overrideAccess: false,
-      draft: false,
-      depth: 0,
-      limit: 1000,
-      pagination: false,
-      select: {
-        slug: true,
-        updatedAt: true,
-      },
-    })
+    const [results, citiesRes] = await Promise.all([
+      payload.find({
+        collection: 'pages',
+        overrideAccess: false,
+        draft: false,
+        depth: 0,
+        limit: 1000,
+        pagination: false,
+        select: {
+          slug: true,
+          updatedAt: true,
+        },
+      }),
+      // City landing pages — каждый активный город — отдельный URL
+      // /<city-slug>. Auto-created хуком при первом объявлении из
+      // нового города (см. src/collections/hooks/cityAutoCreate.ts).
+      payload.find({
+        collection: 'cities',
+        where: { isActive: { equals: true } },
+        limit: 1000,
+        pagination: false,
+        depth: 0,
+        select: {
+          slug: true,
+          updatedAt: true,
+        },
+      }),
+    ])
 
     const dateFallback = new Date().toISOString()
 
@@ -55,7 +71,16 @@ const getPagesSitemap = unstable_cache(
           }))
       : []
 
-    return [...defaultSitemap, ...sitemap]
+    const citySitemap = citiesRes.docs
+      ? citiesRes.docs
+          .filter((c) => Boolean(c?.slug))
+          .map((c) => ({
+            loc: `${SITE_URL}/${c!.slug}`,
+            lastmod: (c as any).updatedAt || dateFallback,
+          }))
+      : []
+
+    return [...defaultSitemap, ...sitemap, ...citySitemap]
   },
   ['pages-sitemap'],
   {

@@ -2,6 +2,7 @@
 import { CollectionConfig } from 'payload'
 import { embedAfterChange, embedAfterDelete } from '../hooks/embeddings'
 import { telegramPublishAfterChange } from '../hooks/telegramPublish'
+import { cityAutoCreateAfterChange } from '../hooks/cityAutoCreate'
 
 export const ResidentialComplex: CollectionConfig = {
   slug: 'residential-complexes',
@@ -13,6 +14,7 @@ export const ResidentialComplex: CollectionConfig = {
     afterChange: [
       embedAfterChange('residential-complexes'),
       telegramPublishAfterChange('residential-complexes'),
+      cityAutoCreateAfterChange,
     ],
     afterDelete: [embedAfterDelete('residential-complexes')],
   },
