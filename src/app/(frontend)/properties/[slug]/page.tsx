@@ -96,13 +96,22 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
     }).format(price)
   }
 
+  // Тип сделки → глагол для description
+  const txAction =
+    property.type === 'rent' ? 'Снять' : property.type === 'sale' ? 'Купить' : 'Найти'
+  const title = `${property.title} — ${formatPrice(property.price)}`
+  const description =
+    `${txAction} объект в ${property.address || 'нужном районе'}: ` +
+    `${property.bedrooms ?? '—'} комн., ${property.bathrooms ?? '—'} с/у, ` +
+    `${property.area ?? '—'} м². Реальные фото, прямой контакт.`
+
   return {
-    title: `${property.title} - ${formatPrice(property.price)}`,
-    description: `${property.bedrooms} bed, ${property.bathrooms} bath property for ${property.type} in ${property.address}. ${property.area} sq.ft.`,
+    title,
+    description,
     openGraph: {
-      title: `${property.title} - ${formatPrice(property.price)}`,
-      description: `${property.bedrooms} bed, ${property.bathrooms} bath property for ${property.type} in ${property.address}`,
-      images: property.images?.length > 0 && typeof property.images[0]?.image === 'object' 
+      title,
+      description,
+      images: property.images?.length > 0 && typeof property.images[0]?.image === 'object'
         ? [{ url: property.images[0].image.url || '/placeholder.jpg' }]
         : [{ url: '/placeholder.jpg' }],
     },

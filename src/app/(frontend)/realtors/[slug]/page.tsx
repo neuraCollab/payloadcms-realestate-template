@@ -1,10 +1,49 @@
 // app/realtors/[slug]/page.tsx
+import type { Metadata } from 'next'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { notFound } from 'next/navigation'
 import { RealtorReviewForm } from '@/components/Forms/RealtorReviewForm'
 import Image from 'next/image'
 import { MaskedPhone } from '@/components/MaskedPhone'
+import { getServerSideURL } from '@/utilities/getURL'
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string }
+}): Promise<Metadata> {
+  const payload = await getPayload({ config })
+  const { slug } = params
+  const users = await payload.find({
+    collection: 'users',
+    where: { slug: { equals: slug }, role: { equals: 'realtor' } },
+    limit: 1,
+    depth: 0,
+  })
+  const realtor: any = users.docs[0]
+  if (!realtor) {
+    return { title: 'Риэлтор не найден' }
+  }
+
+  const name =
+    realtor.fullName || realtor.name || realtor.email?.split('@')[0] || 'Риэлтор'
+  const city = realtor.city ? `, ${realtor.city}` : ''
+  const title = `${name} — риэлтор${city}`
+  const description =
+    `Профиль риэлтора ${name}${city}: активные объявления, отзывы клиентов, ` +
+    `контакты для связи. Прямое общение без переплат агентству.`
+
+  const base = getServerSideURL()
+  const canonical = `${base}/realtors/${slug}`
+
+  return {
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: { title, description, url: canonical, type: 'profile' },
+  }
+}
 
 export default async function RealtorProfilePage({ params }: { params: { slug: string } }) {
   const payload = await getPayload({ config })

@@ -39,4 +39,7 @@ export default function SavedSearchesPage() {
 
 export const metadata: Metadata = {
   title: 'Сохранённые поиски — MegaDomic',
+  description:
+    'Сохранённые комбинации фильтров. Один клик — повторяете поиск ' +
+    'без ручного ввода параметров.',
 }
