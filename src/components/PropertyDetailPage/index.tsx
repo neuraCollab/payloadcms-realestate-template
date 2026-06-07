@@ -54,6 +54,54 @@ export const PropertyDetailPage: React.FC<Props> = async ({ type, slug }) => {
   if (!found.docs.length) notFound()
   const data: any = found.docs[0]
 
+  // Агрегат рейтингов риэлтора → AggregateRating в JSON-LD объекта.
+  // Google показывает звёзды в SERP только при reviewCount > 0.
+  // Один запрос, не дёргаем повторно в RealtorCard — у неё свой.
+  let aggregateRating: { ratingValue: number; reviewCount: number } | null = null
+  if (data.realtor?.id) {
+    try {
+      const reviews = await payload.find({
+        collection: 'reviews',
+        where: {
+          and: [
+            { realtor: { equals: data.realtor.id } },
+            { status: { equals: 'approved' } },
+          ],
+        },
+        limit: 0, // только totalDocs + сумма по count нужны
+        depth: 0,
+      })
+      if (reviews.totalDocs > 0) {
+        // limit:0 не возвращает docs — поэтому отдельный запрос на сами
+        // ratings. Ограничиваем 200 — выше уже статистически шум.
+        const ratingsRes = await payload.find({
+          collection: 'reviews',
+          where: {
+            and: [
+              { realtor: { equals: data.realtor.id } },
+              { status: { equals: 'approved' } },
+            ],
+          },
+          limit: 200,
+          depth: 0,
+        })
+        const sum = ratingsRes.docs.reduce(
+          (acc: number, r: any) => acc + (Number(r.rating) || 0),
+          0,
+        )
+        const avg = sum / ratingsRes.docs.length
+        if (Number.isFinite(avg) && avg > 0) {
+          aggregateRating = {
+            ratingValue: avg,
+            reviewCount: reviews.totalDocs,
+          }
+        }
+      }
+    } catch {
+      /* fail silent — рейтинг опционален */
+    }
+  }
+
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: 'Главная', url: '/' },
     { name: TYPE_LABEL[type], url: `/${type}` },
@@ -62,7 +110,7 @@ export const PropertyDetailPage: React.FC<Props> = async ({ type, slug }) => {
 
   return (
     <article className="max-w-6xl mx-auto space-y-6">
-      <PropertyJsonLd data={data} type={type} />
+      <PropertyJsonLd data={data} type={type} aggregateRating={aggregateRating} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
