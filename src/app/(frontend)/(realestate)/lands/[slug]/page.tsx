@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import { PropertyDetailPage } from '@/components/PropertyDetailPage'
 import { buildPropertyMetadata } from '@/lib/propertyMetadata'
 
-// SSG skipped — DB unreachable at build-time inside docker compose.
-export const dynamic = 'force-dynamic'
+// ISR: см. flats/[slug]/page.tsx — 5 мин кеш на каждую страницу.
+export const revalidate = 300
 
 export default async function LandsDetailRoute({
   params,

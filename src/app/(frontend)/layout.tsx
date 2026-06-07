@@ -14,10 +14,21 @@ import { CookieConsent } from '@/components/CookieConsent'
 import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
 
+// Inter ограничен 4-мя весами (400/500/600/700) — это всё что
+// используют наши tailwind-классы (font-normal/medium/semibold/bold).
+// Без ограничения next/font тянул весь variable-фонт (~80 KiB
+// в свежей prod-сборке). С weights — Next генерирует subset под
+// конкретные значения, woff2 становится ощутимо меньше.
+//
+// preload=true (default) + display=swap = FCP не блокируется, при
+// этом критичный woff2 уходит в <link rel="preload"> автоматически.
 const inter = Inter({
   subsets: ['latin', 'cyrillic'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-sans',
   display: 'swap',
+  preload: true,
+  adjustFontFallback: true,
 })
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

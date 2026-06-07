@@ -29,6 +29,32 @@ const nextConfig = {
   },
   reactStrictMode: true,
   redirects,
+  // Aggressive caching for hashed static assets и иконок: эти файлы
+  // immutable (next/font/google пишет хэш в имя), браузер и любой
+  // прокси-кэш могут держать их год без re-validation.
+  //
+  // Без этого nginx по умолчанию отдаёт только Cache-Control: public,
+  // что на холодную сеть превращается в ~1с на 80 KiB woff2.
+  async headers() {
+    const oneYear = 'public, max-age=31536000, immutable'
+    return [
+      {
+        source: '/_next/static/:path*',
+        headers: [{ key: 'Cache-Control', value: oneYear }],
+      },
+      {
+        // next/font выгружается в /_next/static/media — отдельным
+        // паттерном для надёжности (на случай если roadmap изменит путь).
+        source: '/_next/static/media/:path*',
+        headers: [{ key: 'Cache-Control', value: oneYear }],
+      },
+      {
+        // /public иконки и манифест — реже меняются.
+        source: '/:asset(favicon\\.ico|icon-mark\\.svg|apple-touch-icon\\.png|site\\.webmanifest)',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=86400' }],
+      },
+    ]
+  },
 }
 
 export default withPayload(nextConfig, { devBundleServerPackages: false })
