@@ -83,6 +83,7 @@ export interface Config {
     messages: Message;
     cities: City;
     leads: Lead;
+    'saved-searches': SavedSearch;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -110,6 +111,7 @@ export interface Config {
     messages: MessagesSelect<false> | MessagesSelect<true>;
     cities: CitiesSelect<false> | CitiesSelect<true>;
     leads: LeadsSelect<false> | LeadsSelect<true>;
+    'saved-searches': SavedSearchesSelect<false> | SavedSearchesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1565,6 +1567,33 @@ export interface Lead {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "saved-searches".
+ */
+export interface SavedSearch {
+  id: number;
+  email: string;
+  name: string;
+  /**
+   * Пример: { "collection": "flats", "city": "Москва", "transactionType": "sale", "rooms": "2", "maxPrice": 20000000 }
+   */
+  filters:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  frequency?: ('instant' | 'daily' | 'weekly') | null;
+  isActive?: boolean | null;
+  lastRunAt?: string | null;
+  lastMatchCount?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1798,6 +1827,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'leads';
         value: number | Lead;
+      } | null)
+    | ({
+        relationTo: 'saved-searches';
+        value: number | SavedSearch;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2859,6 +2892,21 @@ export interface LeadsSelect<T extends boolean = true> {
   utmSource?: T;
   utmCampaign?: T;
   pageUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "saved-searches_select".
+ */
+export interface SavedSearchesSelect<T extends boolean = true> {
+  email?: T;
+  name?: T;
+  filters?: T;
+  frequency?: T;
+  isActive?: T;
+  lastRunAt?: T;
+  lastMatchCount?: T;
   updatedAt?: T;
   createdAt?: T;
 }
