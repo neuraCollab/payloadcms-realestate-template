@@ -27,6 +27,7 @@ import { Reviews } from './collections/Reviews'
 import { Messages } from './collections/Messages'
 import { Cities } from './collections/Cities'
 import { LegalInfo } from './globals/LegalInfo/config'
+import { HomeSeo } from './globals/HomeSeo/config'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -101,7 +102,7 @@ export default buildConfig({
     Cities,
   ],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [Header, Footer, LegalInfo],
+  globals: [Header, Footer, LegalInfo, HomeSeo],
   plugins: [
 
     ...plugins,

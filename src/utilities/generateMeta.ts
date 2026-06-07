@@ -26,9 +26,9 @@ export const generateMeta = async (args: {
 
   const ogImage = getImageURL(doc?.meta?.image)
 
-  const title = doc?.meta?.title
-    ? doc?.meta?.title + ' | Payload Website Template'
-    : 'Payload Website Template'
+  // Префикс/суффикс с брендом добавляет layout.tsx через title.template
+  // (`%s — MegaDomic`) — здесь отдаём только meta.title как есть.
+  const title = doc?.meta?.title || doc?.title || undefined
 
   return {
     description: doc?.meta?.description,

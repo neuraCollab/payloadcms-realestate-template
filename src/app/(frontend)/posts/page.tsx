@@ -7,6 +7,7 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
 import PageClient from './page.client'
+import { buildBreadcrumbJsonLd } from '@/utilities/seo'
 
 // SSG skipped — DB unreachable at build-time inside docker compose.
 // `force-dynamic` без revalidate — страница рендерится на каждый
@@ -29,13 +30,24 @@ export default async function Page() {
     },
   })
 
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: 'Главная', url: '/' },
+    { name: 'Блог', url: '/posts' },
+  ])
+
   return (
     <div className="pt-24 pb-24">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <PageClient />
-      <div className="container mb-16">
-        <div className="prose dark:prose-invert max-w-none">
-          <h1>Posts</h1>
-        </div>
+      <div className="container mb-10">
+        <h1 className="text-display text-on-surface">Блог о недвижимости</h1>
+        <p className="text-body text-on-surface-variant mt-2 max-w-2xl">
+          Гайды, аналитика рынка, чек-листы для покупателей и арендаторов.
+          Без воды — только полезное и проверенное.
+        </p>
       </div>
 
       <div className="container mb-8">
@@ -59,7 +71,15 @@ export default async function Page() {
 }
 
 export function generateMetadata(): Metadata {
+  const title = 'Блог о недвижимости — гайды, аналитика, чек-листы'
+  const description =
+    'Полезные материалы о покупке, аренде и продаже недвижимости. ' +
+    'Чек-листы, разборы рынка, юридические моменты, советы для собственников ' +
+    'и арендаторов.'
   return {
-    title: `Payload Website Template Posts`,
+    title,
+    description,
+    alternates: { canonical: '/posts' },
+    openGraph: { title, description, url: '/posts', type: 'website' },
   }
 }

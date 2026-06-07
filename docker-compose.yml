@@ -1,7 +1,9 @@
 services:
 
   postgres:
-    image: postgres:15
+    # pgvector/pgvector:pg15 — Postgres 15 + pgvector preinstalled.
+    # Drop-in замена postgres:15: тот же протокол, тот же volume layout.
+    image: pgvector/pgvector:pg15
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -16,6 +18,41 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
+  # HuggingFace text-embeddings-inference — REST-сервер эмбеддингов.
+  #
+  # ПО УМОЛЧАНИЮ: multilingual-e5-small (118M парам, 384-dim, 100+ языков).
+  # Пик памяти ~1.5GB — стабильно работает в Docker Desktop с 7 GB RAM.
+  #
+  # Если у вас 12+ GB RAM и хочется максимум качества — можно переключиться
+  # на BAAI/bge-m3 (568M, 1024-dim), тогда также обновите EMBEDDING_DIM=1024
+  # в env и пересоздайте таблицу property_embeddings под vector(1024).
+  #
+  # max-batch-tokens=4096 (вместо дефолтного 16384) — снижает пик RAM
+  # на batch'ах. HF_HUB_ENABLE_HF_TRANSFER=0 отключает rust-ускоритель
+  # для надёжности скачивания.
+  tei:
+    image: ghcr.io/huggingface/text-embeddings-inference:cpu-1.7
+    restart: unless-stopped
+    command:
+      - --model-id=intfloat/multilingual-e5-small
+      - --port=80
+      - --max-batch-tokens=4096
+      - --auto-truncate
+    ports:
+      - "8081:80"
+    volumes:
+      - tei_models:/data
+    environment:
+      HF_HOME: /data
+      HUGGINGFACE_HUB_CACHE: /data
+      HF_HUB_ENABLE_HF_TRANSFER: "0"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 300s
 
   pgadmin:
     image: dpage/pgadmin4
@@ -41,6 +78,10 @@ services:
       NEXT_PUBLIC_SERVER_URL: ${NEXT_PUBLIC_SERVER_URL}
       CRON_SECRET: ${CRON_SECRET}
       PREVIEW_SECRET: ${PREVIEW_SECRET}
+      # AI-поиск: HTTP-эндпоинт TEI и параметры модели.
+      EMBEDDINGS_URL: http://tei:80
+      EMBEDDING_MODEL: multilingual-e5-small
+      EMBEDDING_DIM: "384"
       NODE_ENV: development
       WATCHPACK_POLLING: "true"
       CHOKIDAR_USEPOLLING: "true"
@@ -56,3 +97,4 @@ volumes:
   postgres_data:
   app_node_modules:
   app_next:
+  tei_models:

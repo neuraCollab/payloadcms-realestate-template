@@ -6,6 +6,7 @@ import config from '@/payload.config'
 import { Building2, Home, MapPin, Trees, Briefcase, ArrowRight } from 'lucide-react'
 import { PropertyCard } from '@/components/PropertyCard'
 import { POPULAR_FILTERS_FOR_CITY, parseFilterSlug } from '@/lib/cityUrls'
+import { buildBreadcrumbJsonLd } from '@/utilities/seo'
 
 interface Props {
   city: any
@@ -124,8 +125,17 @@ export const CityLandingPage: React.FC<Props> = async ({ city }) => {
 
   const heroUrl: string | undefined = city.heroImage?.url
 
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: 'Главная', url: '/' },
+    { name: city.name, url: `/${city.slug}` },
+  ])
+
   return (
     <article className="pt-16 pb-24">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       {/* Hero */}
       <section className="relative">
         <div className="container">

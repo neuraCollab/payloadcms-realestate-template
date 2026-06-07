@@ -1,5 +1,6 @@
 
 import { CollectionConfig } from 'payload'
+import { embedAfterChange, embedAfterDelete } from '../hooks/embeddings'
 
 export const Commercial: CollectionConfig = {
   slug: 'commercial',
@@ -39,6 +40,8 @@ export const Commercial: CollectionConfig = {
         return data
       },
     ],
+    afterChange: [embedAfterChange('commercial')],
+    afterDelete: [embedAfterDelete('commercial')],
   },
   fields: [
     // Базовые поля

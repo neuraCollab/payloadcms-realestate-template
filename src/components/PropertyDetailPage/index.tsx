@@ -17,6 +17,7 @@ import { PropertyJsonLd } from './JsonLd'
 import { TrackView } from './TrackView'
 import { FavoriteButton } from '@/components/FavoriteButton'
 import type { PropertyType } from '@/components/PropertyFilters/schemas'
+import { buildBreadcrumbJsonLd } from '@/utilities/seo'
 
 const COLLECTION_MAP: Record<PropertyType, string> = {
   flats: 'flats',
@@ -51,9 +52,19 @@ export const PropertyDetailPage: React.FC<Props> = async ({ type, slug }) => {
   if (!found.docs.length) notFound()
   const data: any = found.docs[0]
 
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: 'Главная', url: '/' },
+    { name: TYPE_LABEL[type], url: `/${type}` },
+    { name: data.title, url: `/${type}/${slug}` },
+  ])
+
   return (
     <article className="max-w-6xl mx-auto space-y-6">
       <PropertyJsonLd data={data} type={type} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <TrackView collection={type} id={data.id} />
       <nav aria-label="breadcrumb" className="flex items-center gap-1 text-body-sm text-on-surface-variant">
         <Link href="/" className="hover:text-on-surface">Главная</Link>

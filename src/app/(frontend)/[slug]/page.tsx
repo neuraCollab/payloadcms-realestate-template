@@ -7,6 +7,7 @@ import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 import React, { cache } from 'react'
 import { homeStatic } from '@/endpoints/seed/home-static'
+import { cityIn } from '@/utilities/seo'
 
 import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { RenderHero } from '@/heros/RenderHero'
@@ -78,11 +79,26 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
 
   const city = await queryCityBySlug({ slug })
   if (city) {
+    const cityLoc = cityIn(city.name)
+    const title = `Недвижимость в ${cityLoc} — купить, снять, посуточно`
+    // Если city.description короткий/типовой — используем подробный
+    // авто-шаблон. Иначе берём то что вписали в админке.
+    const auto =
+      `Объявления о продаже и аренде квартир, домов и коммерческой ` +
+      `недвижимости в ${cityLoc}. Прямые контакты с собственниками, ` +
+      `прозрачные цены, без агентских комиссий.`
+    const description =
+      city.description && city.description.length > 80 ? city.description : auto
     return {
-      title: `Недвижимость в городе ${city.name}`,
-      description:
-        city.description ??
-        `Объявления о продаже и аренде недвижимости в городе ${city.name}.`,
+      title,
+      description,
+      alternates: { canonical: `/${city.slug}` },
+      openGraph: {
+        title,
+        description,
+        url: `/${city.slug}`,
+        type: 'website',
+      },
     }
   }
 

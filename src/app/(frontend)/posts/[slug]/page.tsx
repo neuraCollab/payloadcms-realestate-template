@@ -14,6 +14,8 @@ import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
+import { buildBreadcrumbJsonLd } from '@/utilities/seo'
+import { getServerSideURL } from '@/utilities/getURL'
 
 // SSG skipped — DB unreachable at build-time inside docker compose.
 export const dynamic = 'force-dynamic'
@@ -32,8 +34,47 @@ export default async function Post({ params: paramsPromise }: Args) {
 
   if (!post) return <PayloadRedirects url={url} />
 
+  const base = getServerSideURL()
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: 'Главная', url: '/' },
+    { name: 'Блог', url: '/posts' },
+    { name: post.title, url: `/posts/${slug}` },
+  ])
+
+  // Article schema — даёт rich snippets в выдаче (карточка с фото,
+  // датой публикации, автором). Без обязательных полей `image` и
+  // `dateModified` Google не покажет, но валидный JSON-LD никогда
+  // не вредит.
+  const heroImage = (post as any).heroImage
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: (post.meta as any)?.description ?? undefined,
+    image:
+      typeof heroImage === 'object' && heroImage?.url
+        ? `${base}${heroImage.url}`
+        : undefined,
+    datePublished: post.createdAt,
+    dateModified: post.updatedAt ?? post.createdAt,
+    mainEntityOfPage: `${base}/posts/${slug}`,
+    publisher: {
+      '@type': 'Organization',
+      name: 'MegaDomic',
+      logo: { '@type': 'ImageObject', url: `${base}/logo-light.svg` },
+    },
+  }
+
   return (
     <article className="pt-16 pb-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <PageClient />
 
       {/* Allows redirects for valid pages too */}

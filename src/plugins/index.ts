@@ -15,7 +15,9 @@ import { Page, Post } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
 
 const generateTitle: GenerateTitle<Post | Page> = ({ doc }) => {
-  return doc?.title ? `${doc.title} | Payload Website Template` : 'Payload Website Template'
+  // Бренд-суффикс добавляет layout.tsx через title.template (%s — MegaDomic).
+  // Здесь подсказываем только сам заголовок.
+  return doc?.title || 'MegaDomic'
 }
 
 const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
