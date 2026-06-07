@@ -11,6 +11,7 @@ import { PropertyMetaBar } from './PropertyMetaBar'
 import { PropertySpecs } from './PropertySpecs'
 import { PropertyAnalytics } from './PropertyAnalytics'
 import { RealtorCard } from './RealtorCard'
+import { ContactCTA } from '@/components/LeadForm/ContactCTA'
 import { MortgageCalculator } from './MortgageCalculator'
 import { PriceHistoryChart } from './PriceHistoryChart'
 import { PropertyJsonLd } from './JsonLd'
@@ -137,6 +138,15 @@ export const PropertyDetailPage: React.FC<Props> = async ({ type, slug }) => {
         </div>
 
         <aside className="space-y-6">
+          {/* Primary CTA — заметная синяя кнопка над карточкой риэлтора.
+              Открывает диалог с 4 каналами связи (звонок/TG/WA/IG). */}
+          <ContactCTA
+            realtorId={data.realtor?.id}
+            propertyCollection={type}
+            propertyId={data.id}
+            propertyTitle={data.title}
+          />
+
           {data.realtor ? (
             <RealtorCard
               realtor={data.realtor}

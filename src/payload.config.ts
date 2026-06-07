@@ -26,6 +26,7 @@ import { Lands } from './collections/Lands'
 import { Reviews } from './collections/Reviews'
 import { Messages } from './collections/Messages'
 import { Cities } from './collections/Cities'
+import { Leads } from './collections/Leads'
 import { LegalInfo } from './globals/LegalInfo/config'
 import { HomeSeo } from './globals/HomeSeo/config'
 
@@ -100,6 +101,7 @@ export default buildConfig({
     Reviews,
     Messages,
     Cities,
+    Leads,
   ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer, LegalInfo, HomeSeo],

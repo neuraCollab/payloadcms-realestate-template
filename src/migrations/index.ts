@@ -2,6 +2,7 @@ import * as migration_20260602_011706 from './20260602_011706';
 import * as migration_20260606_233403 from './20260606_233403';
 import * as migration_20260606_ai_embeddings from './20260606_ai_embeddings';
 import * as migration_20260607_db_indexes from './20260607_db_indexes';
+import * as migration_20260607_leads from './20260607_leads';
 
 export const migrations = [
   {
@@ -23,5 +24,10 @@ export const migrations = [
     up: migration_20260607_db_indexes.up,
     down: migration_20260607_db_indexes.down,
     name: '20260607_db_indexes',
+  },
+  {
+    up: migration_20260607_leads.up,
+    down: migration_20260607_leads.down,
+    name: '20260607_leads',
   },
 ];
