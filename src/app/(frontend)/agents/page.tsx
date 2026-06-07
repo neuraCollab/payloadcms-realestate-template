@@ -9,8 +9,11 @@ import { AgentsSearch } from './AgentsSearch'
 import { MaskedPhone } from '@/components/MaskedPhone'
 import { buildBreadcrumbJsonLd } from '@/utilities/seo'
 
-// SSG skipped — DB unreachable at build-time inside docker compose.
-export const dynamic = 'force-dynamic'
+// ISR: страница рендерится при первом запросе, потом 10 мин отдаётся
+// из кеша (на каждый уникальный URL — комбинация ?q=&city=). Агенты
+// меняются редко, ускорение TTFB в десятки раз. force-static не ставим
+// потому что есть searchParams — Next переведёт в auto-dynamic при них.
+export const revalidate = 600
 
 type Args = {
   searchParams: Promise<{ q?: string; city?: string }>
