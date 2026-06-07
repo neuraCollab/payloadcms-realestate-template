@@ -2,6 +2,7 @@
 import { CollectionConfig } from 'payload'
 import { embedAfterChange, embedAfterDelete } from '../hooks/embeddings'
 import { telegramPublishAfterChange } from '../hooks/telegramPublish'
+import { cityAutoCreateAfterChange } from '../hooks/cityAutoCreate'
 
 export const Lands: CollectionConfig = {
   slug: 'lands',
@@ -10,7 +11,11 @@ export const Lands: CollectionConfig = {
     group: 'Недвижимость',
   },
   hooks: {
-    afterChange: [embedAfterChange('lands'), telegramPublishAfterChange('lands')],
+    afterChange: [
+      embedAfterChange('lands'),
+      telegramPublishAfterChange('lands'),
+      cityAutoCreateAfterChange,
+    ],
     afterDelete: [embedAfterDelete('lands')],
   },
   fields: [
