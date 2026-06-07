@@ -59,6 +59,34 @@ services:
       retries: 30
       start_period: 300s
 
+  # Опциональный dockerized nginx как reverse-proxy. По умолчанию
+  # отключён через profile=nginx — поднимется только если явно
+  # передать `--profile nginx`. До этого продолжает работать
+  # хост-nginx, проксирующий 127.0.0.1:3000 (см. docs/README.md).
+  #
+  # Перейти на докеризированный вариант:
+  #   1. sudo systemctl disable --now nginx     (отключить хост-nginx)
+  #   2. docker compose -f docker-compose.prod.yml --profile nginx up -d
+  #   3. Сертификаты Let's Encrypt остаются на хосте, certbot renew
+  #      продолжает работать через --webroot (см. volume mounts).
+  nginx:
+    image: nginx:1.27-alpine
+    profiles: ['nginx']
+    restart: always
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./deploy/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./deploy/nginx/conf.d:/etc/nginx/conf.d:ro
+      # SSL-сертификаты с хоста — certbot обновляет их там же.
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      # ACME webroot (для certbot --webroot renew).
+      - /var/www/letsencrypt:/var/www/letsencrypt:ro
+    depends_on:
+      app:
+        condition: service_started
+
   app:
     build:
       context: .

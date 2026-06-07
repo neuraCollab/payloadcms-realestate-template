@@ -625,6 +625,30 @@ git pull origin main
 
 После: настроить nginx + Let's Encrypt по образцу из DEPLOY-PROD.md.
 
+### Reverse-proxy: host vs docker
+
+По умолчанию reverse-proxy — **nginx на хосте**, проксирующий
+`127.0.0.1:3000`. Это работает из коробки, certbot обновляет
+сертификаты через `--webroot`.
+
+Альтернатива — **dockerized nginx** (`deploy/nginx/` + сервис
+`nginx` в `docker-compose.prod.yml` под profile `nginx`).
+Сертификаты bind-mount'ятся с хоста, certbot остаётся на хосте.
+
+```bash
+# Переход host → docker:
+sudo systemctl disable --now nginx
+docker compose -f docker-compose.prod.yml --profile nginx up -d nginx
+
+# Откат на host-nginx:
+docker compose -f docker-compose.prod.yml stop nginx
+sudo systemctl enable --now nginx
+```
+
+Оба варианта используют одни и те же кеширующие правила
+(/_next/static/* immutable 1y, /_next/image 30d, манифест/иконки 1d)
+и WebSocket-upgrade через conditional `Connection` map.
+
 ### Сидинг и миграции на свежем сервере (без снепшота)
 
 Если на сервере поднимается чистая БД (без переноса данных через
