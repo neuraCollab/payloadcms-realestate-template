@@ -1,6 +1,7 @@
 import { CollectionConfig } from 'payload'
 import { snapshotPriceHistory } from './hooks/snapshotPriceHistory'
 import { embedAfterChange, embedAfterDelete } from '../hooks/embeddings'
+import { telegramPublishAfterChange } from '../hooks/telegramPublish'
 
 export const Flats: CollectionConfig = {
   slug: 'flats',
@@ -43,8 +44,9 @@ export const Flats: CollectionConfig = {
       },
       snapshotPriceHistory,
     ],
-    // AI-индексация: fire-and-forget, не блокирует сохранение.
-    afterChange: [embedAfterChange('flats')],
+    // AI-индексация + Telegram-публикация — оба fire-and-forget,
+    // не блокируют сохранение и независимы между собой.
+    afterChange: [embedAfterChange('flats'), telegramPublishAfterChange('flats')],
     afterDelete: [embedAfterDelete('flats')],
   },
   fields: [
