@@ -119,7 +119,11 @@ export default async function PrivacyPage() {
 }
 
 export const metadata: Metadata = {
-  title: 'Политика обработки персональных данных — Realty',
+  // Brand-suffix `— MegaDomic` добавит layout.tsx через title.template.
+  title: 'Политика обработки персональных данных',
   description:
-    'Как Realty собирает, использует и защищает персональные данные. 152-ФЗ + GDPR.',
+    'Как MegaDomic собирает, использует и защищает персональные данные ' +
+    'пользователей: цели обработки, сроки хранения, права субъекта данных. ' +
+    'Соответствует 152-ФЗ и GDPR.',
+  alternates: { canonical: '/privacy' },
 }

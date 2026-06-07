@@ -66,8 +66,17 @@ export default async function Page({ params: paramsPromise }: Args) {
 
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
   const { pageNumber } = await paramsPromise
+  const n = Number(pageNumber) || 1
+  // Страницы пагинации /posts/page/2+ — дубликаты контента /posts.
+  // Закрываем от индекса, canonical → корневую /posts, чтобы Google
+  // не размывал ранжирование.
   return {
-    title: `Payload Website Template Posts Page ${pageNumber || ''}`,
+    title: n > 1 ? `Блог — страница ${n}` : 'Блог о недвижимости',
+    description:
+      'Полезные материалы о покупке, аренде и продаже недвижимости: гайды, ' +
+      'аналитика, чек-листы и юридические разборы.',
+    alternates: { canonical: '/posts' },
+    robots: n > 1 ? { index: false, follow: true } : undefined,
   }
 }
 
