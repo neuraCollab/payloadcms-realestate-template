@@ -153,6 +153,8 @@ docker build \
   --build-arg NEXT_PUBLIC_SERVER_URL="${NEXT_PUBLIC_SERVER_URL}" \
   --build-arg NEXT_PUBLIC_MAPBOX_TOKEN="${NEXT_PUBLIC_MAPBOX_TOKEN:-}" \
   --build-arg NEXT_PUBLIC_MAPBOX_STYLE="${NEXT_PUBLIC_MAPBOX_STYLE:-mapbox://styles/mapbox/streets-v12}" \
+  --build-arg NEXT_PUBLIC_YANDEX_METRIKA_ID="${NEXT_PUBLIC_YANDEX_METRIKA_ID:-}" \
+  --build-arg NEXT_PUBLIC_GA4_ID="${NEXT_PUBLIC_GA4_ID:-}" \
   --build-arg CRON_SECRET="${CRON_SECRET}" \
   --build-arg PREVIEW_SECRET="${PREVIEW_SECRET}" \
   -t realty-app:latest \

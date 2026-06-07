@@ -96,9 +96,20 @@ services:
         condition: service_started
 
   app:
-    # No `build:` here — the image is produced by deploy.sh and tagged
-    # realty-app:latest before compose runs.
+    # Образ собирается через scripts/deploy.sh (docker build с --network=host
+    # чтобы достучаться до postgres на этапе билда). compose up подхватывает
+    # уже готовый тег. Секция build: ниже — fallback для `compose build`:
+    # все NEXT_PUBLIC_* должны попасть в bundle на этапе сборки.
     image: realty-app:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_SERVER_URL: ${NEXT_PUBLIC_SERVER_URL}
+        NEXT_PUBLIC_MAPBOX_TOKEN: ${NEXT_PUBLIC_MAPBOX_TOKEN:-}
+        NEXT_PUBLIC_MAPBOX_STYLE: ${NEXT_PUBLIC_MAPBOX_STYLE:-mapbox://styles/mapbox/streets-v12}
+        NEXT_PUBLIC_YANDEX_METRIKA_ID: ${NEXT_PUBLIC_YANDEX_METRIKA_ID:-}
+        NEXT_PUBLIC_GA4_ID: ${NEXT_PUBLIC_GA4_ID:-}
     restart: always
     ports:
       - '127.0.0.1:3000:3000'   # bind only to loopback; reverse-proxy fronts it
@@ -108,6 +119,8 @@ services:
       NEXT_PUBLIC_SERVER_URL: ${NEXT_PUBLIC_SERVER_URL}
       NEXT_PUBLIC_MAPBOX_TOKEN: ${NEXT_PUBLIC_MAPBOX_TOKEN:-}
       NEXT_PUBLIC_MAPBOX_STYLE: ${NEXT_PUBLIC_MAPBOX_STYLE:-mapbox://styles/mapbox/streets-v12}
+      NEXT_PUBLIC_YANDEX_METRIKA_ID: ${NEXT_PUBLIC_YANDEX_METRIKA_ID:-}
+      NEXT_PUBLIC_GA4_ID: ${NEXT_PUBLIC_GA4_ID:-}
       CRON_SECRET: ${CRON_SECRET}
       PREVIEW_SECRET: ${PREVIEW_SECRET}
       # AI-поиск

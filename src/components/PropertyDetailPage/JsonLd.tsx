@@ -5,6 +5,15 @@ import type { PropertyType } from '@/components/PropertyFilters/schemas'
 interface Props {
   data: any
   type: PropertyType
+  /**
+   * Агрегированная оценка риэлтора (по одобренным отзывам). Если
+   * прокинута — попадёт в RealEstateListing.aggregateRating →
+   * звёзды в выдаче. Без 1+ отзыва Google звёзды не покажет.
+   */
+  aggregateRating?: {
+    ratingValue: number
+    reviewCount: number
+  } | null
 }
 
 const TYPE_NAME: Record<PropertyType, string> = {
@@ -28,7 +37,7 @@ const SCHEMA_TYPE: Record<PropertyType, string> = {
  *   - Organization (publisher)
  * Crawled by Google Real Estate, Yandex Webmaster, etc.
  */
-export const PropertyJsonLd: React.FC<Props> = ({ data, type }) => {
+export const PropertyJsonLd: React.FC<Props> = ({ data, type, aggregateRating }) => {
   const baseUrl = getServerSideURL()
   const url = `${baseUrl}/${type}/${data.slug}`
   const images: string[] = (data.images ?? [])
@@ -88,6 +97,20 @@ export const PropertyJsonLd: React.FC<Props> = ({ data, type }) => {
       : {}),
     ...(data.rooms && data.rooms !== 'studio'
       ? { numberOfRooms: parseInt(String(data.rooms), 10) || undefined }
+      : {}),
+    // Звёзды в SERP. Google требует ratingValue (1-5), reviewCount > 0
+    // и видимый рейтинг где-то на странице — наш RealtorCard рисует
+    // averageRating рядом с именем риэлтора, требование выполнено.
+    ...(aggregateRating && aggregateRating.reviewCount > 0
+      ? {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: aggregateRating.ratingValue.toFixed(1),
+            reviewCount: aggregateRating.reviewCount,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
       : {}),
     additionalType: SCHEMA_TYPE[type],
   }

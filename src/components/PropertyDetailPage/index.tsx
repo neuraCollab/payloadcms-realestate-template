@@ -11,6 +11,8 @@ import { PropertyMetaBar } from './PropertyMetaBar'
 import { PropertySpecs } from './PropertySpecs'
 import { PropertyAnalytics } from './PropertyAnalytics'
 import { RealtorCard } from './RealtorCard'
+import { ContactCTA } from '@/components/LeadForm/ContactCTA'
+import { PropertyFaq } from './PropertyFaq'
 import { MortgageCalculator } from './MortgageCalculator'
 import { PriceHistoryChart } from './PriceHistoryChart'
 import { PropertyJsonLd } from './JsonLd'
@@ -52,6 +54,54 @@ export const PropertyDetailPage: React.FC<Props> = async ({ type, slug }) => {
   if (!found.docs.length) notFound()
   const data: any = found.docs[0]
 
+  // Агрегат рейтингов риэлтора → AggregateRating в JSON-LD объекта.
+  // Google показывает звёзды в SERP только при reviewCount > 0.
+  // Один запрос, не дёргаем повторно в RealtorCard — у неё свой.
+  let aggregateRating: { ratingValue: number; reviewCount: number } | null = null
+  if (data.realtor?.id) {
+    try {
+      const reviews = await payload.find({
+        collection: 'reviews',
+        where: {
+          and: [
+            { realtor: { equals: data.realtor.id } },
+            { status: { equals: 'approved' } },
+          ],
+        },
+        limit: 0, // только totalDocs + сумма по count нужны
+        depth: 0,
+      })
+      if (reviews.totalDocs > 0) {
+        // limit:0 не возвращает docs — поэтому отдельный запрос на сами
+        // ratings. Ограничиваем 200 — выше уже статистически шум.
+        const ratingsRes = await payload.find({
+          collection: 'reviews',
+          where: {
+            and: [
+              { realtor: { equals: data.realtor.id } },
+              { status: { equals: 'approved' } },
+            ],
+          },
+          limit: 200,
+          depth: 0,
+        })
+        const sum = ratingsRes.docs.reduce(
+          (acc: number, r: any) => acc + (Number(r.rating) || 0),
+          0,
+        )
+        const avg = sum / ratingsRes.docs.length
+        if (Number.isFinite(avg) && avg > 0) {
+          aggregateRating = {
+            ratingValue: avg,
+            reviewCount: reviews.totalDocs,
+          }
+        }
+      }
+    } catch {
+      /* fail silent — рейтинг опционален */
+    }
+  }
+
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: 'Главная', url: '/' },
     { name: TYPE_LABEL[type], url: `/${type}` },
@@ -60,7 +110,7 @@ export const PropertyDetailPage: React.FC<Props> = async ({ type, slug }) => {
 
   return (
     <article className="max-w-6xl mx-auto space-y-6">
-      <PropertyJsonLd data={data} type={type} />
+      <PropertyJsonLd data={data} type={type} aggregateRating={aggregateRating} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
@@ -134,9 +184,22 @@ export const PropertyDetailPage: React.FC<Props> = async ({ type, slug }) => {
               </ul>
             </section>
           ) : null}
+
+          {/* Типизированный FAQ + FAQPage JSON-LD — rich snippet
+              «People also ask» в Google + снятие возражений до контакта. */}
+          <PropertyFaq type={type} />
         </div>
 
         <aside className="space-y-6">
+          {/* Primary CTA — заметная синяя кнопка над карточкой риэлтора.
+              Открывает диалог с 4 каналами связи (звонок/TG/WA/IG). */}
+          <ContactCTA
+            realtorId={data.realtor?.id}
+            propertyCollection={type}
+            propertyId={data.id}
+            propertyTitle={data.title}
+          />
+
           {data.realtor ? (
             <RealtorCard
               realtor={data.realtor}
