@@ -20,6 +20,12 @@ export interface PropertyCardProps {
   favId?: string | number
   /** 'compact' — для витрин/гридов где нужна плотная подача. */
   size?: 'default' | 'compact'
+  /**
+   * Above-the-fold карточки → priority=true. Next будет fetchpriority=high
+   * и сразу преложит preload-хинт. Для остальных оставляем по умолчанию
+   * (lazy). Правило: первые 2 на мобиле, первые 4 на десктопе.
+   */
+  priority?: boolean
 }
 
 const formatPrice = (n: number) => n.toLocaleString('ru-RU') + ' ₽'
@@ -37,6 +43,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
   favCollection,
   favId,
   size = 'default',
+  priority = false,
 }) => {
   const compact = size === 'compact'
   return (
@@ -60,6 +67,13 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
               : '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
           }
           className="object-cover"
+          // priority снимает lazy и хинтит браузеру fetchpriority=high —
+          // нужно для LCP-карточки. По умолчанию lazy + low-priority.
+          priority={priority}
+          // 1×1 серый placeholder — устраняет «дыру» до загрузки картинки
+          // (CLS снижается, perceived perf растёт).
+          placeholder="blur"
+          blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxMCI+PHJlY3Qgd2lkdGg9IjE2IiBoZWlnaHQ9IjEwIiBmaWxsPSIjZjFmM2Y1Ii8+PC9zdmc+"
         />
         {badge ? (
           <span

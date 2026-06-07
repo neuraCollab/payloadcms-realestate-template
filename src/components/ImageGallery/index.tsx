@@ -84,6 +84,10 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
                 height={500}
                 className="w-full h-72 sm:h-96 object-cover"
                 priority
+                // Серый плейсхолдер до загрузки картинки. CLS уже ноль
+                // (width/height жёстко заданы), это для perceived perf.
+                placeholder="blur"
+                blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxMCI+PHJlY3Qgd2lkdGg9IjE2IiBoZWlnaHQ9IjEwIiBmaWxsPSIjZjFmM2Y1Ii8+PC9zdmc+"
                 draggable={false}
               />
             )

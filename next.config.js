@@ -26,6 +26,13 @@ const nextConfig = {
         }
       }),
     ],
+    // AVIF → WebP → JPEG fallback. AVIF меньше JPEG в 2-3 раза
+    // при сопоставимом качестве, WebP в 1.5-2. Поддерживают почти
+    // все живые браузеры. Next сам выбирает по Accept заголовку.
+    formats: ['image/avif', 'image/webp'],
+    // Кеш оптимизированной картинки в _next/image — год.
+    // Меняется только при изменении исходного файла (хеш в URL).
+    minimumCacheTTL: 31536000,
   },
   reactStrictMode: true,
   redirects,
