@@ -1,21 +1,19 @@
 # Настройка аналитики (Yandex Metrika + GA4)
 
-Шаги для тебя — заполнить вручную через админ-консоли провайдеров,
-вернуть готовые id в `.env`, пересобрать app.
+Счётчики уже зашиты в код как production-defaults:
+- **Yandex Metrika**: `109710917`
+- **GA4**: `G-L7KQ9W2PJ8`
+
+После `./scripts/deploy.sh` они начнут собирать данные автоматически.
+Переменные `NEXT_PUBLIC_YANDEX_METRIKA_ID` / `NEXT_PUBLIC_GA4_ID` в `.env`
+нужны только если хочешь подменить id для dev/staging-окружения.
 
 ## 1. Yandex Metrika
 
-1. https://metrika.yandex.ru/list → «+ Добавить счётчик»
-2. Имя счётчика: `MegaDomic`, адрес `https://megadomic.ru`.
-3. **Включить** обязательно:
-   - Вебвизор (запись сессий)
-   - Карта кликов
-   - Точный показатель отказов
-4. Скопировать **id счётчика** (8-значное число, например `12345678`).
-5. На сервере в `.env`:
-   ```
-   NEXT_PUBLIC_YANDEX_METRIKA_ID=12345678
-   ```
+Счётчик `109710917` уже работает. В админке Метрики:
+
+1. Открыть https://metrika.yandex.ru/dashboard?id=109710917
+2. Убедиться что включены: Вебвизор, Карта кликов, Точный показатель отказов.
 
 ### Цели для отслеживания
 
@@ -33,14 +31,10 @@
 
 ## 2. Google Analytics 4
 
-1. https://analytics.google.com → Admin → Create Property.
-2. Property name: `MegaDomic`, time zone: `Europe/Moscow`, currency: RUB.
-3. Reporting → Data Streams → Web → Stream name: `megadomic.ru`.
-4. Скопировать **Measurement ID** (формат `G-XXXXXXXXXX`).
-5. На сервере в `.env`:
-   ```
-   NEXT_PUBLIC_GA4_ID=G-XXXXXXXXXX
-   ```
+Поток `G-L7KQ9W2PJ8` уже работает. В админке GA4:
+
+1. https://analytics.google.com → выбрать property с этим ID.
+2. Подтвердить что хост `megadomic.ru` в Data Streams → Web.
 
 ### Конверсии для отслеживания
 
@@ -53,16 +47,17 @@
 Имена должны точно совпадать с теми что выше. Через 24 часа после
 первых событий — пометить их как «Conversion» в UI.
 
-## 3. Перезапуск с новыми переменными
+## 3. Деплой
 
 ```bash
 cd ~/payloadcms-realestate-template
-# .env уже содержит оба id (см. выше)
-./scripts/deploy.sh    # пересобирает app с NEXT_PUBLIC_* в bundle
+git pull origin main
+./scripts/deploy.sh    # пересобирает app, защёлкивает счётчики в bundle
 ```
 
-NEXT_PUBLIC_* запекаются на этапе build, поэтому без rebuild новые
-значения не подхватятся даже после `restart`.
+NEXT_PUBLIC_* (и хардкод-defaults) запекаются на этапе build —
+после rebuild появятся сразу. Никакого .env-редактирования больше
+не нужно.
 
 ## 4. Проверка что счётчики установлены
 

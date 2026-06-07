@@ -20,8 +20,12 @@ declare global {
   }
 }
 
-const YM_ID = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID
-const GA4_ID = process.env.NEXT_PUBLIC_GA4_ID
+// Должны совпадать с DEFAULT_* в src/components/Analytics/index.tsx.
+const DEFAULT_YM_ID = '109710917'
+const DEFAULT_GA4_ID = 'G-L7KQ9W2PJ8'
+
+const YM_ID = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID || DEFAULT_YM_ID
+const GA4_ID = process.env.NEXT_PUBLIC_GA4_ID || DEFAULT_GA4_ID
 
 /**
  * Отправить именованное событие. params попадут как goal-parameters
