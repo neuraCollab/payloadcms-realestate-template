@@ -38,21 +38,41 @@ const TYPE_LABEL: Record<PropertyType, string> = {
 interface Props {
   type: PropertyType
   slug: string
+  /**
+   * Optional pre-fetched document — для preview-режима в кабинете.
+   * Если передан — slug игнорируется, DB не дёргаем, рендерим как
+   * полноценную детальную страницу.
+   */
+  doc?: any
+  /**
+   * В preview-режиме скрываем секции «Оставить отзыв» и контактные
+   * CTA, т.к. это превью владельца — а не публичная страница.
+   */
+  previewMode?: boolean
 }
 
 const formatPrice = (n: number) => n.toLocaleString('ru-RU') + ' ₽'
 
-export const PropertyDetailPage: React.FC<Props> = async ({ type, slug }) => {
+export const PropertyDetailPage: React.FC<Props> = async ({
+  type,
+  slug,
+  doc: docProp,
+  previewMode = false,
+}) => {
   const payload = await getPayload({ config })
 
-  const found = await payload.find({
-    collection: COLLECTION_MAP[type] as any,
-    where: { slug: { equals: slug } },
-    depth: 2,
-    limit: 1,
-  })
-  if (!found.docs.length) notFound()
-  const data: any = found.docs[0]
+  let data: any = docProp ?? null
+
+  if (!data) {
+    const found = await payload.find({
+      collection: COLLECTION_MAP[type] as any,
+      where: { slug: { equals: slug } },
+      depth: 2,
+      limit: 1,
+    })
+    if (!found.docs.length) notFound()
+    data = found.docs[0]
+  }
 
   // Агрегат рейтингов риэлтора → AggregateRating в JSON-LD объекта.
   // Google показывает звёзды в SERP только при reviewCount > 0.

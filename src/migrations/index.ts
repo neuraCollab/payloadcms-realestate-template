@@ -6,6 +6,7 @@ import * as migration_20260607_leads from './20260607_leads';
 import * as migration_20260607_auth_tokens from './20260607_auth_tokens';
 import * as migration_20260607_saved_searches from './20260607_saved_searches';
 import * as migration_20260607_telegram from './20260607_telegram';
+import * as migration_20260607_cabinet_listings from './20260607_cabinet_listings';
 
 export const migrations = [
   {
@@ -47,5 +48,10 @@ export const migrations = [
     up: migration_20260607_telegram.up,
     down: migration_20260607_telegram.down,
     name: '20260607_telegram',
+  },
+  {
+    up: migration_20260607_cabinet_listings.up,
+    down: migration_20260607_cabinet_listings.down,
+    name: '20260607_cabinet_listings',
   },
 ];

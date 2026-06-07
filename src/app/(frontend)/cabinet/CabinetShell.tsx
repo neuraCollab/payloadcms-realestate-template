@@ -10,6 +10,7 @@ import {
   Bookmark,
   LogOut,
   LogIn,
+  Home as HomeIcon,
 } from 'lucide-react'
 import { cn } from '@/utilities/ui'
 import { useFavorites } from '@/lib/favorites'
@@ -57,6 +58,7 @@ export const CabinetShell: React.FC<Props> = ({ email, children }) => {
       count: recent.length,
       guest: true,
     },
+    { href: '/cabinet/listings', label: 'Мои объявления', icon: HomeIcon },
     { href: '/cabinet/saved-searches', label: 'Сохранённые поиски', icon: Bookmark },
   ]
 
