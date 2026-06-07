@@ -82,6 +82,7 @@ export interface Config {
     reviews: Review;
     messages: Message;
     cities: City;
+    leads: Lead;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -108,6 +109,7 @@ export interface Config {
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
     messages: MessagesSelect<false> | MessagesSelect<true>;
     cities: CitiesSelect<false> | CitiesSelect<true>;
+    leads: LeadsSelect<false> | LeadsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1535,6 +1537,34 @@ export interface City {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads".
+ */
+export interface Lead {
+  id: number;
+  phone: string;
+  name?: string | null;
+  channel?: ('callback' | 'telegram' | 'whatsapp' | 'instagram') | null;
+  /**
+   * Для tg/wa/ig — username без @. Для callback пусто.
+   */
+  contactHandle?: string | null;
+  message?: string | null;
+  /**
+   * flats | commercial | lands | residential-complexes
+   */
+  propertyCollection?: string | null;
+  propertyId?: string | null;
+  propertyTitle?: string | null;
+  realtor?: (number | null) | User;
+  status?: ('new' | 'contacted' | 'qualified' | 'won' | 'lost') | null;
+  utmSource?: string | null;
+  utmCampaign?: string | null;
+  pageUrl?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1764,6 +1794,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'cities';
         value: number | City;
+      } | null)
+    | ({
+        relationTo: 'leads';
+        value: number | Lead;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2804,6 +2838,27 @@ export interface CitiesSelect<T extends boolean = true> {
         lng?: T;
       };
   isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads_select".
+ */
+export interface LeadsSelect<T extends boolean = true> {
+  phone?: T;
+  name?: T;
+  channel?: T;
+  contactHandle?: T;
+  message?: T;
+  propertyCollection?: T;
+  propertyId?: T;
+  propertyTitle?: T;
+  realtor?: T;
+  status?: T;
+  utmSource?: T;
+  utmCampaign?: T;
+  pageUrl?: T;
   updatedAt?: T;
   createdAt?: T;
 }
