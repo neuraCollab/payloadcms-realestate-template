@@ -240,7 +240,7 @@ const CardList: React.FC<{
   }
   return (
     <ul className="space-y-3">
-      {cards.map((c) => (
+      {cards.map((c, i) => (
         <li
           key={c.id}
           data-card-id={c.id}
@@ -263,6 +263,11 @@ const CardList: React.FC<{
                   fill
                   sizes="180px"
                   className="object-cover"
+                  // Первые 3 строки списка обычно above-the-fold даже на
+                  // тесном ноутбучном экране — на них priority снимает
+                  // lazy и хинтит fetchpriority=high. Заметно ускоряет
+                  // LCP, остальные грузятся как обычно.
+                  priority={i < 3}
                 />
               ) : (
                 <div className="absolute inset-0 grid place-items-center text-on-surface-variant text-label">
