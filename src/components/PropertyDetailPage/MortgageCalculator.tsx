@@ -1,11 +1,21 @@
 'use client'
 import React from 'react'
 import { Calculator, Percent } from 'lucide-react'
+import { MortgageCTA } from '@/components/LeadForm/MortgageCTA'
 
 interface Props {
   price: number
   /** Header label override. Default: «Ипотечный калькулятор» */
   label?: string
+  /**
+   * Если переданы — под результатом появится CTA «Получить одобрение».
+   * Без этих props компонент работает в standalone-режиме (как раньше).
+   */
+  property?: {
+    collection: string
+    id: string | number
+    title: string
+  }
 }
 
 const formatPrice = (n: number) =>
@@ -26,7 +36,7 @@ const monthlyPayment = (S: number, annualRate: number, months: number): number =
   return (S * (i * pow)) / (pow - 1)
 }
 
-export const MortgageCalculator: React.FC<Props> = ({ price, label }) => {
+export const MortgageCalculator: React.FC<Props> = ({ price, label, property }) => {
   const safePrice = price > 0 ? price : 5_000_000
   const [downPct, setDownPct] = React.useState(20)
   const [years, setYears] = React.useState(20)
@@ -118,6 +128,25 @@ export const MortgageCalculator: React.FC<Props> = ({ price, label }) => {
         Расчёт ориентировочный (аннуитетная схема). Условия конкретной программы уточняйте
         в банке.
       </p>
+
+      {/* CTA «Получить одобрение» — отправляет посчитанные параметры
+          в /api/leads, дальше менеджер банка-партнёра. Появляется
+          только когда property передан с детальной — на других
+          местах калькулятор остаётся «чистый». */}
+      {property ? (
+        <MortgageCTA
+          propertyCollection={property.collection}
+          propertyId={property.id}
+          propertyTitle={property.title}
+          calc={{
+            price: safePrice,
+            downPayment,
+            years,
+            monthly,
+            rate,
+          }}
+        />
+      ) : null}
     </section>
   )
 }
