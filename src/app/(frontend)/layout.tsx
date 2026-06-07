@@ -11,6 +11,7 @@ import { InitTheme } from '@/providers/Theme/InitTheme'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { CookieConsent } from '@/components/CookieConsent'
 import { Analytics } from '@/components/Analytics'
+import { CompareTray } from '@/components/CompareTray'
 
 import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
@@ -53,6 +54,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           {children}
           <Footer />
           <CookieConsent />
+          <CompareTray />
         </Providers>
         <Analytics />
       </body>

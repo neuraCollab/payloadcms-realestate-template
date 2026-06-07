@@ -155,7 +155,14 @@ export const PropertyDetailPage: React.FC<Props> = async ({ type, slug }) => {
           <PropertySpecs data={data} type={type} />
 
           {data.transactionType === 'sale' && typeof data.price === 'number' ? (
-            <MortgageCalculator price={data.price} />
+            <MortgageCalculator
+              price={data.price}
+              property={{
+                collection: type,
+                id: data.id,
+                title: data.title,
+              }}
+            />
           ) : null}
 
           {Array.isArray(data.priceHistory) && data.priceHistory.length >= 2 ? (

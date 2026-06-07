@@ -7,6 +7,7 @@ import { Building2, Home, MapPin, Trees, Briefcase, ArrowRight } from 'lucide-re
 import { PropertyCard } from '@/components/PropertyCard'
 import { POPULAR_FILTERS_FOR_CITY, parseFilterSlug } from '@/lib/cityUrls'
 import { buildBreadcrumbJsonLd } from '@/utilities/seo'
+import { getServerSideURL } from '@/utilities/getURL'
 
 interface Props {
   city: any
@@ -130,11 +131,77 @@ export const CityLandingPage: React.FC<Props> = async ({ city }) => {
     { name: city.name, url: `/${city.slug}` },
   ])
 
+  // LocalBusiness / RealEstateAgent JSON-LD — для попадания в Local Pack
+  // выдачи Google + Я.Бизнес. areaServed привязан к городу, прайс-
+  // диапазон считаем «$$» (средний рынок). Контакты подтягиваются
+  // из глобала legal-info (если заполнены).
+  let legal: any = null
+  try {
+    legal = await payload.findGlobal({ slug: 'legal-info' as any, depth: 0 })
+  } catch {
+    /* без legal info — не критично, агента всё равно отрисуем */
+  }
+
+  const baseUrl = getServerSideURL()
+  const cityUrl = `${baseUrl}/${city.slug}`
+  const localBusinessJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'RealEstateAgent',
+    name: `MegaDomic — недвижимость в ${city.name}`,
+    url: cityUrl,
+    image: heroUrl ? new URL(heroUrl, baseUrl).toString() : undefined,
+    areaServed: {
+      '@type': 'City',
+      name: city.name,
+      ...(city.region ? { containedInPlace: city.region } : {}),
+      ...(city.coordinates?.lat && city.coordinates?.lng
+        ? {
+            geo: {
+              '@type': 'GeoCoordinates',
+              latitude: city.coordinates.lat,
+              longitude: city.coordinates.lng,
+            },
+          }
+        : {}),
+    },
+    priceRange: '$$',
+    ...(legal?.phone
+      ? {
+          telephone: legal.phone,
+          contactPoint: {
+            '@type': 'ContactPoint',
+            telephone: legal.phone,
+            contactType: 'customer service',
+            availableLanguage: ['Russian'],
+          },
+        }
+      : {}),
+    ...(legal?.address || city.name
+      ? {
+          address: {
+            '@type': 'PostalAddress',
+            addressCountry: 'RU',
+            addressLocality: city.name,
+            ...(legal?.address ? { streetAddress: legal.address } : {}),
+          },
+        }
+      : {}),
+    aggregateOffers: {
+      '@type': 'AggregateOffer',
+      offerCount: counters.flats + counters.commercial + counters.lands,
+      priceCurrency: 'RUB',
+    },
+  }
+
   return (
     <article className="pt-16 pb-24">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
       />
       {/* Hero */}
       <section className="relative">

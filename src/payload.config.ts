@@ -27,6 +27,7 @@ import { Reviews } from './collections/Reviews'
 import { Messages } from './collections/Messages'
 import { Cities } from './collections/Cities'
 import { Leads } from './collections/Leads'
+import { SavedSearches } from './collections/SavedSearches'
 import { LegalInfo } from './globals/LegalInfo/config'
 import { HomeSeo } from './globals/HomeSeo/config'
 
@@ -102,6 +103,7 @@ export default buildConfig({
     Messages,
     Cities,
     Leads,
+    SavedSearches,
   ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer, LegalInfo, HomeSeo],

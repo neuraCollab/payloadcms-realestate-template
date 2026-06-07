@@ -1,5 +1,6 @@
 // collections/Messages.ts
 import { CollectionConfig } from 'payload'
+import { messageNotifyAfterChange } from '../hooks/messageNotify'
 
 export const Messages: CollectionConfig = {
   slug: 'messages',
@@ -13,6 +14,11 @@ export const Messages: CollectionConfig = {
     create: () => true, // анонимные могут отправлять
     update: ({ req: { user } }) => !!user,
     delete: ({ req: { user } }) => !!user,
+  },
+  hooks: {
+    // Email-уведомление при новом сообщении в треде — fire-and-forget.
+    // Если SMTP лагает или ключа нет, ничего не блокирует.
+    afterChange: [messageNotifyAfterChange],
   },
   fields: [
     {

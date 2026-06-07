@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { cn } from '@/utilities/ui'
 import { FavoriteButton } from '@/components/FavoriteButton'
+import { CompareButton } from '@/components/CompareButton'
 import type { FavCollection } from '@/lib/favorites'
 
 export interface PropertyCardProps {
@@ -88,8 +89,18 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
           </span>
         ) : null}
         {favCollection && favId !== undefined ? (
-          <div className={compact ? 'absolute top-2 right-2 z-10' : 'absolute top-3 right-3 z-10'}>
+          <div
+            className={
+              compact
+                ? 'absolute top-2 right-2 z-10 flex flex-col gap-1.5'
+                : 'absolute top-3 right-3 z-10 flex flex-col gap-2'
+            }
+          >
             <FavoriteButton collection={favCollection} id={favId} />
+            {/* Compare-кнопка только для типов, которые мы реально
+                сравниваем (4 коллекции недвижимости). favCollection
+                и compare-collection — один и тот же набор. */}
+            <CompareButton collection={favCollection} id={favId} />
           </div>
         ) : null}
       </div>
