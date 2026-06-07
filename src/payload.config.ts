@@ -20,6 +20,7 @@ import { Properties } from './collections/Properties'
 import { Agents } from './collections/Agents'
 import { Testimonials } from './collections/Testimonials'
 import { Flats } from './collections/Flat'
+import { Houses } from './collections/Houses'
 import { ResidentialComplex } from './collections/ResidentialComplex'
 import { Commercial } from './collections/Commercial'
 import { Lands } from './collections/Lands'
@@ -97,6 +98,7 @@ export default buildConfig({
     Agents,
     Testimonials,
     Flats,
+    Houses,
     ResidentialComplex,
     Commercial,
     Lands,
