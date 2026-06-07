@@ -11,6 +11,9 @@ const getPostsSitemap = unstable_cache(
       process.env.VERCEL_PROJECT_PRODUCTION_URL ||
       'https://example.com'
 
+    // `_status` — служебное поле Payload Drafts/Versions, его нельзя
+    // фильтровать через where напрямую. `draft: false` сам отбросит
+    // черновики, нам этого достаточно.
     const results = await payload.find({
       collection: 'posts',
       overrideAccess: false,
@@ -18,11 +21,6 @@ const getPostsSitemap = unstable_cache(
       depth: 0,
       limit: 1000,
       pagination: false,
-      where: {
-        _status: {
-          equals: 'published',
-        },
-      },
       select: {
         slug: true,
         updatedAt: true,

@@ -1,11 +1,16 @@
 // collections/Lands.ts
 import { CollectionConfig } from 'payload'
+import { embedAfterChange, embedAfterDelete } from '../hooks/embeddings'
 
 export const Lands: CollectionConfig = {
   slug: 'lands',
   admin: {
     useAsTitle: 'title',
     group: 'Недвижимость',
+  },
+  hooks: {
+    afterChange: [embedAfterChange('lands')],
+    afterDelete: [embedAfterDelete('lands')],
   },
   fields: [
     {

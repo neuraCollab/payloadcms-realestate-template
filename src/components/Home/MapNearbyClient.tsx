@@ -50,9 +50,9 @@ export const MapNearbyClient: React.FC<{ items: PropertyMapItem[] }> = ({ items 
       : null
 
   return (
-    <section className="px-4 py-10 md:py-14 bg-surface-container-low/40">
+    <section className="px-4 py-6 md:py-8 bg-surface-container-low/40">
       <div className="max-w-6xl mx-auto">
-        <header className="mb-5 md:mb-6 flex items-end justify-between gap-4 flex-wrap">
+        <header className="mb-4 md:mb-5 flex items-end justify-between gap-4 flex-wrap">
           <div>
             <h2 className="text-headline text-on-surface">Объекты на карте</h2>
             <p className="text-body-sm text-on-surface-variant mt-1">

@@ -691,6 +691,99 @@ https://account.mapbox.com/access-tokens/ и пересобери образ (т
 
 ---
 
+## AI-поиск (семантический)
+
+NL-запросы на сайте и в Telegram-боте: пользователь пишет «двушка в
+Москве рядом с парком до 15 млн, светлая, с балконом» — система понимает
+смысл и ранжирует выдачу.
+
+### Стек
+
+| Компонент | Реализация |
+|---|---|
+| Embedding-модель | **BGE-M3** (BAAI) — 1024-dim, мультиязычный, top-tier для смешанных запросов |
+| Embedding-сервер | **HuggingFace TEI** (`text-embeddings-inference`) — отдельный Docker-сервис, REST API |
+| Хранилище векторов | **pgvector** в существующем Postgres (отдельный сервис не нужен) |
+| Парсер фильтров | Rule-based (regex) `src/lib/embeddings/queryParser.ts` — заглушка под LLM в будущем |
+| Гибрид | Structured-фильтры (city/rooms/price) применяются hard-фильтром, семантика ранжирует прошедшее |
+
+### Архитектура
+
+```
+┌──── /api/ai-search ──┐    embedOne(q)    ┌─── TEI ──────────┐
+│ 1. parsePrompt(q)    │ ────────────────► │  BGE-M3 на CPU   │
+│ 2. payload.find(...) │ ◄──── vector ──── │  /embed endpoint │
+│    (префильтр 200)   │                   └──────────────────┘
+│ 3. ANN среди ids     │
+│ 4. hydrate + sort    │            ┌─── Postgres ───────────┐
+└──────────┬───────────┘            │  pgvector              │
+           │                        │  property_embeddings   │
+           ▼                        │   (collection, doc_id, │
+       JSON results                 │    vector, hash)       │
+                                    └────────────────────────┘
+```
+
+### Установка
+
+1. Поднять обновлённый стек: `docker compose up -d` (Postgres сменится на `pgvector/pgvector:pg15`, добавится `tei`).
+2. Применить миграцию: `docker compose run --rm app pnpm payload migrate`. Она создаст `vector` extension и таблицу.
+3. Дождаться загрузки модели (~2.3GB в `tei_models` volume) — `docker compose logs -f tei` покажет «Ready».
+4. Полная индексация:
+   ```bash
+   curl -X POST http://localhost:3000/api/admin/reindex-embeddings \
+     -H "Authorization: Bearer $CRON_SECRET" \
+     -H "Content-Type: application/json" \
+     -d '{}'
+   ```
+   Ответ: `{ stats: { flats: { total: 35, indexed: 35, ... }, ... } }`.
+
+### Использование
+
+- **На сайте**: AI-поиск box на главной → редирект на `/search?ai=1&q=...`. Также любой URL `/search?ai=1&q=...` работает.
+- **В Telegram-боте**: любое сообщение-текст уходит в `aiSearch.ts` (вызов API сайта). Если сайт/TEI недоступны → fallback на regex `matcher.ts`.
+- **Авто-индексация**: `afterChange`/`afterDelete` hooks во всех 4 коллекциях — fire-and-forget. При создании/обновлении объекта эмбеддинг считается в фоне, не блокируя сохранение.
+
+### Переменные окружения
+
+```env
+EMBEDDINGS_URL=http://tei:80
+EMBEDDING_MODEL=bge-m3
+EMBEDDING_DIM=1024
+```
+
+Если `EMBEDDINGS_URL` пустой — AI-поиск молча отключён, сайт продолжает работать на keyword-поиске.
+
+### API
+
+```
+GET /api/ai-search?q=<NL>&limit=20&collections=flats,commercial
+→ {
+    query: "...",
+    extracted: { city, rooms, maxPrice, ... },
+    mode: "semantic" | "filter-only",
+    total: 12,
+    results: [{ collection, id, score, doc }]
+  }
+
+POST /api/admin/reindex-embeddings
+   Auth: Bearer CRON_SECRET  ИЛИ Payload session с role=admin
+   Body: { collections?: ["flats", ...], force?: boolean }
+→ { ok: true, stats: {...} }
+```
+
+### Готовность к фото-поиску
+
+Таблица `property_embeddings` уже полиморфная по полю `kind` (text|image_clip). Когда захочется поиск по фотографиям:
+
+1. Запустить второй TEI с CLIP-моделью.
+2. Добавить `kind='image_clip'` в `serialize.ts` (или отдельный сериализатор по media).
+3. Hook будет эмбеддить и текст, и каждое фото.
+4. Search-endpoint объединит дистанции с весами.
+
+Никаких миграций схемы не понадобится.
+
+---
+
 ## Roadmap
 
 ### Реализовано

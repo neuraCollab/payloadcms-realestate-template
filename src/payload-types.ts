@@ -124,11 +124,13 @@ export interface Config {
     header: Header;
     footer: Footer;
     'legal-info': LegalInfo;
+    'home-seo': HomeSeo;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     'legal-info': LegalInfoSelect<false> | LegalInfoSelect<true>;
+    'home-seo': HomeSeoSelect<false> | HomeSeoSelect<true>;
   };
   locale: null;
   user: User & {
@@ -3162,6 +3164,58 @@ export interface LegalInfo {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-seo".
+ */
+export interface HomeSeo {
+  id: number;
+  /**
+   * Текст вкладки браузера и заголовок в выдаче. Включите ключевое слово в начало.
+   */
+  metaTitle: string;
+  /**
+   * Сниппет в выдаче. Должен убеждать кликнуть. Без переспама.
+   */
+  metaDescription: string;
+  /**
+   * Должен быть один на странице. Содержит главное ключевое слово.
+   */
+  h1: string;
+  subtitle?: string | null;
+  /**
+   * Каждый блок — отдельная H2-секция на главной. Используется для таргета нишевых запросов. Заголовок — H2 с ключевой фразой, текст — 2-4 предложения, CTA — ссылка на отфильтрованный каталог.
+   */
+  seoBlocks?:
+    | {
+        /**
+         * Например: «Снять квартиру посуточно в Москве без комиссии»
+         */
+        heading: string;
+        body: string;
+        ctaLabel?: string | null;
+        /**
+         * Например: /flats?transactionType=daily&city=Москва&fromOwner=true
+         */
+        ctaHref: string;
+        highlightKeywords?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  faqIntro?: string | null;
+  /**
+   * Каждый вопрос индексируется как FAQPage. Можно ловить инфо-запросы в поиске и попасть в Featured Snippets.
+   */
+  faq?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -3230,6 +3284,37 @@ export interface LegalInfoSelect<T extends boolean = true> {
   privacyPolicyUrl?: T;
   termsUrl?: T;
   dataProtectionOfficer?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-seo_select".
+ */
+export interface HomeSeoSelect<T extends boolean = true> {
+  metaTitle?: T;
+  metaDescription?: T;
+  h1?: T;
+  subtitle?: T;
+  seoBlocks?:
+    | T
+    | {
+        heading?: T;
+        body?: T;
+        ctaLabel?: T;
+        ctaHref?: T;
+        highlightKeywords?: T;
+        id?: T;
+      };
+  faqIntro?: T;
+  faq?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

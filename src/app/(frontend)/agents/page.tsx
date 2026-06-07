@@ -7,6 +7,7 @@ import configPromise from '@payload-config'
 import { Star, Search as SearchIcon, User as UserIcon } from 'lucide-react'
 import { AgentsSearch } from './AgentsSearch'
 import { MaskedPhone } from '@/components/MaskedPhone'
+import { buildBreadcrumbJsonLd } from '@/utilities/seo'
 
 // SSG skipped — DB unreachable at build-time inside docker compose.
 export const dynamic = 'force-dynamic'
@@ -195,8 +196,17 @@ export default async function AgentsPage({ searchParams: searchParamsPromise }: 
   const topIds = new Set(top.map((t) => t.doc.id))
   const rest = withStats.filter((s) => !topIds.has(s.doc.id))
 
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: 'Главная', url: '/' },
+    { name: 'Риэлторы', url: '/agents' },
+  ])
+
   return (
     <article className="pt-16 pb-24">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <div className="container space-y-10">
         {/* Hero */}
         <header className="text-center space-y-3">
@@ -261,6 +271,10 @@ export default async function AgentsPage({ searchParams: searchParamsPromise }: 
 }
 
 export const metadata: Metadata = {
-  title: 'Агенты — Realty',
-  description: 'Топ риэлторов с отзывами клиентов и активными объектами недвижимости.',
+  title: 'Риэлторы — проверенные агенты с отзывами клиентов',
+  description:
+    'Найдите риэлтора, который подходит вам: профили с фото, отзывами, ' +
+    'рейтингом и списком активных объектов. Прозрачные контакты, ' +
+    'честный выбор по реальным сделкам.',
+  alternates: { canonical: '/agents' },
 }

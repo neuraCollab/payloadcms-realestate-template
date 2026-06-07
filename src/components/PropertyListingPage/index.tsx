@@ -8,6 +8,7 @@ import { SortSelect, type SortOption } from '@/components/SortSelect'
 import { CatalogClient } from './CatalogClient'
 import type { PropertyType } from '@/components/PropertyFilters/schemas'
 import type { CatalogMapItem } from '@/components/CatalogMap'
+import { buildBreadcrumbJsonLd, buildItemListJsonLd } from '@/utilities/seo'
 
 const PAGE_SIZE = 20
 
@@ -262,8 +263,29 @@ export const PropertyListingPage: React.FC<Props> = async ({
     </>
   )
 
+  // BreadcrumbList: Главная → {title} — даёт хлебные крошки в выдаче.
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: 'Главная', url: '/' },
+    { name: title, url: `/${type}` },
+  ])
+
+  // ItemList: первые 20 объектов с URL — даёт Google структуру каталога.
+  const itemListJsonLd = buildItemListJsonLd(
+    cards.slice(0, 20).map((c) => ({ name: c.title, url: c.href })),
+  )
+
   return (
     <div className="space-y-4">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      {cards.length > 0 ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+        />
+      ) : null}
       <header className="flex items-end justify-between flex-wrap gap-2">
         <div>
           <h1 className="text-headline text-on-surface">{title}</h1>

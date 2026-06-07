@@ -11,6 +11,8 @@ const getPagesSitemap = unstable_cache(
       process.env.VERCEL_PROJECT_PRODUCTION_URL ||
       'https://example.com'
 
+    // `_status` нельзя запрашивать напрямую. `draft: false` уже
+    // отсекает черновики.
     const results = await payload.find({
       collection: 'pages',
       overrideAccess: false,
@@ -18,11 +20,6 @@ const getPagesSitemap = unstable_cache(
       depth: 0,
       limit: 1000,
       pagination: false,
-      where: {
-        _status: {
-          equals: 'published',
-        },
-      },
       select: {
         slug: true,
         updatedAt: true,
@@ -31,26 +28,31 @@ const getPagesSitemap = unstable_cache(
 
     const dateFallback = new Date().toISOString()
 
+    // Базовый набор «всегда»: корень + основные каталоги. /search и
+    // /cabinet/* пропускаем намеренно — они noindex (см. их metadata).
     const defaultSitemap = [
-      {
-        loc: `${SITE_URL}/search`,
-        lastmod: dateFallback,
-      },
-      {
-        loc: `${SITE_URL}/posts`,
-        lastmod: dateFallback,
-      },
+      { loc: `${SITE_URL}/`, lastmod: dateFallback },
+      { loc: `${SITE_URL}/flats`, lastmod: dateFallback },
+      { loc: `${SITE_URL}/commercial`, lastmod: dateFallback },
+      { loc: `${SITE_URL}/lands`, lastmod: dateFallback },
+      { loc: `${SITE_URL}/residential-complexes`, lastmod: dateFallback },
+      { loc: `${SITE_URL}/agents`, lastmod: dateFallback },
+      { loc: `${SITE_URL}/posts`, lastmod: dateFallback },
     ]
+
+    // Slug'и Pages из БД, которые мы отключили (см. [slug]/page.tsx →
+    // DISABLED_PAGE_SLUGS) — не должны попадать в sitemap.
+    const DISABLED = new Set(['home-v2'])
 
     const sitemap = results.docs
       ? results.docs
-          .filter((page) => Boolean(page?.slug))
-          .map((page) => {
-            return {
-              loc: page?.slug === 'home' ? `${SITE_URL}/` : `${SITE_URL}/${page?.slug}`,
-              lastmod: page.updatedAt || dateFallback,
-            }
-          })
+          .filter((page) => Boolean(page?.slug) && !DISABLED.has(page!.slug!))
+          // `home` уже отдан корнем в defaultSitemap — не дублируем.
+          .filter((page) => page!.slug !== 'home')
+          .map((page) => ({
+            loc: `${SITE_URL}/${page!.slug}`,
+            lastmod: page!.updatedAt || dateFallback,
+          }))
       : []
 
     return [...defaultSitemap, ...sitemap]

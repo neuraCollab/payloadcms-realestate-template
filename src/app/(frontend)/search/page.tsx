@@ -22,8 +22,17 @@ type Args = {
     transactionType?: string
     minPrice?: string
     maxPrice?: string
+    /** AI-режим: ?ai=1 → используем семантический поиск через /api/ai-search. */
+    ai?: string
   }>
 }
+
+import {
+  embedQuery,
+  isConfigured as embeddingsConfigured,
+  searchEmbeddings,
+  parsePrompt,
+} from '@/lib/embeddings'
 
 type SearchHit = {
   id: string | number
@@ -136,6 +145,76 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
   const sp = await searchParamsPromise
   const payload = await getPayload({ config: configPromise })
 
+  // ── AI-режим ──
+  // Если ai=1 и q непустой — пытаемся семантический поиск напрямую через
+  // нашу embeddings lib (без HTTP-self-call). При недоступности TEI или
+  // ошибке откатываемся на обычный keyword-поиск ниже.
+  const aiMode = sp.ai === '1' && Boolean(sp.q?.trim())
+  let aiHits: SearchHit[] | null = null
+  let aiExtracted: ReturnType<typeof parsePrompt> | null = null
+  if (aiMode && embeddingsConfigured()) {
+    try {
+      const parsed = parsePrompt(sp.q!)
+      aiExtracted = parsed
+      const targetColls = parsed.collections ?? [...CATEGORIES]
+      const prefilterIds: Partial<Record<Category, number[]>> = {}
+      await Promise.all(
+        targetColls.map(async (c) => {
+          const where = buildWhere(c, sp)
+          if (parsed.city) where['location.city'] = { like: parsed.city }
+          if (parsed.rooms && c === 'flats') where.rooms = { equals: parsed.rooms }
+          if (parsed.transactionType && (c === 'flats' || c === 'commercial'))
+            where.transactionType = { equals: parsed.transactionType }
+          if (parsed.maxPrice !== undefined)
+            where.price = { ...(where.price ?? {}), less_than_equal: parsed.maxPrice }
+          if (parsed.minPrice !== undefined)
+            where.price = { ...(where.price ?? {}), greater_than_equal: parsed.minPrice }
+          const r = await payload.find({
+            collection: c as any,
+            where,
+            depth: 0,
+            limit: 200,
+            sort: '-createdAt',
+          })
+          prefilterIds[c] = (r.docs as Array<{ id: number }>).map((d) => Number(d.id))
+        }),
+      )
+      const vec = await embedQuery(sp.q!)
+      const ann = await searchEmbeddings(payload, {
+        vector: vec,
+        collections: targetColls as any,
+        limit: 24,
+        docIdsByCollection: prefilterIds as any,
+      })
+
+      // Гидрируем
+      const byColl: Record<string, number[]> = {}
+      for (const h of ann) (byColl[h.collection] ??= []).push(h.docId)
+      const docsByColl: Record<string, Map<number, any>> = {}
+      await Promise.all(
+        Object.entries(byColl).map(async ([c, ids]) => {
+          if (ids.length === 0) return
+          const r = await payload.find({
+            collection: c as any,
+            where: { id: { in: ids } },
+            depth: 1,
+            limit: ids.length,
+          })
+          const m = new Map<number, any>()
+          for (const d of r.docs) m.set(Number(d.id), d)
+          docsByColl[c] = m
+        }),
+      )
+      aiHits = []
+      for (const h of ann) {
+        const d = docsByColl[h.collection]?.get(h.docId)
+        if (d) aiHits.push(toHit(d, h.collection as Category))
+      }
+    } catch (err) {
+      console.warn('[/search] AI mode failed, falling back to keyword:', err)
+    }
+  }
+
   const categoryParam = (sp.category ?? 'all') as 'all' | Category
   const targets: Category[] =
     categoryParam === 'all' ? [...CATEGORIES] : [categoryParam as Category]
@@ -143,40 +222,57 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
   // Per-collection limit. With 4 collections, 6 each = 24 cap when "all".
   const perLimit = categoryParam === 'all' ? 6 : 24
 
-  const results = await Promise.all(
-    targets.map((c) =>
-      payload
-        .find({
-          collection: c as any,
-          where: buildWhere(c, sp),
-          sort: '-createdAt',
-          limit: perLimit,
-          depth: 1,
-        })
-        .then((r) => ({ c, docs: r.docs, totalDocs: r.totalDocs })),
-    ),
-  )
-
-  const hits: SearchHit[] = []
+  // Keyword-блок выполняется ТОЛЬКО если AI-режим не активен или
+  // не отдал ничего. Иначе мы зря дёргаем БД и натыкаемся на
+  // несовместимые поля (RC не имеет title и т.п.) → 500.
+  let keywordHits: SearchHit[] = []
   let totalDocs = 0
-  for (const { c, docs, totalDocs: total } of results) {
-    totalDocs += total
-    for (const d of docs) hits.push(toHit(d, c))
+  if (!aiHits) {
+    const results = await Promise.all(
+      targets.map((c) =>
+        payload
+          .find({
+            collection: c as any,
+            where: buildWhere(c, sp),
+            sort: '-createdAt',
+            limit: perLimit,
+            depth: 1,
+          })
+          .then((r) => ({ c, docs: r.docs, totalDocs: r.totalDocs }))
+          .catch(() => ({ c, docs: [] as any[], totalDocs: 0 })),
+      ),
+    )
+    for (const { c, docs, totalDocs: total } of results) {
+      totalDocs += total
+      for (const d of docs) keywordHits.push(toHit(d, c))
+    }
+    keywordHits.sort((a, b) =>
+      (b.createdAt ?? '').localeCompare(a.createdAt ?? ''),
+    )
   }
 
-  // Newest first across collections.
-  hits.sort((a, b) => (b.createdAt ?? '').localeCompare(a.createdAt ?? ''))
+  const hits = aiHits ?? keywordHits
+  const displayTotal = aiHits ? aiHits.length : totalDocs
 
   return (
     <div className="pt-24 pb-24">
       <PageClient />
       <div className="container space-y-6">
         <header className="space-y-1">
-          <h1 className="text-display text-on-surface">Расширенный поиск</h1>
+          <h1 className="text-display text-on-surface">
+            {aiMode ? 'AI-поиск' : 'Расширенный поиск'}
+          </h1>
           <p className="text-body-sm text-on-surface-variant">
-            Найдено: {totalDocs} {totalDocs === 1 ? 'объект' : 'объектов'}
+            {aiMode && aiHits
+              ? `Релевантных: ${displayTotal}`
+              : `Найдено: ${displayTotal} ${displayTotal === 1 ? 'объект' : 'объектов'}`}
             {sp.q ? ` по запросу «${sp.q}»` : ''}
           </p>
+          {aiMode && aiExtracted ? (
+            <p className="text-label text-on-surface-variant">
+              {renderExtractedFilters(aiExtracted)}
+            </p>
+          ) : null}
         </header>
 
         <SearchFilters />
@@ -216,5 +312,24 @@ export function generateMetadata(): Metadata {
     title: 'Поиск недвижимости',
     description:
       'Расширенный поиск по квартирам, коммерческой недвижимости, земельным участкам и ЖК.',
+    // Поисковая страница даёт бесконечные комбинации параметров —
+    // crawler потратит budget впустую. Закрываем от индекса, но не
+    // от обхода (`nofollow` НЕ ставим — пусть Google идёт по ссылкам
+    // на нашу детальную).
+    robots: { index: false, follow: true },
   }
+}
+
+function renderExtractedFilters(p: ReturnType<typeof parsePrompt>): string {
+  const parts: string[] = []
+  if (p.city) parts.push(`🏙 ${p.city}`)
+  if (p.district) parts.push(`📍 ${p.district}`)
+  if (p.rooms) parts.push(`🛏 ${p.rooms === 'studio' ? 'студия' : p.rooms + ' комн'}`)
+  if (p.transactionType === 'sale') parts.push('🏷 продажа')
+  if (p.transactionType === 'rent') parts.push('🔑 аренда')
+  if (p.minPrice) parts.push(`от ${p.minPrice.toLocaleString('ru-RU')} ₽`)
+  if (p.maxPrice) parts.push(`до ${p.maxPrice.toLocaleString('ru-RU')} ₽`)
+  if (p.minArea) parts.push(`от ${p.minArea} м²`)
+  if (p.maxArea) parts.push(`до ${p.maxArea} м²`)
+  return parts.length ? `Распознанные фильтры: ${parts.join(' · ')}` : ''
 }

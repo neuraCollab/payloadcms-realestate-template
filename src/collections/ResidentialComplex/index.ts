@@ -1,11 +1,16 @@
 // collections/ResidentialComplex.ts
 import { CollectionConfig } from 'payload'
+import { embedAfterChange, embedAfterDelete } from '../hooks/embeddings'
 
 export const ResidentialComplex: CollectionConfig = {
   slug: 'residential-complexes',
   admin: {
     useAsTitle: 'name',
     group: 'Недвижимость',
+  },
+  hooks: {
+    afterChange: [embedAfterChange('residential-complexes')],
+    afterDelete: [embedAfterDelete('residential-complexes')],
   },
   fields: [
     {

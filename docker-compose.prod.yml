@@ -18,8 +18,9 @@
 
 services:
   postgres:
-    # GCR-зеркало DockerHub для регионов, где CloudFront-CDN заблокирован
-    image: mirror.gcr.io/library/postgres:15
+    # pgvector/pgvector:pg15 — drop-in postgres:15 + pgvector extension.
+    # Если оригинал недоступен из RU — заменить на собственный mirror.
+    image: pgvector/pgvector:pg15
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -32,6 +33,31 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
+  # HuggingFace TEI — embedding-сервер.
+  # По умолчанию multilingual-e5-small (384-dim, ~1.5 GB RAM пиком).
+  # Если на сервере 12+ GB — можно поменять на BAAI/bge-m3 + EMBEDDING_DIM=1024
+  # и пересоздать таблицу property_embeddings под vector(1024).
+  tei:
+    image: ghcr.io/huggingface/text-embeddings-inference:cpu-1.7
+    restart: unless-stopped
+    command:
+      - --model-id=intfloat/multilingual-e5-small
+      - --port=80
+      - --max-batch-tokens=4096
+      - --auto-truncate
+    volumes:
+      - tei_models:/data
+    environment:
+      HF_HOME: /data
+      HUGGINGFACE_HUB_CACHE: /data
+      HF_HUB_ENABLE_HF_TRANSFER: "0"
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -fsS http://localhost/health || exit 1']
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 300s
 
   app:
     build:
@@ -53,6 +79,10 @@ services:
       NEXT_PUBLIC_MAPBOX_STYLE: ${NEXT_PUBLIC_MAPBOX_STYLE:-mapbox://styles/mapbox/streets-v12}
       CRON_SECRET: ${CRON_SECRET}
       PREVIEW_SECRET: ${PREVIEW_SECRET}
+      # AI-поиск
+      EMBEDDINGS_URL: http://tei:80
+      EMBEDDING_MODEL: multilingual-e5-small
+      EMBEDDING_DIM: "384"
       NODE_ENV: production
     volumes:
       # Media uploads — persisted between deploys.
@@ -63,3 +93,4 @@ services:
 
 volumes:
   postgres_data:
+  tei_models:
