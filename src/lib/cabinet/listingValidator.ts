@@ -261,6 +261,344 @@ export function validateFlatDraft(input: DraftFlatInput): ValidationResult {
   return { ok: true, data }
 }
 
+// ─── House (частные дома) ────────────────────────────────────────────
+
+export interface DraftHouseInput {
+  title?: string
+  houseType?: string
+  transactionType?: string
+  city?: string
+  district?: string
+  address?: string
+  price?: number | string
+  currency?: string
+  areaTotal?: number | string
+  areaLand?: number | string
+  bedrooms?: number | string
+  bathrooms?: number | string
+  floors?: number | string
+  yearBuilt?: number | string
+  material?: string
+  fromOwner?: boolean
+  noCommission?: boolean
+  description?: string
+}
+
+export interface ValidatedHouse {
+  title: string
+  slug: string
+  houseType: 'cottage' | 'townhouse' | 'dacha' | 'detached'
+  transactionType: 'sale' | 'rent' | 'daily'
+  location: { city: string; district: string; address: string }
+  price: number
+  currency: 'RUB' | 'USD' | 'EUR'
+  area: { total: number; land?: number }
+  bedrooms?: number
+  bathrooms?: number
+  floors?: number
+  yearBuilt?: number
+  material?: 'brick' | 'wood' | 'frame' | 'aerocrete' | 'monolithic'
+  fromOwner: boolean
+  noCommission: boolean
+  description: Record<string, any>
+}
+
+const HOUSE_ENUMS = {
+  houseType: ['cottage', 'townhouse', 'dacha', 'detached'],
+  transactionType: ['sale', 'rent', 'daily'],
+  currency: ['RUB', 'USD', 'EUR'],
+  material: ['brick', 'wood', 'frame', 'aerocrete', 'monolithic'],
+} as const
+
+export function validateHouseDraft(
+  input: DraftHouseInput,
+):
+  | { ok: true; data: ValidatedHouse }
+  | { ok: false; errors: Record<string, string> } {
+  const errors: Record<string, string> = {}
+
+  const title = cleanText(input.title, MAX_TITLE_LEN)
+  if (title.length < 10) errors.title = 'Заголовок: минимум 10 символов'
+  const city = cleanText(input.city, 80)
+  if (!city) errors.city = 'Город обязателен'
+  const district = cleanText(input.district, 120)
+  if (!district) errors.district = 'Район обязателен'
+  const address = cleanText(input.address, 200)
+  if (!address) errors.address = 'Адрес обязателен'
+
+  const houseType = HOUSE_ENUMS.houseType.includes(input.houseType as any)
+    ? (input.houseType as ValidatedHouse['houseType'])
+    : ('cottage' as const)
+
+  const transactionType = HOUSE_ENUMS.transactionType.includes(input.transactionType as any)
+    ? (input.transactionType as ValidatedHouse['transactionType'])
+    : null
+  if (!transactionType) errors.transactionType = 'Выберите тип сделки'
+
+  const currency = HOUSE_ENUMS.currency.includes(input.currency as any)
+    ? (input.currency as ValidatedHouse['currency'])
+    : ('RUB' as const)
+
+  const material = input.material && HOUSE_ENUMS.material.includes(input.material as any)
+    ? (input.material as ValidatedHouse['material'])
+    : undefined
+
+  const price = num(input.price)
+  if (price === null || price < MIN_PRICE) errors.price = `Цена: минимум ${MIN_PRICE} ₽`
+  else if (price > MAX_PRICE) errors.price = 'Цена слишком большая'
+
+  const areaTotal = num(input.areaTotal)
+  if (areaTotal === null || areaTotal < 10) errors.areaTotal = 'Площадь дома: минимум 10 м²'
+
+  const areaLand = num(input.areaLand) ?? undefined
+  if (areaLand !== undefined && (areaLand < 0 || areaLand > 100_000)) {
+    errors.areaLand = 'Участок: от 0 до 100 000 соток'
+  }
+
+  const bedrooms = num(input.bedrooms) ?? undefined
+  if (bedrooms !== undefined && (bedrooms < 0 || bedrooms > 50)) errors.bedrooms = 'Спальни: 0-50'
+  const bathrooms = num(input.bathrooms) ?? undefined
+  if (bathrooms !== undefined && (bathrooms < 0 || bathrooms > 50)) errors.bathrooms = 'Санузлы: 0-50'
+  const floors = num(input.floors) ?? undefined
+  if (floors !== undefined && (floors < 1 || floors > 10)) errors.floors = 'Этажей: 1-10'
+
+  const yearBuilt = num(input.yearBuilt) ?? undefined
+  const thisYear = new Date().getFullYear()
+  if (yearBuilt !== undefined && (yearBuilt < 1800 || yearBuilt > thisYear + 10)) {
+    errors.yearBuilt = `Год: 1800–${thisYear + 10}`
+  }
+
+  if (Object.keys(errors).length > 0) return { ok: false, errors }
+
+  const descriptionText = cleanText(input.description, MAX_TEXT_LEN)
+  return {
+    ok: true,
+    data: {
+      title,
+      slug: slugify(title),
+      houseType,
+      transactionType: transactionType!,
+      location: { city, district, address },
+      price: price!,
+      currency,
+      area: { total: areaTotal!, ...(areaLand !== undefined ? { land: areaLand } : {}) },
+      ...(bedrooms !== undefined ? { bedrooms } : {}),
+      ...(bathrooms !== undefined ? { bathrooms } : {}),
+      ...(floors !== undefined ? { floors } : {}),
+      ...(yearBuilt !== undefined ? { yearBuilt } : {}),
+      ...(material ? { material } : {}),
+      fromOwner: Boolean(input.fromOwner),
+      noCommission: Boolean(input.noCommission),
+      description: textToLexical(descriptionText),
+    },
+  }
+}
+
+// ─── Commercial ──────────────────────────────────────────────────────
+
+export interface DraftCommercialInput {
+  title?: string
+  commercialType?: string
+  transactionType?: string
+  city?: string
+  district?: string
+  address?: string
+  price?: number | string
+  currency?: string
+  priceType?: string
+  areaTotal?: number | string
+  areaUsable?: number | string
+  floor?: number | string
+  description?: string
+}
+
+export interface ValidatedCommercial {
+  title: string
+  slug: string
+  commercialType: 'office' | 'retail' | 'warehouse' | 'production' | 'restaurant' | 'free'
+  transactionType: 'sale' | 'rent'
+  location: { city: string; district: string; address: string }
+  area: { total: number; usable?: number }
+  price: number
+  currency: 'RUB' | 'USD' | 'EUR'
+  priceType?: 'total' | 'per_m'
+  floor?: number
+  description: Record<string, any>
+}
+
+const COMMERCIAL_ENUMS = {
+  commercialType: ['office', 'retail', 'warehouse', 'production', 'restaurant', 'free'],
+  transactionType: ['sale', 'rent'],
+  currency: ['RUB', 'USD', 'EUR'],
+  priceType: ['total', 'per_m'],
+} as const
+
+export function validateCommercialDraft(
+  input: DraftCommercialInput,
+):
+  | { ok: true; data: ValidatedCommercial }
+  | { ok: false; errors: Record<string, string> } {
+  const errors: Record<string, string> = {}
+
+  const title = cleanText(input.title, MAX_TITLE_LEN)
+  if (title.length < 10) errors.title = 'Заголовок: минимум 10 символов'
+  const city = cleanText(input.city, 80)
+  if (!city) errors.city = 'Город обязателен'
+  const district = cleanText(input.district, 120)
+  if (!district) errors.district = 'Район обязателен'
+  const address = cleanText(input.address, 200)
+  if (!address) errors.address = 'Адрес обязателен'
+
+  const commercialType = COMMERCIAL_ENUMS.commercialType.includes(input.commercialType as any)
+    ? (input.commercialType as ValidatedCommercial['commercialType'])
+    : null
+  if (!commercialType) errors.commercialType = 'Выберите тип помещения'
+
+  const transactionType = COMMERCIAL_ENUMS.transactionType.includes(input.transactionType as any)
+    ? (input.transactionType as ValidatedCommercial['transactionType'])
+    : null
+  if (!transactionType) errors.transactionType = 'Выберите тип сделки'
+
+  const currency = COMMERCIAL_ENUMS.currency.includes(input.currency as any)
+    ? (input.currency as ValidatedCommercial['currency'])
+    : ('RUB' as const)
+  const priceType = COMMERCIAL_ENUMS.priceType.includes(input.priceType as any)
+    ? (input.priceType as ValidatedCommercial['priceType'])
+    : ('total' as const)
+
+  const price = num(input.price)
+  if (price === null || price < MIN_PRICE) errors.price = `Цена: минимум ${MIN_PRICE} ₽`
+  else if (price > MAX_PRICE) errors.price = 'Цена слишком большая'
+
+  const areaTotal = num(input.areaTotal)
+  if (areaTotal === null || areaTotal < 5) errors.areaTotal = 'Площадь: минимум 5 м²'
+  const areaUsable = num(input.areaUsable) ?? undefined
+  if (areaUsable !== undefined && areaTotal !== null && areaUsable > areaTotal) {
+    errors.areaUsable = 'Полезная площадь не может быть больше общей'
+  }
+
+  const floor = num(input.floor) ?? undefined
+
+  if (Object.keys(errors).length > 0) return { ok: false, errors }
+
+  const descriptionText = cleanText(input.description, MAX_TEXT_LEN)
+  return {
+    ok: true,
+    data: {
+      title,
+      slug: slugify(title),
+      commercialType: commercialType!,
+      transactionType: transactionType!,
+      location: { city, district, address },
+      area: { total: areaTotal!, ...(areaUsable !== undefined ? { usable: areaUsable } : {}) },
+      price: price!,
+      currency,
+      priceType,
+      ...(floor !== undefined ? { floor } : {}),
+      description: textToLexical(descriptionText),
+    },
+  }
+}
+
+// ─── Lands ───────────────────────────────────────────────────────────
+
+export interface DraftLandInput {
+  title?: string
+  purpose?: string
+  city?: string
+  district?: string
+  address?: string
+  area?: number | string
+  price?: number | string
+  description?: string
+}
+
+export interface ValidatedLand {
+  title: string
+  slug: string
+  // Значения должны совпадать с enum_lands_purpose в БД
+  // (см. initial migration: ijs, snt, lph, commercial, agricultural).
+  purpose: 'ijs' | 'snt' | 'lph' | 'agricultural' | 'commercial'
+  location: { city: string; district: string; address?: string }
+  area: number // соток
+  price: number
+  description: Record<string, any>
+}
+
+const LAND_ENUMS = {
+  purpose: ['ijs', 'snt', 'lph', 'agricultural', 'commercial'],
+} as const
+
+export function validateLandDraft(
+  input: DraftLandInput,
+):
+  | { ok: true; data: ValidatedLand }
+  | { ok: false; errors: Record<string, string> } {
+  const errors: Record<string, string> = {}
+
+  const title = cleanText(input.title, MAX_TITLE_LEN)
+  if (title.length < 10) errors.title = 'Заголовок: минимум 10 символов'
+  const city = cleanText(input.city, 80)
+  if (!city) errors.city = 'Город обязателен'
+  const district = cleanText(input.district, 120)
+  if (!district) errors.district = 'Район обязателен'
+  const address = cleanText(input.address, 200)
+
+  const purpose = LAND_ENUMS.purpose.includes(input.purpose as any)
+    ? (input.purpose as ValidatedLand['purpose'])
+    : null
+  if (!purpose) errors.purpose = 'Выберите назначение участка'
+
+  const price = num(input.price)
+  if (price === null || price < MIN_PRICE) errors.price = `Цена: минимум ${MIN_PRICE} ₽`
+
+  const area = num(input.area)
+  if (area === null || area < 1) errors.area = 'Площадь: минимум 1 сотка'
+  else if (area > 100_000) errors.area = 'Площадь слишком большая'
+
+  if (Object.keys(errors).length > 0) return { ok: false, errors }
+
+  const descriptionText = cleanText(input.description, MAX_TEXT_LEN)
+  return {
+    ok: true,
+    data: {
+      title,
+      slug: slugify(title),
+      purpose: purpose!,
+      location: { city, district, ...(address ? { address } : {}) },
+      area: area!,
+      price: price!,
+      description: textToLexical(descriptionText),
+    },
+  }
+}
+
+// ─── Generic router ──────────────────────────────────────────────────
+
+export type ListingCollection = 'flats' | 'houses' | 'commercial' | 'lands'
+
+export const isListingCollection = (s: any): s is ListingCollection =>
+  s === 'flats' || s === 'houses' || s === 'commercial' || s === 'lands'
+
+/** Один валидатор-фасад — берём collection, вызываем нужную проверку. */
+export function validateDraft(
+  collection: ListingCollection,
+  input: any,
+):
+  | { ok: true; data: any }
+  | { ok: false; errors: Record<string, string> } {
+  switch (collection) {
+    case 'flats':
+      return validateFlatDraft(input)
+    case 'houses':
+      return validateHouseDraft(input)
+    case 'commercial':
+      return validateCommercialDraft(input)
+    case 'lands':
+      return validateLandDraft(input)
+  }
+}
+
 /** Доступные опции для UI селектов — единый источник истины. */
 export const FLAT_OPTIONS = {
   propertyCategory: [
@@ -297,3 +635,61 @@ export const FLAT_OPTIONS = {
     { value: 'bed', label: 'Койко-место' },
   ],
 } as const
+
+export const HOUSE_OPTIONS = {
+  houseType: [
+    { value: 'cottage', label: 'Коттедж' },
+    { value: 'townhouse', label: 'Таунхаус' },
+    { value: 'dacha', label: 'Дача' },
+    { value: 'detached', label: 'Отдельный дом' },
+  ],
+  transactionType: [
+    { value: 'sale', label: 'Продажа' },
+    { value: 'rent', label: 'Долгосрочная аренда' },
+    { value: 'daily', label: 'Посуточно' },
+  ],
+  material: [
+    { value: 'brick', label: 'Кирпич' },
+    { value: 'wood', label: 'Дерево/бревно' },
+    { value: 'frame', label: 'Каркас' },
+    { value: 'aerocrete', label: 'Газобетон' },
+    { value: 'monolithic', label: 'Монолит' },
+  ],
+} as const
+
+export const COMMERCIAL_OPTIONS = {
+  commercialType: [
+    { value: 'office', label: 'Офис' },
+    { value: 'retail', label: 'Торговое помещение' },
+    { value: 'warehouse', label: 'Склад' },
+    { value: 'production', label: 'Производство' },
+    { value: 'restaurant', label: 'Общепит' },
+    { value: 'free', label: 'Свободного назначения' },
+  ],
+  transactionType: [
+    { value: 'sale', label: 'Продажа' },
+    { value: 'rent', label: 'Аренда' },
+  ],
+  priceType: [
+    { value: 'total', label: 'Полная цена' },
+    { value: 'per_m', label: 'За м²' },
+  ],
+} as const
+
+export const LAND_OPTIONS = {
+  purpose: [
+    { value: 'ijs', label: 'ИЖС' },
+    { value: 'snt', label: 'СНТ/ДНП' },
+    { value: 'lph', label: 'ЛПХ' },
+    { value: 'agricultural', label: 'Сельхоз назначения' },
+    { value: 'commercial', label: 'Коммерческая' },
+  ],
+} as const
+
+/** Метки коллекций для UI / навигации. */
+export const COLLECTION_LABELS: Record<ListingCollection, string> = {
+  flats: 'Квартира',
+  houses: 'Дом',
+  commercial: 'Коммерческая',
+  lands: 'Участок',
+}

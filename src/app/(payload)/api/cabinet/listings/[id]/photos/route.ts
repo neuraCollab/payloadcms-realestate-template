@@ -2,6 +2,18 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import { cookies } from 'next/headers'
 import config from '@/payload.config'
+import { isListingCollection, type ListingCollection } from '@/lib/cabinet/listingValidator'
+
+function getCollection(req: NextRequest): ListingCollection | null {
+  const c = new URL(req.url).searchParams.get('collection') ?? 'flats'
+  return isListingCollection(c) ? c : null
+}
+
+// Lands не использует images sub-table — у них своя структура.
+// Поэтому photo-upload пока ограничиваем flats/houses/commercial.
+function supportsPhotos(c: ListingCollection): boolean {
+  return c === 'flats' || c === 'houses' || c === 'commercial'
+}
 
 /**
  * POST /api/cabinet/listings/[id]/photos
@@ -41,13 +53,22 @@ export async function POST(
   const email = await getEmailFromCookie()
   if (!email) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
 
+  const collection = getCollection(req)
+  if (!collection) return NextResponse.json({ error: 'bad_collection' }, { status: 400 })
+  if (!supportsPhotos(collection)) {
+    return NextResponse.json(
+      { error: 'no_photos', message: 'Этот тип объявления не поддерживает загрузку фото в кабинете.' },
+      { status: 400 },
+    )
+  }
+
   const { id } = await params
   const payload = await getPayload({ config })
 
   let listing: any
   try {
     listing = await payload.findByID({
-      collection: 'flats',
+      collection: collection as any,
       id,
       depth: 1,
       overrideAccess: true,
@@ -136,13 +157,13 @@ export async function POST(
     }
   }
 
-  // Привязываем к flats.images.
+  // Привязываем к <collection>.images.
   const newImages = [
     ...(Array.isArray(listing.images) ? listing.images : []),
     ...createdMediaIds.map((mid) => ({ image: mid })),
   ]
   await payload.update({
-    collection: 'flats',
+    collection: collection as any,
     id,
     data: { images: newImages } as any,
     overrideAccess: true,
@@ -158,6 +179,12 @@ export async function DELETE(
   const email = await getEmailFromCookie()
   if (!email) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
 
+  const collection = getCollection(req)
+  if (!collection) return NextResponse.json({ error: 'bad_collection' }, { status: 400 })
+  if (!supportsPhotos(collection)) {
+    return NextResponse.json({ error: 'no_photos' }, { status: 400 })
+  }
+
   const { id } = await params
   const mediaId = new URL(req.url).searchParams.get('mediaId')
   if (!mediaId) {
@@ -167,7 +194,7 @@ export async function DELETE(
   const payload = await getPayload({ config })
   const listing: any = await payload
     .findByID({
-      collection: 'flats',
+      collection: collection as any,
       id,
       depth: 1,
       overrideAccess: true,
@@ -185,7 +212,7 @@ export async function DELETE(
       String(item?.image?.id ?? item?.image) !== String(mediaId),
   )
   await payload.update({
-    collection: 'flats',
+    collection: collection as any,
     id,
     data: { images: filtered } as any,
     overrideAccess: true,

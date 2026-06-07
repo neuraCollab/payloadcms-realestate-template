@@ -304,8 +304,18 @@ export const Commercial: CollectionConfig = {
         { label: 'Продано/Сдано', value: 'sold' },
         { label: 'Снято с публикации', value: 'unpublished' },
         { label: 'Черновик', value: 'draft' },
+        { label: 'На модерации', value: 'pending_review' },
       ],
     },
+    // UGC-поля (создание через личный кабинет).
+    {
+      name: 'contactEmail',
+      type: 'email',
+      admin: { position: 'sidebar', readOnly: true },
+      index: true,
+    },
+    { name: 'submittedAt', type: 'date', admin: { position: 'sidebar', readOnly: true } },
+    { name: 'moderationNote', type: 'textarea', admin: { position: 'sidebar' } },
     {
       name: 'fromOwner',
       type: 'checkbox',

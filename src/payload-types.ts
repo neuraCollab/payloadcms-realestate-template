@@ -1199,7 +1199,10 @@ export interface Commercial {
     phone?: string | null;
     email?: string | null;
   };
-  status?: ('active' | 'sold' | 'unpublished' | 'draft') | null;
+  status?: ('active' | 'sold' | 'unpublished' | 'draft' | 'pending_review') | null;
+  contactEmail?: string | null;
+  submittedAt?: string | null;
+  moderationNote?: string | null;
   fromOwner?: boolean | null;
   noCommission?: boolean | null;
   updatedAt: string;
@@ -1383,7 +1386,10 @@ export interface Land {
         id?: string | null;
       }[]
     | null;
-  status?: ('active' | 'sold' | 'unpublished') | null;
+  status?: ('active' | 'sold' | 'unpublished' | 'draft' | 'pending_review') | null;
+  contactEmail?: string | null;
+  submittedAt?: string | null;
+  moderationNote?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2976,6 +2982,9 @@ export interface CommercialSelect<T extends boolean = true> {
         email?: T;
       };
   status?: T;
+  contactEmail?: T;
+  submittedAt?: T;
+  moderationNote?: T;
   fromOwner?: T;
   noCommission?: T;
   updatedAt?: T;
@@ -3011,6 +3020,9 @@ export interface LandsSelect<T extends boolean = true> {
         id?: T;
       };
   status?: T;
+  contactEmail?: T;
+  submittedAt?: T;
+  moderationNote?: T;
   updatedAt?: T;
   createdAt?: T;
 }
