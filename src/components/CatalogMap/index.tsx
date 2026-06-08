@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { Map as MapIcon, ChevronLeft, Crosshair } from 'lucide-react'
+import { MyLocationButton } from '@/components/MyLocationButton'
 import type { Map as MapboxMap, GeoJSONSource, MapMouseEvent } from 'mapbox-gl'
 
 export interface CatalogMapItem {
@@ -390,6 +391,18 @@ export const CatalogMap: React.FC<Props> = ({
           К списку
         </button>
       ) : null}
+
+      {/* «Ко мне» — overlay в правом нижнем углу, доступно на всех картах. */}
+      <div className="absolute bottom-3 right-3 z-10">
+        <MyLocationButton
+          onLocate={(coords) => {
+            mapRef.current?.flyTo({
+              center: [coords.lng, coords.lat],
+              zoom: 14,
+            })
+          }}
+        />
+      </div>
     </div>
   )
 }

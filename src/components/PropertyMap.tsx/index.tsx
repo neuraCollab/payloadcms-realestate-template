@@ -4,6 +4,7 @@
 import React from 'react'
 import { Map as MapIcon } from 'lucide-react'
 import type { Map as MapboxMap, Marker, Popup } from 'mapbox-gl'
+import { MyLocationButton } from '@/components/MyLocationButton'
 
 export interface PropertyMapItem {
   id: string
@@ -174,14 +175,21 @@ export const PropertyMap: React.FC<PropertyMapProps> = ({
     )
   }
 
+  const flyToMe = (coords: { lat: number; lng: number }) => {
+    if (!mapRef.current) return
+    mapRef.current.flyTo({ center: [coords.lng, coords.lat], zoom: 14 })
+  }
+
   return (
     <section className={`mx-auto px-4 ${className}`}>
       {title ? <h2 className="text-2xl font-semibold mb-4">{title}</h2> : null}
-      <div
-        ref={containerRef}
-        className="w-full rounded-xl overflow-hidden border border-base-300"
-        style={{ height }}
-      />
+      <div className="relative w-full rounded-xl overflow-hidden border border-base-300" style={{ height }}>
+        <div ref={containerRef} className="w-full h-full" />
+        {/* «Ко мне» — на всех картах сайта (см. MyLocationButton). */}
+        <div className="absolute bottom-3 right-3">
+          <MyLocationButton onLocate={flyToMe} />
+        </div>
+      </div>
     </section>
   )
 }
