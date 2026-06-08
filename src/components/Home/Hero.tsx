@@ -29,13 +29,18 @@ interface HeroProps {
   /** H1 из глобала home-seo. Дефолт — если global пуст. */
   h1?: string
   subtitle?: string
+  /**
+   * Город по IP пользователя (SSR-определение). Подставляется как
+   * initial value поля «Город» в hero-фильтре, юзер может стереть.
+   */
+  defaultCity?: string
 }
 
-export const Hero: React.FC<HeroProps> = ({ h1, subtitle }) => {
+export const Hero: React.FC<HeroProps> = ({ h1, subtitle, defaultCity }) => {
   const router = useRouter()
   const [q, setQ] = React.useState('')
   const [category, setCategory] = React.useState<string>('all')
-  const [city, setCity] = React.useState('')
+  const [city, setCity] = React.useState(defaultCity ?? '')
   const [tx, setTx] = React.useState<'rent' | 'sale' | 'any'>('any')
   const [focused, setFocused] = React.useState(false)
 
