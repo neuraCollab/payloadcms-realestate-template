@@ -70,7 +70,16 @@ export const ConsentCheckbox: React.FC<Props> = ({
             </Link>
           </>
         ) : null}
-        .
+        . Также соглашаюсь с использованием{' '}
+        <Link
+          href={`${privacyUrl}#ai-recommendations`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary hover:underline"
+        >
+          рекомендательной системы
+        </Link>
+        {' '}для подбора объявлений.
       </label>
     </div>
   )

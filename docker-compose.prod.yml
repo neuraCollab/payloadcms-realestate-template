@@ -130,6 +130,9 @@ services:
       YANDEX_CLIENT_SECRET: ${YANDEX_CLIENT_SECRET:-}
       MAILRU_CLIENT_ID: ${MAILRU_CLIENT_ID:-}
       MAILRU_CLIENT_SECRET: ${MAILRU_CLIENT_SECRET:-}
+      # Recommendation engine (LLM)
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-}
       # AI-поиск
       EMBEDDINGS_URL: http://tei:80
       EMBEDDING_MODEL: multilingual-e5-small

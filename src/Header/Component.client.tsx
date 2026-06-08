@@ -9,6 +9,7 @@ import { HeaderNav } from './Nav'
 import { MobileNav } from './MobileNav'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { CabinetLink } from './CabinetLink'
+import { AiHelperButton } from '@/components/AiHelperButton'
 
 interface HeaderClientProps {
   data: Header
@@ -28,6 +29,9 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
           <HeaderNav data={data} />
         </div>
         <div className="flex items-center gap-1 flex-shrink-0">
+          {/* AI-помощник — иконка-спаркл. Сам ограничит доступ
+              (модалка покажет auth-gate если cookie пуст). */}
+          <AiHelperButton variant="icon" label="AI-помощник" />
           <CabinetLink />
           <ThemeToggle />
           <div className="lg:hidden">
