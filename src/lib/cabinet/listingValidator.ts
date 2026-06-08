@@ -389,7 +389,27 @@ export function validateFlatDraft(input: DraftFlatInput): ValidationResult {
     description: descriptionDoc,
   }
 
+  attachCoords(data, input)
   return { ok: true, data }
+}
+
+/**
+ * Прицепляет coordinates если в input есть lat/lng. Reuse-friendly
+ * для flats/houses/commercial (схемы coordinates group идентичны).
+ */
+function attachCoords(data: any, input: any): void {
+  const c = coordsInline(input)
+  if (c.coordinates) data.coordinates = c.coordinates
+}
+
+/** Inline-форма для spread: `{ ...coordsInline(input) }`. */
+function coordsInline(input: any): { coordinates?: { lat: number; lng: number } } {
+  const lat = num(input.lat)
+  const lng = num(input.lng)
+  if (lat !== null && lng !== null && Math.abs(lat) <= 90 && Math.abs(lng) <= 180) {
+    return { coordinates: { lat, lng } }
+  }
+  return {}
 }
 
 // ─── House (частные дома) ────────────────────────────────────────────
@@ -521,6 +541,7 @@ export function validateHouseDraft(
       fromOwner: Boolean(input.fromOwner),
       noCommission: Boolean(input.noCommission),
       description: descriptionDoc,
+      ...coordsInline(input),
     },
   }
 }
@@ -627,6 +648,7 @@ export function validateCommercialDraft(
       priceType,
       ...(floor !== undefined ? { floor } : {}),
       description: descriptionDoc,
+      ...coordsInline(input),
     },
   }
 }

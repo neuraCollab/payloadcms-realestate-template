@@ -10,6 +10,7 @@ import { TypeFields } from './TypeFields'
 import { LivePropertyPreview } from './LivePropertyPreview'
 import { RichTextEditor } from '@/components/RichTextEditor'
 import { htmlToLexical, lexicalToHtml } from '@/lib/cabinet/htmlToLexical'
+import { LocationPicker } from '@/components/LocationPicker'
 import {
   Field,
   Honeypot,
@@ -176,6 +177,40 @@ export const ListingForm: React.FC<Props> = ({ collection, initial, listingId })
                 onChange={(e) => update('metro', e.target.value)} placeholder="Чистые пруды" />
             </Field>
           ) : null}
+
+          {/* Карта для выбора точки. Заполнит адрес автоматически
+              если он пуст, кооординаты — всегда. */}
+          <div>
+            <div className="text-label text-on-surface-variant mb-2">
+              Точка на карте
+            </div>
+            <LocationPicker
+              value={
+                f.lat && f.lng
+                  ? { lat: Number(f.lat), lng: Number(f.lng) }
+                  : null
+              }
+              onChange={(coords, addr) => {
+                setF((p: any) => ({
+                  ...p,
+                  lat: coords.lat,
+                  lng: coords.lng,
+                  // Заполняем поля только если они пусты — не перетираем
+                  // ручной ввод пользователя.
+                  city: p.city || addr?.city || p.city,
+                  district: p.district || addr?.district || p.district,
+                  address:
+                    p.address ||
+                    addr?.street ||
+                    addr?.formattedAddress ||
+                    p.address,
+                }))
+              }}
+            />
+            <p className="text-label text-on-surface-variant mt-1">
+              Кликните по карте — заполним адрес автоматически. Можно поправить вручную выше.
+            </p>
+          </div>
         </section>
 
         {/* Цена — общая */}
@@ -285,6 +320,8 @@ function buildInitial(collection: ListingCollection, doc: any): any {
     city: doc.location?.city ?? '',
     district: doc.location?.district ?? '',
     address: doc.location?.address ?? '',
+    lat: doc.coordinates?.lat ?? '',
+    lng: doc.coordinates?.lng ?? '',
     price: doc.price ?? '',
     currency: doc.currency ?? 'RUB',
     fromOwner: doc.fromOwner ?? true,
