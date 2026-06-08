@@ -1,9 +1,12 @@
 import type { Metadata } from 'next'
 import React from 'react'
+import { headers } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 
 import { Hero } from '@/components/Home/Hero'
+import { LoginNudge } from '@/components/LoginNudge'
+import { detectCityFromRequestHeaders } from '@/lib/geoip'
 import { CategoryTiles } from '@/components/Home/CategoryTiles'
 import { WhyUs } from '@/components/Home/WhyUs'
 import { FeaturedListings } from '@/components/Home/FeaturedListings'
@@ -41,14 +44,29 @@ const fetchLegal = async () => {
 }
 
 export default async function HomePage() {
-  const [seo, legal] = await Promise.all([fetchHomeSeo(), fetchLegal()])
+  const hdrs = await headers()
+  const [seo, legal, detectedCity] = await Promise.all([
+    fetchHomeSeo(),
+    fetchLegal(),
+    // Город по IP. Промис гонится параллельно — даже если ip-api ляжет
+    // на 1.5 сек, общий рендер не блокируется (Promise.all дожидается).
+    detectCityFromRequestHeaders(hdrs),
+  ])
 
   return (
     <main className="pb-16">
       {/* JSON-LD: Organization + WebSite + RealEstateAgent */}
       <HomeJsonLd legal={legal} />
 
-      <Hero h1={seo?.h1} subtitle={seo?.subtitle} />
+      {/* Однократный toast-prompt справа сверху — Google/Yandex/Mail.
+          Сам решает по cookie + localStorage показывать или нет. */}
+      <LoginNudge />
+
+      <Hero
+        h1={seo?.h1}
+        subtitle={seo?.subtitle}
+        defaultCity={detectedCity ?? undefined}
+      />
       <CategoryTiles />
       <WhyUs />
       <FeaturedListings />

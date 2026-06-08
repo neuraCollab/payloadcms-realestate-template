@@ -146,6 +146,15 @@
     animation: fadeInUp 0.55s ease-out both;
   }
 
+  /* LoginNudge — въезд справа. */
+  @keyframes slideInRight {
+    from { transform: translateX(110%); opacity: 0; }
+    to   { transform: translateX(0);    opacity: 1; }
+  }
+  .animate-slideInRight {
+    animation: slideInRight 0.35s cubic-bezier(.34,1.56,.64,1) both;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .md-category-icon,
     .md-category-icon.is-revealed,
