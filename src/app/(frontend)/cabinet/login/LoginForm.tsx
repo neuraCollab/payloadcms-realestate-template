@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { ConsentCheckbox } from '@/components/ConsentCheckbox'
+import { OAuthButtons } from '@/components/OAuthButtons'
 
 /**
  * Magic-link логин. Поток:
@@ -19,6 +20,18 @@ import { ConsentCheckbox } from '@/components/ConsentCheckbox'
 const ERROR_LABELS: Record<string, string> = {
   expired: 'Ссылка истекла или уже использована. Запросите новую.',
   invalid: 'Невалидная ссылка. Запросите новую.',
+  // OAuth-ошибки. Названия как `oauth_<code>` в callback'е.
+  oauth_cancelled: 'Авторизация отменена.',
+  oauth_state_mismatch: 'Сессия истекла. Попробуйте войти ещё раз.',
+  oauth_missing_code: 'Авторизация прервана. Попробуйте снова.',
+  oauth_token_exchange: 'Не удалось получить токен. Попробуйте снова.',
+  oauth_no_token: 'Не удалось получить токен. Попробуйте снова.',
+  oauth_token_network: 'Сетевая ошибка при авторизации.',
+  oauth_userinfo: 'Не удалось получить ваш email от провайдера.',
+  oauth_userinfo_network: 'Сетевая ошибка при получении профиля.',
+  oauth_no_email: 'Провайдер не вернул email. Используйте магик-линк.',
+  oauth_not_configured: 'Этот провайдер пока не настроен.',
+  oauth_unknown_provider: 'Неизвестный провайдер.',
 }
 
 export const LoginForm: React.FC = () => {
@@ -84,12 +97,27 @@ export const LoginForm: React.FC = () => {
   }
 
   return (
-    <form onSubmit={submit} className="space-y-3 text-left">
+    <div className="space-y-4 text-left">
       {error ? (
         <div className="text-body-sm text-rose-700 bg-rose-50 border border-rose-200 rounded-md p-3">
           {error}
         </div>
       ) : null}
+
+      {/* Быстрый вход через провайдеров — Google, Yandex, Mail.ru.
+          Один клик — никакой почты ждать не надо. */}
+      <div>
+        <p className="text-label text-on-surface-variant mb-2">Войти через</p>
+        <OAuthButtons />
+      </div>
+
+      <div className="flex items-center gap-3 text-label text-on-surface-variant">
+        <span className="h-px bg-border flex-1" />
+        или по email
+        <span className="h-px bg-border flex-1" />
+      </div>
+
+      <form onSubmit={submit} className="space-y-3">
       <Input
         type="email"
         value={email}
@@ -123,6 +151,7 @@ export const LoginForm: React.FC = () => {
         Отправим письмо со ссылкой для входа. Без паролей — открываете
         ссылку из почты, и кабинет ваш.
       </p>
-    </form>
+      </form>
+    </div>
   )
 }

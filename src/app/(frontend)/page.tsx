@@ -5,6 +5,7 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 
 import { Hero } from '@/components/Home/Hero'
+import { LoginNudge } from '@/components/LoginNudge'
 import { detectCityFromRequestHeaders } from '@/lib/geoip'
 import { CategoryTiles } from '@/components/Home/CategoryTiles'
 import { WhyUs } from '@/components/Home/WhyUs'
@@ -56,6 +57,10 @@ export default async function HomePage() {
     <main className="pb-16">
       {/* JSON-LD: Organization + WebSite + RealEstateAgent */}
       <HomeJsonLd legal={legal} />
+
+      {/* Однократный toast-prompt справа сверху — Google/Yandex/Mail.
+          Сам решает по cookie + localStorage показывать или нет. */}
+      <LoginNudge />
 
       <Hero
         h1={seo?.h1}
