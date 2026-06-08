@@ -29,7 +29,7 @@ export default async function NewListingByTypePage({ params }: Props) {
   if (!isListingCollection(collection)) notFound()
 
   return (
-    <div className="max-w-3xl space-y-4">
+    <div className="max-w-7xl space-y-4">
       <div className="flex items-center gap-3">
         <Link
           href="/cabinet/listings/new"

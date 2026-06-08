@@ -7,13 +7,29 @@ interface Props {
   /** Какая коллекция владеет объявлением — нужно для роута API. */
   collection: 'flats' | 'houses' | 'commercial' | 'lands'
   initialImages: Array<{ image?: any }>
+  /** Колбэк: меняется список фото — отдадим URL'ы наверх для preview. */
+  onImagesChange?: (urls: string[]) => void
 }
 
 const MAX_PHOTOS = 10
 const MAX_SIZE_MB = 5
 
-export const PhotoUploader: React.FC<Props> = ({ listingId, collection, initialImages }) => {
+export const PhotoUploader: React.FC<Props> = ({
+  listingId,
+  collection,
+  initialImages,
+  onImagesChange,
+}) => {
   const [images, setImages] = React.useState(initialImages ?? [])
+
+  // Каждый раз когда список меняется — толкаем URL'ы наверх.
+  React.useEffect(() => {
+    if (!onImagesChange) return
+    const urls = (images as any[])
+      .map((it) => it?.image?.url)
+      .filter((u): u is string => typeof u === 'string')
+    onImagesChange(urls)
+  }, [images, onImagesChange])
   const [uploading, setUploading] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
   const fileInputRef = React.useRef<HTMLInputElement>(null)

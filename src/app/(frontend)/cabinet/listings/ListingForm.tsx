@@ -7,6 +7,10 @@ import {
 } from '@/lib/cabinet/listingValidator'
 import { PhotoUploader } from './PhotoUploader'
 import { TypeFields } from './TypeFields'
+import { LivePropertyPreview } from './LivePropertyPreview'
+import { RichTextEditor } from '@/components/RichTextEditor'
+import { htmlToLexical, lexicalToHtml } from '@/lib/cabinet/htmlToLexical'
+import { LocationPicker } from '@/components/LocationPicker'
 import {
   Field,
   Honeypot,
@@ -66,6 +70,13 @@ export const ListingForm: React.FC<Props> = ({ collection, initial, listingId })
   const [f, setF] = React.useState<any>(() => buildInitial(collection, initial))
   const update = (k: string, v: any) => setF((p: any) => ({ ...p, [k]: v }))
 
+  // URL'ы фото для preview (приходят из PhotoUploader через onImagesChange).
+  // Берём из initial.images при первом рендере, дальше PhotoUploader обновляет.
+  const [previewImageUrls, setPreviewImageUrls] = React.useState<string[]>(() => {
+    const arr = (initial?.images ?? []) as any[]
+    return arr.map((it) => it?.image?.url).filter((u): u is string => !!u)
+  })
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSubmitting(true)
@@ -76,10 +87,19 @@ export const ListingForm: React.FC<Props> = ({ collection, initial, listingId })
         ? `/api/cabinet/listings/${listingId}?collection=${collection}`
         : '/api/cabinet/listings'
       const method = isEdit ? 'PATCH' : 'POST'
+      // description в form state — HTML (вывод tiptap). Конвертируем
+      // в Lexical JSON перед отправкой — серверный валидатор примет
+      // как объект и просканирует whitelist'ом.
+      const descriptionDoc = htmlToLexical(f.description ?? '')
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...f, collection, website }),
+        body: JSON.stringify({
+          ...f,
+          description: descriptionDoc,
+          collection,
+          website,
+        }),
       })
       const data = await res.json()
       if (!res.ok) {
@@ -107,13 +127,15 @@ export const ListingForm: React.FC<Props> = ({ collection, initial, listingId })
   }
 
   return (
-    <div className="space-y-5 max-w-3xl">
-      <div className="bg-card rounded-md shadow-e1 p-4 flex items-center gap-3">
-        <div className="text-label text-on-surface-variant">Тип:</div>
-        <div className="text-title text-on-surface">{COLLECTION_LABELS[collection]}</div>
-      </div>
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-5 max-w-7xl">
+      {/* Левая колонка — форма */}
+      <div className="space-y-5 min-w-0">
+        <div className="bg-card rounded-md shadow-e1 p-4 flex items-center gap-3">
+          <div className="text-label text-on-surface-variant">Тип:</div>
+          <div className="text-title text-on-surface">{COLLECTION_LABELS[collection]}</div>
+        </div>
 
-      {topError ? <TopError>{topError}</TopError> : null}
+        {topError ? <TopError>{topError}</TopError> : null}
 
       <form onSubmit={onSubmit} className="space-y-5">
         <Honeypot value={website} onChange={setWebsite} />
@@ -155,6 +177,40 @@ export const ListingForm: React.FC<Props> = ({ collection, initial, listingId })
                 onChange={(e) => update('metro', e.target.value)} placeholder="Чистые пруды" />
             </Field>
           ) : null}
+
+          {/* Карта для выбора точки. Заполнит адрес автоматически
+              если он пуст, кооординаты — всегда. */}
+          <div>
+            <div className="text-label text-on-surface-variant mb-2">
+              Точка на карте
+            </div>
+            <LocationPicker
+              value={
+                f.lat && f.lng
+                  ? { lat: Number(f.lat), lng: Number(f.lng) }
+                  : null
+              }
+              onChange={(coords, addr) => {
+                setF((p: any) => ({
+                  ...p,
+                  lat: coords.lat,
+                  lng: coords.lng,
+                  // Заполняем поля только если они пусты — не перетираем
+                  // ручной ввод пользователя.
+                  city: p.city || addr?.city || p.city,
+                  district: p.district || addr?.district || p.district,
+                  address:
+                    p.address ||
+                    addr?.street ||
+                    addr?.formattedAddress ||
+                    p.address,
+                }))
+              }}
+            />
+            <p className="text-label text-on-surface-variant mt-1">
+              Кликните по карте — заполним адрес автоматически. Можно поправить вручную выше.
+            </p>
+          </div>
         </section>
 
         {/* Цена — общая */}
@@ -204,10 +260,12 @@ export const ListingForm: React.FC<Props> = ({ collection, initial, listingId })
               placeholder="Светлая 2-комнатная квартира у метро Чистые пруды"
               maxLength={200} />
           </Field>
-          <Field label="Описание" hint="Подробности про объект, инфраструктуру, плюсы">
-            <textarea className={textareaCls} value={f.description ?? ''}
-              onChange={(e) => update('description', e.target.value)}
-              rows={6} maxLength={5000} />
+          <Field label="Описание" hint="Жирный, заголовки, списки, ссылки — как в админке">
+            <RichTextEditor
+              value={f.description ?? ''}
+              onChange={(html) => update('description', html)}
+              placeholder="Расскажите о доме, ремонте, инфраструктуре района…"
+            />
           </Field>
         </section>
 
@@ -222,9 +280,22 @@ export const ListingForm: React.FC<Props> = ({ collection, initial, listingId })
             listingId={listingId}
             collection={collection}
             initialImages={initial?.images ?? []}
+            onImagesChange={setPreviewImageUrls}
           />
         </section>
       ) : null}
+      </div>
+
+      {/* Правая колонка — live preview (sticky на десктопе) */}
+      <aside className="lg:sticky lg:top-4 lg:self-start lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto space-y-2">
+        <div className="text-label text-on-surface-variant uppercase px-1">
+          Превью объявления
+        </div>
+        <LivePropertyPreview f={f} collection={collection} imageUrls={previewImageUrls} />
+        <p className="text-label text-on-surface-variant px-1">
+          Так объявление выглядит у пользователей. Изменения видны мгновенно.
+        </p>
+      </aside>
     </div>
   )
 }
@@ -249,11 +320,20 @@ function buildInitial(collection: ListingCollection, doc: any): any {
     city: doc.location?.city ?? '',
     district: doc.location?.district ?? '',
     address: doc.location?.address ?? '',
+    lat: doc.coordinates?.lat ?? '',
+    lng: doc.coordinates?.lng ?? '',
     price: doc.price ?? '',
     currency: doc.currency ?? 'RUB',
     fromOwner: doc.fromOwner ?? true,
     noCommission: doc.noCommission ?? true,
-    description: typeof doc.description === 'string' ? doc.description : extractText(doc.description),
+    // Если description — Lexical JSON (как из БД), разворачиваем в HTML
+    // для tiptap. Если строка — оставляем как есть.
+    description:
+      typeof doc.description === 'string'
+        ? doc.description
+        : doc.description && typeof doc.description === 'object'
+          ? lexicalToHtml(doc.description)
+          : '',
   }
   if (collection === 'flats') {
     return {
