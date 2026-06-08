@@ -44,6 +44,38 @@ export const Hero: React.FC<HeroProps> = ({ h1, subtitle, defaultCity }) => {
   const [tx, setTx] = React.useState<'rent' | 'sale' | 'any'>('any')
   const [focused, setFocused] = React.useState(false)
 
+  // Suggestions state.
+  const [suggestions, setSuggestions] = React.useState<string[]>([])
+  const [showDropdown, setShowDropdown] = React.useState(false)
+  const [hlIdx, setHlIdx] = React.useState(-1) // подсвеченная позиция (для arrow keys)
+  const fetchTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const fetchSuggestions = React.useCallback((text: string) => {
+    fetch(`/api/search/suggestions?q=${encodeURIComponent(text)}`)
+      .then((r) => r.json())
+      .then((d) => {
+        setSuggestions(Array.isArray(d?.suggestions) ? d.suggestions : [])
+        setHlIdx(-1)
+      })
+      .catch(() => setSuggestions([]))
+  }, [])
+
+  // Debounce: лимит — 1 запрос в 180мс.
+  React.useEffect(() => {
+    if (!showDropdown) return
+    if (fetchTimer.current) clearTimeout(fetchTimer.current)
+    fetchTimer.current = setTimeout(() => fetchSuggestions(q), 180)
+    return () => {
+      if (fetchTimer.current) clearTimeout(fetchTimer.current)
+    }
+  }, [q, showDropdown, fetchSuggestions])
+
+  const pickSuggestion = (s: string) => {
+    setQ(s)
+    setShowDropdown(false)
+    setHlIdx(-1)
+  }
+
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
     const text = q.trim()
@@ -61,6 +93,23 @@ export const Hero: React.FC<HeroProps> = ({ h1, subtitle, defaultCity }) => {
   // ⌘/Ctrl + Enter — быстрая отправка из любого поля.
   const onKeyDown = (e: React.KeyboardEvent) => {
     if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') submit(e as any)
+  }
+
+  // Клавиатура в инпуте подсказок: arrow up/down, enter, esc.
+  const onInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!showDropdown || suggestions.length === 0) return
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      setHlIdx((i) => (i + 1) % suggestions.length)
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      setHlIdx((i) => (i <= 0 ? suggestions.length - 1 : i - 1))
+    } else if (e.key === 'Enter' && hlIdx >= 0) {
+      e.preventDefault()
+      pickSuggestion(suggestions[hlIdx]!)
+    } else if (e.key === 'Escape') {
+      setShowDropdown(false)
+    }
   }
 
   return (
@@ -90,26 +139,81 @@ export const Hero: React.FC<HeroProps> = ({ h1, subtitle, defaultCity }) => {
           style={{ animationDelay: '160ms' }}
         >
           {/* — Главная строка: ключевые слова (опциональны) — */}
-          <label
-            htmlFor="hero-q"
-            className={`flex items-center gap-3 p-3 md:p-4 transition-colors ${
-              focused ? 'bg-surface-container-low/40' : ''
-            }`}
-          >
-            <span className="inline-flex w-9 h-9 items-center justify-center rounded-md bg-primary/10 text-primary flex-shrink-0">
-              <Search className="w-4 h-4" />
-            </span>
-            <input
-              id="hero-q"
-              type="text"
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              onFocus={() => setFocused(true)}
-              onBlur={() => setFocused(false)}
-              placeholder="Ключевые слова: новостройка, у парка, с балконом (необязательно)"
-              className="flex-1 min-w-0 bg-transparent text-body md:text-title text-on-surface placeholder:text-on-surface-variant/70 focus-visible:outline-none py-1.5"
-            />
-          </label>
+          <div className="relative">
+            <label
+              htmlFor="hero-q"
+              className={`flex items-center gap-3 p-3 md:p-4 transition-colors ${
+                focused ? 'bg-surface-container-low/40' : ''
+              }`}
+            >
+              <span className="inline-flex w-9 h-9 items-center justify-center rounded-md bg-primary/10 text-primary flex-shrink-0">
+                <Search className="w-4 h-4" />
+              </span>
+              <input
+                id="hero-q"
+                type="text"
+                value={q}
+                onChange={(e) => {
+                  setQ(e.target.value)
+                  setShowDropdown(true)
+                }}
+                onFocus={() => {
+                  setFocused(true)
+                  setShowDropdown(true)
+                  // Сразу запросим топ-подсказки, не дожидаясь debounce —
+                  // иначе пустой инпут открывается без саджестов.
+                  fetchSuggestions(q)
+                }}
+                onBlur={() => {
+                  setFocused(false)
+                  // Задержка чтобы успел сработать клик по подсказке.
+                  setTimeout(() => setShowDropdown(false), 150)
+                }}
+                onKeyDown={onInputKeyDown}
+                placeholder="Ключевые слова: новостройка, у парка, с балконом (необязательно)"
+                aria-autocomplete="list"
+                aria-controls="hero-suggestions"
+                aria-expanded={showDropdown && suggestions.length > 0}
+                role="combobox"
+                className="flex-1 min-w-0 bg-transparent text-body md:text-title text-on-surface placeholder:text-on-surface-variant/70 focus-visible:outline-none py-1.5"
+              />
+            </label>
+
+            {/* Dropdown с подсказками. Открывается на фокус, пропадает на blur. */}
+            {showDropdown && suggestions.length > 0 ? (
+              <ul
+                id="hero-suggestions"
+                role="listbox"
+                className="absolute left-0 right-0 top-full mt-1 z-20 bg-card border border-border rounded-md shadow-e3 overflow-hidden max-h-72 overflow-y-auto"
+              >
+                {!q.trim() ? (
+                  <li className="px-4 pt-2 pb-1 text-label text-on-surface-variant uppercase">
+                    Часто ищут
+                  </li>
+                ) : null}
+                {suggestions.map((s, i) => (
+                  <li key={s + i} role="option" aria-selected={i === hlIdx}>
+                    <button
+                      type="button"
+                      // Используем onMouseDown а не onClick — onBlur у input
+                      // срабатывает быстрее чем onClick и закрывает dropdown.
+                      onMouseDown={(e) => {
+                        e.preventDefault()
+                        pickSuggestion(s)
+                      }}
+                      onMouseEnter={() => setHlIdx(i)}
+                      className={`w-full text-left px-4 py-2.5 text-body-sm flex items-center gap-2 ${
+                        i === hlIdx ? 'bg-primary/10 text-primary' : 'text-on-surface hover:bg-surface-container-low'
+                      }`}
+                    >
+                      <Search className="w-3.5 h-3.5 opacity-50 shrink-0" />
+                      <span className="line-clamp-1">{s}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
 
           {/* — Полоса-разделитель — */}
           <div className="h-px bg-border" />
