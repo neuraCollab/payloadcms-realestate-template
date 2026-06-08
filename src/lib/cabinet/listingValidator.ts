@@ -104,6 +104,137 @@ const num = (v: any): number | null => {
 const cleanText = (v: any, max: number): string =>
   typeof v === 'string' ? stripHtml(v).slice(0, max) : ''
 
+/**
+ * Принимает description в любой форме:
+ *   • string (plain text) → оборачивает в простой Lexical paragraph
+ *   • object (Lexical doc от клиента tiptap → htmlToLexical) →
+ *     light-валидация: whitelist node types, ограничение длины текста.
+ *
+ * Возвращает Lexical JSON.
+ */
+const normalizeDescription = (input: any): Record<string, any> => {
+  if (input && typeof input === 'object' && (input as any).root) {
+    return sanitizeLexical(input)
+  }
+  // Строка — старый путь.
+  const text = cleanText(input, MAX_TEXT_LEN)
+  return textToLexical(text)
+}
+
+const ALLOWED_NODE_TYPES = new Set([
+  'root',
+  'paragraph',
+  'heading',
+  'list',
+  'listitem',
+  'text',
+  'link',
+  'linebreak',
+])
+
+const MAX_TEXT_NODE_LEN = MAX_TEXT_LEN
+
+/** Whitelisted-walk по Lexical-дереву. Дропает неизвестные node types. */
+function sanitizeLexical(doc: any): Record<string, any> {
+  const root = doc.root
+  if (!root || typeof root !== 'object') {
+    return textToLexical('')
+  }
+  return {
+    root: {
+      type: 'root',
+      version: 1,
+      format: '',
+      indent: 0,
+      direction: 'ltr',
+      children: walkChildren(root.children),
+    },
+  }
+}
+
+function walkChildren(nodes: any): any[] {
+  if (!Array.isArray(nodes)) return []
+  const out: any[] = []
+  for (const n of nodes) {
+    if (!n || typeof n !== 'object') continue
+    if (!ALLOWED_NODE_TYPES.has(n.type)) continue
+    if (n.type === 'text') {
+      const text = typeof n.text === 'string' ? n.text.slice(0, MAX_TEXT_NODE_LEN) : ''
+      if (!text) continue
+      const format = Number(n.format) | 0
+      out.push({
+        type: 'text',
+        version: 1,
+        text,
+        format,
+        style: '',
+        mode: 'normal',
+        detail: 0,
+      })
+    } else if (n.type === 'linebreak') {
+      out.push({ type: 'linebreak', version: 1 })
+    } else if (n.type === 'link') {
+      const url = typeof n.url === 'string' ? n.url : ''
+      if (!url || /^(javascript|data|vbscript):/i.test(url.trim())) continue
+      out.push({
+        type: 'link',
+        version: 1,
+        format: '',
+        indent: 0,
+        direction: 'ltr',
+        url,
+        rel: 'noopener noreferrer',
+        target: '_blank',
+        children: walkChildren(n.children),
+      })
+    } else if (n.type === 'list') {
+      const listType = n.listType === 'number' ? 'number' : 'bullet'
+      out.push({
+        type: 'list',
+        version: 1,
+        format: '',
+        indent: 0,
+        direction: 'ltr',
+        listType,
+        tag: listType === 'number' ? 'ol' : 'ul',
+        start: 1,
+        children: walkChildren(n.children),
+      })
+    } else if (n.type === 'listitem') {
+      out.push({
+        type: 'listitem',
+        version: 1,
+        format: '',
+        indent: 0,
+        direction: 'ltr',
+        value: typeof n.value === 'number' ? n.value : 1,
+        children: walkChildren(n.children),
+      })
+    } else if (n.type === 'heading') {
+      const tag = n.tag === 'h3' ? 'h3' : 'h2'
+      out.push({
+        type: 'heading',
+        version: 1,
+        format: '',
+        indent: 0,
+        direction: 'ltr',
+        tag,
+        children: walkChildren(n.children),
+      })
+    } else if (n.type === 'paragraph') {
+      out.push({
+        type: 'paragraph',
+        version: 1,
+        format: '',
+        indent: 0,
+        direction: 'ltr',
+        children: walkChildren(n.children),
+      })
+    }
+  }
+  return out
+}
+
 /** Lexical-doc из plain text. Используется для description. */
 const textToLexical = (text: string): Record<string, any> => {
   const t = stripHtml(text).slice(0, MAX_TEXT_LEN)
@@ -218,7 +349,7 @@ export function validateFlatDraft(input: DraftFlatInput): ValidationResult {
     errors.yearBuilt = `Год: между 1800 и ${thisYear + 10}`
   }
 
-  const descriptionText = cleanText(input.description, MAX_TEXT_LEN)
+  const descriptionDoc = normalizeDescription(input.description)
   // description опционален но желателен; не блокируем save при пустом
 
   if (Object.keys(errors).length > 0) {
@@ -255,7 +386,7 @@ export function validateFlatDraft(input: DraftFlatInput): ValidationResult {
     fromOwner: Boolean(input.fromOwner),
     noCommission: Boolean(input.noCommission),
     ...(rentalSubtype ? { rentalSubtype } : {}),
-    description: descriptionText ? textToLexical(descriptionText) : textToLexical(''),
+    description: descriptionDoc,
   }
 
   return { ok: true, data }
@@ -370,7 +501,7 @@ export function validateHouseDraft(
 
   if (Object.keys(errors).length > 0) return { ok: false, errors }
 
-  const descriptionText = cleanText(input.description, MAX_TEXT_LEN)
+  const descriptionDoc = normalizeDescription(input.description)
   return {
     ok: true,
     data: {
@@ -389,7 +520,7 @@ export function validateHouseDraft(
       ...(material ? { material } : {}),
       fromOwner: Boolean(input.fromOwner),
       noCommission: Boolean(input.noCommission),
-      description: textToLexical(descriptionText),
+      description: descriptionDoc,
     },
   }
 }
@@ -481,7 +612,7 @@ export function validateCommercialDraft(
 
   if (Object.keys(errors).length > 0) return { ok: false, errors }
 
-  const descriptionText = cleanText(input.description, MAX_TEXT_LEN)
+  const descriptionDoc = normalizeDescription(input.description)
   return {
     ok: true,
     data: {
@@ -495,7 +626,7 @@ export function validateCommercialDraft(
       currency,
       priceType,
       ...(floor !== undefined ? { floor } : {}),
-      description: textToLexical(descriptionText),
+      description: descriptionDoc,
     },
   }
 }
@@ -558,7 +689,7 @@ export function validateLandDraft(
 
   if (Object.keys(errors).length > 0) return { ok: false, errors }
 
-  const descriptionText = cleanText(input.description, MAX_TEXT_LEN)
+  const descriptionDoc = normalizeDescription(input.description)
   return {
     ok: true,
     data: {
@@ -568,7 +699,7 @@ export function validateLandDraft(
       location: { city, district, ...(address ? { address } : {}) },
       area: area!,
       price: price!,
-      description: textToLexical(descriptionText),
+      description: descriptionDoc,
     },
   }
 }

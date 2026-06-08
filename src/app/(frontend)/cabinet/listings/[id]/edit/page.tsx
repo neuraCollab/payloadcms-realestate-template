@@ -51,7 +51,7 @@ export default async function EditListingPage({ params, searchParams }: Props) {
   if (!doc || doc.contactEmail !== email) notFound()
 
   return (
-    <div className="max-w-3xl space-y-4">
+    <div className="max-w-7xl space-y-4">
       <div className="flex items-center justify-between">
         <Link
           href="/cabinet/listings"
