@@ -13,7 +13,7 @@ const getPagesSitemap = unstable_cache(
 
     // `_status` нельзя запрашивать напрямую. `draft: false` уже
     // отсекает черновики.
-    const [results, citiesRes] = await Promise.all([
+    const [results, citiesRes, landingsRes] = await Promise.all([
       payload.find({
         collection: 'pages',
         overrideAccess: false,
@@ -40,6 +40,18 @@ const getPagesSitemap = unstable_cache(
           updatedAt: true,
         },
       }),
+      // SEO-landing'и — city × filter combos, сгенерированные через
+      // POST /api/admin/seo/generate. URL вида /<citySlug>/<filterSlug>.
+      payload
+        .find({
+          collection: 'seo-landings' as any,
+          where: { isPublished: { equals: true } },
+          limit: 5000,
+          pagination: false,
+          depth: 0,
+          overrideAccess: true,
+        })
+        .catch(() => ({ docs: [] as any[] })),
     ])
 
     const dateFallback = new Date().toISOString()
@@ -80,7 +92,14 @@ const getPagesSitemap = unstable_cache(
           }))
       : []
 
-    return [...defaultSitemap, ...sitemap, ...citySitemap]
+    const landingsSitemap = (landingsRes.docs as any[])
+      .filter((l) => l?.citySlug && l?.filterSlug)
+      .map((l) => ({
+        loc: `${SITE_URL}/${l.citySlug}/${l.filterSlug}`,
+        lastmod: l.updatedAt || dateFallback,
+      }))
+
+    return [...defaultSitemap, ...sitemap, ...citySitemap, ...landingsSitemap]
   },
   ['pages-sitemap'],
   {

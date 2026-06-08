@@ -86,6 +86,7 @@ export interface Config {
     leads: Lead;
     'saved-searches': SavedSearch;
     'telegram-channels': TelegramChannel;
+    'seo-landings': SeoLanding;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -116,6 +117,7 @@ export interface Config {
     leads: LeadsSelect<false> | LeadsSelect<true>;
     'saved-searches': SavedSearchesSelect<false> | SavedSearchesSelect<true>;
     'telegram-channels': TelegramChannelsSelect<false> | TelegramChannelsSelect<true>;
+    'seo-landings': SeoLandingsSelect<false> | SeoLandingsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1722,6 +1724,67 @@ export interface TelegramChannel {
   createdAt: string;
 }
 /**
+ * Сгенерированные SEO-страницы для комбинаций город × фильтр. POST /api/admin/seo/generate — массовая генерация через LLM. «Premium edit» (isPremium=true) — выполнен Claude Sonnet/GPT-4.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seo-landings".
+ */
+export interface SeoLanding {
+  id: number;
+  citySlug: string;
+  cityName: string;
+  /**
+   * Из src/lib/cityUrls.ts — arenda-kvartir, prodazha-kvartir и т.п.
+   */
+  filterSlug: string;
+  filterLabel?: string | null;
+  propertyType?: ('flats' | 'houses' | 'commercial' | 'lands' | 'residential-complexes') | null;
+  filterParams?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Будет в <title>. Brand suffix добавит layout автоматически.
+   */
+  title?: string | null;
+  metaDescription?: string | null;
+  h1?: string | null;
+  /**
+   * Простой текст, рендерится как <p>. Без HTML-тегов.
+   */
+  intro?: string | null;
+  faq?:
+    | {
+        q: string;
+        a: string;
+        id?: string | null;
+      }[]
+    | null;
+  isPublished?: boolean | null;
+  isPremium?: boolean | null;
+  /**
+   * model, tokens, prompt_version, generated_at
+   */
+  generationMeta?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  indexedAt?: string | null;
+  indexationStatus?: ('pending' | 'submitted' | 'indexed' | 'crawled' | 'excluded') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
@@ -1968,6 +2031,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'telegram-channels';
         value: number | TelegramChannel;
+      } | null)
+    | ({
+        relationTo: 'seo-landings';
+        value: number | SeoLanding;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -3128,6 +3195,36 @@ export interface TelegramChannelsSelect<T extends boolean = true> {
   channelUsername?: T;
   isActive?: T;
   postedCount?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seo-landings_select".
+ */
+export interface SeoLandingsSelect<T extends boolean = true> {
+  citySlug?: T;
+  cityName?: T;
+  filterSlug?: T;
+  filterLabel?: T;
+  propertyType?: T;
+  filterParams?: T;
+  title?: T;
+  metaDescription?: T;
+  h1?: T;
+  intro?: T;
+  faq?:
+    | T
+    | {
+        q?: T;
+        a?: T;
+        id?: T;
+      };
+  isPublished?: T;
+  isPremium?: T;
+  generationMeta?: T;
+  indexedAt?: T;
+  indexationStatus?: T;
   updatedAt?: T;
   createdAt?: T;
 }
