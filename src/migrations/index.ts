@@ -11,6 +11,7 @@ import * as migration_20260607_houses from './20260607_houses';
 import * as migration_20260607_lands_draft from './20260607_lands_draft';
 import * as migration_20260608_search_queries from './20260608_search_queries';
 import * as migration_20260608_search_queries_user from './20260608_search_queries_user';
+import * as migration_20260608_seo_landings from './20260608_seo_landings';
 
 export const migrations = [
   {
@@ -77,5 +78,10 @@ export const migrations = [
     up: migration_20260608_search_queries_user.up,
     down: migration_20260608_search_queries_user.down,
     name: '20260608_search_queries_user',
+  },
+  {
+    up: migration_20260608_seo_landings.up,
+    down: migration_20260608_seo_landings.down,
+    name: '20260608_seo_landings',
   },
 ];

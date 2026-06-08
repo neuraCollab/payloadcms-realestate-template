@@ -1,23 +1,33 @@
 /**
- * Тонкий LLM-клиент. Без зависимостей, прямой fetch к Anthropic
- * Messages API. Достаточно для двух use case'ов:
- *   1. Извлечение структурированных фильтров из NL-промпта.
- *   2. Генерация 1-строчных объяснений «почему рекомендовано».
+ * Тонкий LLM-клиент. Без зависимостей. Поддерживает 2 провайдера:
+ *   • anthropic (Claude Haiku) — для recommendation engine, premium edit
+ *   • openai (gpt-4o-mini)     — для bulk SEO generation (×5 дешевле)
  *
  * Env:
- *   ANTHROPIC_API_KEY — обязательно (без него shouldUseLLM() = false)
- *   ANTHROPIC_MODEL   — опционально, default 'claude-haiku-4-5'
+ *   ANTHROPIC_API_KEY — для anthropic-провайдера
+ *   ANTHROPIC_MODEL   — опц., default 'claude-haiku-4-5'
+ *   OPENAI_API_KEY    — для openai-провайдера
+ *   OPENAI_MODEL      — опц., default 'gpt-4o-mini'
  *
- * Все промпты — короткие и инструктивные. Цель — держать токены под
- * 500 на запрос (~$0.0001 на gpt-4o-mini-ish, ~$0.0002 на Haiku).
+ * Никогда не throws. Возвращает null при отсутствии ключа / сетевой
+ * ошибке / тайм-ауте.
  */
 
-const API_URL = 'https://api.anthropic.com/v1/messages'
-const DEFAULT_MODEL = 'claude-haiku-4-5'
-const REQ_TIMEOUT_MS = 8000
+const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages'
+const OPENAI_URL = 'https://api.openai.com/v1/chat/completions'
+const DEFAULT_ANTHROPIC_MODEL = 'claude-haiku-4-5'
+const DEFAULT_OPENAI_MODEL = 'gpt-4o-mini'
+const REQ_TIMEOUT_MS = 30000 // 30с — для bulk-генерации SEO допускаем longer
+
+export type Provider = 'anthropic' | 'openai'
 
 export function shouldUseLLM(): boolean {
-  return Boolean(process.env.ANTHROPIC_API_KEY)
+  return Boolean(process.env.ANTHROPIC_API_KEY || process.env.OPENAI_API_KEY)
+}
+
+export function shouldUseProvider(p: Provider): boolean {
+  if (p === 'anthropic') return Boolean(process.env.ANTHROPIC_API_KEY)
+  return Boolean(process.env.OPENAI_API_KEY)
 }
 
 interface Message {
@@ -32,26 +42,38 @@ interface ChatOptions {
   maxTokens?: number
   /** 0.0..1.0 — для extraction ставим низкий (детерминизм). */
   temperature?: number
+  /**
+   * Выбор провайдера. По умолчанию anthropic (для recommendation
+   * engine). Для SEO bulk generation передаём 'openai' — gpt-4o-mini
+   * в 5× дешевле Haiku на длинных текстах.
+   */
+  provider?: Provider
 }
 
 /**
  * Generic chat completion. Возвращает text ответа модели или null
- * на ошибку. Никогда не бросает — recommendation engine не должен
- * падать на сетевой ошибке.
+ * на ошибку. Никогда не бросает.
  */
 export async function chat(
   messages: Message[],
   opts: ChatOptions = {},
 ): Promise<string | null> {
+  const provider = opts.provider ?? 'anthropic'
+  if (provider === 'openai') return chatOpenAI(messages, opts)
+  return chatAnthropic(messages, opts)
+}
+
+async function chatAnthropic(
+  messages: Message[],
+  opts: ChatOptions,
+): Promise<string | null> {
   const key = process.env.ANTHROPIC_API_KEY
   if (!key) return null
-
-  const model = process.env.ANTHROPIC_MODEL || DEFAULT_MODEL
+  const model = process.env.ANTHROPIC_MODEL || DEFAULT_ANTHROPIC_MODEL
   const ctrl = new AbortController()
   const timer = setTimeout(() => ctrl.abort(), REQ_TIMEOUT_MS)
-
   try {
-    const res = await fetch(API_URL, {
+    const res = await fetch(ANTHROPIC_URL, {
       method: 'POST',
       signal: ctrl.signal,
       headers: {
@@ -69,26 +91,75 @@ export async function chat(
     })
     clearTimeout(timer)
     if (!res.ok) {
-      console.warn('[llm] non-OK', res.status, await res.text().catch(() => ''))
+      console.warn('[llm:anthropic]', res.status, await res.text().catch(() => ''))
       return null
     }
     const data = (await res.json()) as { content?: Array<{ text?: string }> }
-    // Anthropic возвращает content: [{ type: 'text', text: '...' }]
     const text = data.content?.[0]?.text
     return typeof text === 'string' ? text.trim() : null
   } catch (err) {
     clearTimeout(timer)
-    console.warn('[llm] network', (err as Error).message)
+    console.warn('[llm:anthropic] network', (err as Error).message)
+    return null
+  }
+}
+
+async function chatOpenAI(
+  messages: Message[],
+  opts: ChatOptions,
+): Promise<string | null> {
+  const key = process.env.OPENAI_API_KEY
+  if (!key) return null
+  const model = process.env.OPENAI_MODEL || DEFAULT_OPENAI_MODEL
+  const ctrl = new AbortController()
+  const timer = setTimeout(() => ctrl.abort(), REQ_TIMEOUT_MS)
+
+  // OpenAI принимает system как первое message.
+  const finalMessages: Array<{ role: string; content: string }> = []
+  if (opts.system) {
+    finalMessages.push({ role: 'system', content: opts.system })
+  }
+  for (const m of messages) {
+    finalMessages.push({ role: m.role, content: m.content })
+  }
+
+  try {
+    const res = await fetch(OPENAI_URL, {
+      method: 'POST',
+      signal: ctrl.signal,
+      headers: {
+        Authorization: `Bearer ${key}`,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model,
+        max_tokens: opts.maxTokens ?? 256,
+        temperature: opts.temperature ?? 0.2,
+        messages: finalMessages,
+        // response_format: json_object форсит JSON, но требует слова
+        // «JSON» в промпте. Для SEO-промптов добавляем явно.
+      }),
+    })
+    clearTimeout(timer)
+    if (!res.ok) {
+      console.warn('[llm:openai]', res.status, await res.text().catch(() => ''))
+      return null
+    }
+    const data = (await res.json()) as {
+      choices?: Array<{ message?: { content?: string } }>
+    }
+    const text = data.choices?.[0]?.message?.content
+    return typeof text === 'string' ? text.trim() : null
+  } catch (err) {
+    clearTimeout(timer)
+    console.warn('[llm:openai] network', (err as Error).message)
     return null
   }
 }
 
 /**
  * Извлекает структурированные фильтры из NL-промпта.
- * Используется в recommendation engine для precise pre-filtering.
- *
- * Возвращает { city?, rooms?, minPrice?, maxPrice?, transactionType?,
- *              tags?: string[] }. Поля опциональны — LLM не выдумывает.
+ * Используется в recommendation engine.
  */
 export async function extractFiltersLLM(
   prompt: string,
@@ -115,12 +186,10 @@ export async function extractFiltersLLM(
   })
   if (!res) return null
   try {
-    // Сначала пробуем как есть, потом ищем фигурные скобки на случай
-    // если модель вернула с текстом до/после.
     const direct = JSON.parse(res)
     if (typeof direct === 'object') return direct
   } catch {
-    /* ниже fallback */
+    /* fallback */
   }
   const m = res.match(/\{[\s\S]*\}/)
   if (m) {
@@ -128,7 +197,7 @@ export async function extractFiltersLLM(
       const j = JSON.parse(m[0])
       if (typeof j === 'object') return j
     } catch {
-      /* нет валидного JSON — возвращаем null */
+      /* invalid */
     }
   }
   return null
@@ -136,22 +205,16 @@ export async function extractFiltersLLM(
 
 /**
  * Генерирует 1-строчное объяснение «почему рекомендуем» для объекта.
- * `userPrompt` — оригинальный запрос юзера, `propertyDesc` — краткое
- * описание объекта (title + city + price + специфика).
- *
- * Возвращает строку ≤ 120 символов на русском.
  */
 export async function explainMatchLLM(
   userPrompt: string,
   propertyDesc: string,
 ): Promise<string | null> {
   if (!shouldUseLLM()) return null
-
   const system = `Ты — помощник по недвижимости. На русском, 1 предложение, ≤ 120 символов.
 Объясни почему конкретный объект подходит под запрос пользователя.
 Не повторяй очевидное (название, цену). Подсвети 1-2 ключевых совпадения.
 Без воды.`
-
   const res = await chat(
     [
       {

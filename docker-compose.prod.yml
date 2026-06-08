@@ -121,6 +121,9 @@ services:
       # Recommendation engine (LLM)
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-}
+      # SEO-generation (LLM)
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-}
       # AI-поиск
       EMBEDDINGS_URL: http://tei:80
       EMBEDDING_MODEL: multilingual-e5-small
