@@ -3,8 +3,10 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
 
+import Link from 'next/link'
 import { PropertyCard } from '@/components/PropertyCard'
 import { SearchFilters } from '@/components/SearchFilters'
+import { AiHelperButton } from '@/components/AiHelperButton'
 import PageClient from './page.client'
 
 // SSG skipped — DB unreachable at build-time inside docker compose.
@@ -258,22 +260,31 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
     <div className="pt-24 pb-24">
       <PageClient />
       <div className="container space-y-6">
-        <header className="space-y-1">
-          <h1 className="text-display text-on-surface">
-            {aiMode ? 'AI-поиск' : 'Расширенный поиск'}
-          </h1>
-          <p className="text-body-sm text-on-surface-variant">
-            {aiMode && aiHits
-              ? `Релевантных: ${displayTotal}`
-              : `Найдено: ${displayTotal} ${displayTotal === 1 ? 'объект' : 'объектов'}`}
-            {sp.q ? ` по запросу «${sp.q}»` : ''}
-          </p>
-          {aiMode && aiExtracted ? (
-            <p className="text-label text-on-surface-variant">
-              {renderExtractedFilters(aiExtracted)}
+        <header className="flex items-start justify-between gap-3 flex-wrap">
+          <div className="space-y-1 min-w-0">
+            <h1 className="text-display text-on-surface">
+              {aiMode ? 'AI-поиск' : 'Расширенный поиск'}
+            </h1>
+            <p className="text-body-sm text-on-surface-variant">
+              {aiMode && aiHits
+                ? `Релевантных: ${displayTotal}`
+                : `Найдено: ${displayTotal} ${displayTotal === 1 ? 'объект' : 'объектов'}`}
+              {sp.q ? ` по запросу «${sp.q}»` : ''}
             </p>
-          ) : null}
+          </div>
+          {/* «Подобрать» — AI-помощник учитывает прошлые поиски и
+              предпочтения. Auth-gated внутри. */}
+          <AiHelperButton variant="button" label="Подобрать с AI" />
         </header>
+        {aiMode && aiExtracted ? (
+          <p className="text-label text-on-surface-variant">
+            {renderExtractedFilters(aiExtracted)}
+          </p>
+        ) : null}
+        <p className="text-label text-on-surface-variant">
+          Используется рек.-система (embeddings + LLM). Подробнее в{' '}
+          <Link href="/privacy#ai-recommendations" className="underline">политике</Link>.
+        </p>
 
         <SearchFilters />
 

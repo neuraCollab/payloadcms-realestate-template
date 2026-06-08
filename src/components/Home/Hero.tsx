@@ -1,7 +1,8 @@
 'use client'
 import React from 'react'
 import { useRouter } from 'next/navigation'
-import { Search, ArrowRight, ChevronDown } from 'lucide-react'
+import { Search, ArrowRight, ChevronDown, Sparkles } from 'lucide-react'
+import { RecommendModal } from '@/components/RecommendModal'
 
 const CATEGORIES = [
   { value: 'all', label: 'Любой тип' },
@@ -75,6 +76,9 @@ export const Hero: React.FC<HeroProps> = ({ h1, subtitle, defaultCity }) => {
     setShowDropdown(false)
     setHlIdx(-1)
   }
+
+  // AI-помощник (модалка с recommend engine).
+  const [aiOpen, setAiOpen] = React.useState(false)
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -286,6 +290,18 @@ export const Hero: React.FC<HeroProps> = ({ h1, subtitle, defaultCity }) => {
               })}
             </div>
 
+            {/* AI mode — открывает помощника с учётом предпочтений */}
+            <button
+              type="button"
+              onClick={() => setAiOpen(true)}
+              aria-label="AI-помощник"
+              title="AI-помощник учитывает прошлые поиски и предпочтения"
+              className="inline-flex items-center gap-1.5 h-10 px-3 rounded-md border border-primary/30 text-primary text-body-sm font-medium hover:bg-primary/5 whitespace-nowrap"
+            >
+              <Sparkles className="w-4 h-4" />
+              AI
+            </button>
+
             {/* CTA — главный синий */}
             <button
               type="submit"
@@ -296,6 +312,8 @@ export const Hero: React.FC<HeroProps> = ({ h1, subtitle, defaultCity }) => {
             </button>
           </div>
         </form>
+
+        <RecommendModal open={aiOpen} onClose={() => setAiOpen(false)} />
       </div>
     </section>
   )
