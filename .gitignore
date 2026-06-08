@@ -3,6 +3,10 @@ dist / media
 node_modules
 .DS_Store
 .env
+.env.bak.*
+# Infisical CLI workspace binding — содержит project-id/org-id,
+# не секреты, но привязка к конкретной локальной учётке.
+.infisical.json
 .next
 .vercel
 .superpowers/
