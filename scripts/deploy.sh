@@ -37,10 +37,28 @@ if [[ $RESTORE_FROM_SNAPSHOT -eq 1 ]]; then
 fi
 
 # -------- Step 1: preflight --------
-if [[ ! -f .env ]]; then
-  echo "❌ .env not found at $ROOT_DIR"
-  echo "   Copy .env.example to .env and fill in production secrets first."
-  exit 1
+# Источник секретов: либо локальный .env, либо Infisical CLI.
+# Infisical активируется автоматически если найдена `infisical` CLI
+# + установлен INFISICAL_TOKEN (или есть .infisical.json).
+# .env остаётся как fallback на случай если Infisical не настроен —
+# для одноразовых ручных деплоев.
+USE_INFISICAL=0
+if command -v infisical &>/dev/null; then
+  if [[ -n "${INFISICAL_TOKEN:-}" ]] || [[ -f .infisical.json ]]; then
+    USE_INFISICAL=1
+    echo "▸ Источник секретов: Infisical (.env не требуется)"
+  fi
+fi
+
+if [[ $USE_INFISICAL -eq 0 ]]; then
+  if [[ ! -f .env ]]; then
+    echo "❌ Не найдены ни .env, ни Infisical (CLI или токен)."
+    echo "   Варианты:"
+    echo "     • Скопировать .env.example в .env и заполнить."
+    echo "     • Установить Infisical CLI: см. docs/INFISICAL-SETUP.md"
+    exit 1
+  fi
+  echo "▸ Источник секретов: .env (Infisical CLI не активна)"
 fi
 
 if ! command -v docker &>/dev/null; then
@@ -93,10 +111,26 @@ if [[ $RESTORE_FROM_SNAPSHOT -eq 1 ]]; then
 fi
 
 # -------- Step 3: bring up Postgres (always) --------
-# shellcheck disable=SC1091
-set -a
-source .env
-set +a
+# Загружаем секреты в окружение. Infisical CLI работает прозрачно —
+# `infisical export --format=dotenv` отдаёт нам .env-формат, source'им как обычно.
+if [[ $USE_INFISICAL -eq 1 ]]; then
+  echo "▸ Loading secrets from Infisical..."
+  # --format=dotenv-export даёт `export KEY=VALUE` строки, пригодные
+  # для eval. Тише чем pipe в source.
+  INFISICAL_SECRETS="$(infisical export --env="${INFISICAL_ENV:-prod}" --format=dotenv-export 2>/dev/null)"
+  if [[ -z "$INFISICAL_SECRETS" ]]; then
+    echo "❌ Infisical export вернул пусто. Проверьте INFISICAL_TOKEN/.infisical.json"
+    exit 1
+  fi
+  set -a
+  eval "$INFISICAL_SECRETS"
+  set +a
+else
+  # shellcheck disable=SC1091
+  set -a
+  source .env
+  set +a
+fi
 
 echo "▸ Starting postgres..."
 $COMPOSE up -d postgres

@@ -82,6 +82,35 @@ jobs:
         id: sha-tag
         run: echo "tag=sha-$(echo ${{ github.sha }} | cut -c1-7)" >> "$GITHUB_OUTPUT"
 
+      # Infisical CLI получает секреты для build-args (NEXT_PUBLIC_* и
+      # серверные секреты, которые пекутся в bundle на этапе build).
+      # Единственное что должно быть в GitHub Secrets — INFISICAL_TOKEN.
+      - name: Install Infisical CLI
+        run: |
+          curl -1sLf \
+            'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh' \
+            | sudo -E bash
+          sudo apt-get update && sudo apt-get install -y infisical
+          infisical --version
+
+      - name: Fetch secrets from Infisical
+        env:
+          INFISICAL_TOKEN: ${{ secrets.INFISICAL_TOKEN }}
+        run: |
+          # --format=dotenv даёт `KEY=VALUE` строки, кладём в GH-step
+          # env через специальный GITHUB_ENV. Maskedим автоматически
+          # через add-mask.
+          set -e
+          infisical export --env=prod --format=dotenv > /tmp/secrets.env
+          while IFS='=' read -r k v; do
+            [[ -z "$k" || "$k" == \#* ]] && continue
+            # add-mask маскирует значение в логах GitHub
+            echo "::add-mask::$v"
+            echo "$k=$v" >> "$GITHUB_ENV"
+          done < /tmp/secrets.env
+          rm /tmp/secrets.env
+          echo "Загружено секретов: $(wc -l < $GITHUB_ENV)"
+
       - name: Build & push
         uses: docker/build-push-action@v6
         with:
@@ -95,13 +124,15 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            NEXT_PUBLIC_SERVER_URL=${{ secrets.NEXT_PUBLIC_SERVER_URL }}
-            NEXT_PUBLIC_MAPBOX_TOKEN=${{ secrets.NEXT_PUBLIC_MAPBOX_TOKEN }}
-            NEXT_PUBLIC_MAPBOX_STYLE=${{ secrets.NEXT_PUBLIC_MAPBOX_STYLE }}
+            NEXT_PUBLIC_SERVER_URL=${{ env.NEXT_PUBLIC_SERVER_URL }}
+            NEXT_PUBLIC_MAPBOX_TOKEN=${{ env.NEXT_PUBLIC_MAPBOX_TOKEN }}
+            NEXT_PUBLIC_MAPBOX_STYLE=${{ env.NEXT_PUBLIC_MAPBOX_STYLE }}
+            NEXT_PUBLIC_YANDEX_METRIKA_ID=${{ env.NEXT_PUBLIC_YANDEX_METRIKA_ID }}
+            NEXT_PUBLIC_GA4_ID=${{ env.NEXT_PUBLIC_GA4_ID }}
             DATABASE_URI=postgresql://noop:noop@127.0.0.1:5432/noop
-            PAYLOAD_SECRET=${{ secrets.PAYLOAD_SECRET }}
-            CRON_SECRET=${{ secrets.CRON_SECRET }}
-            PREVIEW_SECRET=${{ secrets.PREVIEW_SECRET }}
+            PAYLOAD_SECRET=${{ env.PAYLOAD_SECRET }}
+            CRON_SECRET=${{ env.CRON_SECRET }}
+            PREVIEW_SECRET=${{ env.PREVIEW_SECRET }}
 
   deploy:
     name: Deploy to production
@@ -160,11 +191,22 @@ jobs:
             done
 
             echo "▸ Apply pending migrations..."
-            SECRET=$(grep '^CRON_SECRET=' .env | cut -d= -f2)
-            MIGRATE_RES=$(curl -sS -X POST http://127.0.0.1:3000/api/admin/migrate \
-              -H "Authorization: Bearer $SECRET" \
-              -H 'Content-Type: application/json' -d '{}')
-            echo "  $MIGRATE_RES"
+            # CRON_SECRET достаём из Infisical (если установлена CLI)
+            # или из .env как fallback. Логика та же что в deploy.sh.
+            if command -v infisical &>/dev/null && [[ -n "${INFISICAL_TOKEN_SERVER:-}" ]] || [[ -f .infisical.json ]]; then
+              SECRET=$(infisical secrets get CRON_SECRET --env=prod --plain 2>/dev/null || echo "")
+            fi
+            if [[ -z "${SECRET:-}" ]] && [[ -f .env ]]; then
+              SECRET=$(grep '^CRON_SECRET=' .env | cut -d= -f2)
+            fi
+            if [[ -z "${SECRET:-}" ]]; then
+              echo "  ⚠ Не удалось получить CRON_SECRET — миграция пропущена"
+            else
+              MIGRATE_RES=$(curl -sS -X POST http://127.0.0.1:3000/api/admin/migrate \
+                -H "Authorization: Bearer $SECRET" \
+                -H 'Content-Type: application/json' -d '{}')
+              echo "  $MIGRATE_RES"
+            fi
 
             echo "▸ Cleanup old images (keep last 3)..."
             docker images "$REGISTRY/$REPO" --format '{{.ID}} {{.CreatedAt}}' \
