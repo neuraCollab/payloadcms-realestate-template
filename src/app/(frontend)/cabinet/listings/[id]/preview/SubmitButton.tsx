@@ -3,7 +3,12 @@ import React from 'react'
 import { useRouter } from 'next/navigation'
 import { Send } from 'lucide-react'
 
-export const SubmitButton: React.FC<{ listingId: string }> = ({ listingId }) => {
+interface Props {
+  listingId: string
+  collection: 'flats' | 'houses' | 'commercial' | 'lands'
+}
+
+export const SubmitButton: React.FC<Props> = ({ listingId, collection }) => {
   const router = useRouter()
   const [submitting, setSubmitting] = React.useState(false)
 
@@ -11,9 +16,10 @@ export const SubmitButton: React.FC<{ listingId: string }> = ({ listingId }) => 
     if (!confirm('Отправить на модерацию? После этого редактирование в кабинете будет недоступно.')) return
     setSubmitting(true)
     try {
-      const res = await fetch(`/api/cabinet/listings/${listingId}/submit`, {
-        method: 'POST',
-      })
+      const res = await fetch(
+        `/api/cabinet/listings/${listingId}/submit?collection=${collection}`,
+        { method: 'POST' },
+      )
       const data = await res.json()
       if (!res.ok) {
         if (data.errors) {

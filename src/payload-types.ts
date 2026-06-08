@@ -76,6 +76,7 @@ export interface Config {
     agents: Agent;
     testimonials: Testimonial;
     flats: Flat;
+    houses: House;
     'residential-complexes': ResidentialComplex;
     commercial: Commercial;
     lands: Land;
@@ -105,6 +106,7 @@ export interface Config {
     agents: AgentsSelect<false> | AgentsSelect<true>;
     testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     flats: FlatsSelect<false> | FlatsSelect<true>;
+    houses: HousesSelect<false> | HousesSelect<true>;
     'residential-complexes': ResidentialComplexesSelect<false> | ResidentialComplexesSelect<true>;
     commercial: CommercialSelect<false> | CommercialSelect<true>;
     lands: LandsSelect<false> | LandsSelect<true>;
@@ -1197,7 +1199,10 @@ export interface Commercial {
     phone?: string | null;
     email?: string | null;
   };
-  status?: ('active' | 'sold' | 'unpublished' | 'draft') | null;
+  status?: ('active' | 'sold' | 'unpublished' | 'draft' | 'pending_review') | null;
+  contactEmail?: string | null;
+  submittedAt?: string | null;
+  moderationNote?: string | null;
   fromOwner?: boolean | null;
   noCommission?: boolean | null;
   updatedAt: string;
@@ -1381,7 +1386,10 @@ export interface Land {
         id?: string | null;
       }[]
     | null;
-  status?: ('active' | 'sold' | 'unpublished') | null;
+  status?: ('active' | 'sold' | 'unpublished' | 'draft' | 'pending_review') | null;
+  contactEmail?: string | null;
+  submittedAt?: string | null;
+  moderationNote?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1469,6 +1477,89 @@ export interface Property {
       }[]
     | null;
   status?: ('active' | 'sold' | 'draft') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "houses".
+ */
+export interface House {
+  id: number;
+  title: string;
+  slug?: string | null;
+  realtor?: (number | null) | User;
+  houseType?: ('cottage' | 'townhouse' | 'dacha' | 'detached') | null;
+  transactionType: 'sale' | 'rent' | 'daily';
+  location: {
+    city: string;
+    district: string;
+    address: string;
+  };
+  coordinates?: {
+    lat?: number | null;
+    lng?: number | null;
+    formattedAddress?: string | null;
+  };
+  bedrooms?: number | null;
+  bathrooms?: number | null;
+  floors?: number | null;
+  area: {
+    total: number;
+    land?: number | null;
+  };
+  price: number;
+  currency?: ('RUB' | 'USD' | 'EUR') | null;
+  material?: ('brick' | 'wood' | 'frame' | 'aerocrete' | 'monolithic') | null;
+  yearBuilt?: number | null;
+  images?:
+    | {
+        image: number | Media;
+        alt?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  amenities?:
+    | {
+        amenity?:
+          | (
+              | 'garage'
+              | 'sauna'
+              | 'pool'
+              | 'gas'
+              | 'water'
+              | 'sewage'
+              | 'electricity'
+              | 'fireplace'
+              | 'terrace'
+              | 'fenced'
+            )
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  status?: ('active' | 'sold' | 'unpublished' | 'draft' | 'pending_review') | null;
+  isFeatured?: boolean | null;
+  fromOwner?: boolean | null;
+  noCommission?: boolean | null;
+  contactEmail?: string | null;
+  submittedAt?: string | null;
+  moderationNote?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1837,6 +1928,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'flats';
         value: number | Flat;
+      } | null)
+    | ({
+        relationTo: 'houses';
+        value: number | House;
       } | null)
     | ({
         relationTo: 'residential-complexes';
@@ -2735,6 +2830,67 @@ export interface FlatsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "houses_select".
+ */
+export interface HousesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  realtor?: T;
+  houseType?: T;
+  transactionType?: T;
+  location?:
+    | T
+    | {
+        city?: T;
+        district?: T;
+        address?: T;
+      };
+  coordinates?:
+    | T
+    | {
+        lat?: T;
+        lng?: T;
+        formattedAddress?: T;
+      };
+  bedrooms?: T;
+  bathrooms?: T;
+  floors?: T;
+  area?:
+    | T
+    | {
+        total?: T;
+        land?: T;
+      };
+  price?: T;
+  currency?: T;
+  material?: T;
+  yearBuilt?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        alt?: T;
+        id?: T;
+      };
+  description?: T;
+  amenities?:
+    | T
+    | {
+        amenity?: T;
+        id?: T;
+      };
+  status?: T;
+  isFeatured?: T;
+  fromOwner?: T;
+  noCommission?: T;
+  contactEmail?: T;
+  submittedAt?: T;
+  moderationNote?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "residential-complexes_select".
  */
 export interface ResidentialComplexesSelect<T extends boolean = true> {
@@ -2826,6 +2982,9 @@ export interface CommercialSelect<T extends boolean = true> {
         email?: T;
       };
   status?: T;
+  contactEmail?: T;
+  submittedAt?: T;
+  moderationNote?: T;
   fromOwner?: T;
   noCommission?: T;
   updatedAt?: T;
@@ -2861,6 +3020,9 @@ export interface LandsSelect<T extends boolean = true> {
         id?: T;
       };
   status?: T;
+  contactEmail?: T;
+  submittedAt?: T;
+  moderationNote?: T;
   updatedAt?: T;
   createdAt?: T;
 }

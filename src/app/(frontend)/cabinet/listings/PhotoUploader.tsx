@@ -4,13 +4,15 @@ import { Upload, X, ImageIcon } from 'lucide-react'
 
 interface Props {
   listingId: string | number
+  /** Какая коллекция владеет объявлением — нужно для роута API. */
+  collection: 'flats' | 'houses' | 'commercial' | 'lands'
   initialImages: Array<{ image?: any }>
 }
 
 const MAX_PHOTOS = 10
 const MAX_SIZE_MB = 5
 
-export const PhotoUploader: React.FC<Props> = ({ listingId, initialImages }) => {
+export const PhotoUploader: React.FC<Props> = ({ listingId, collection, initialImages }) => {
   const [images, setImages] = React.useState(initialImages ?? [])
   const [uploading, setUploading] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
@@ -38,7 +40,7 @@ export const PhotoUploader: React.FC<Props> = ({ listingId, initialImages }) => 
     for (const f of files) fd.append('file', f)
 
     try {
-      const res = await fetch(`/api/cabinet/listings/${listingId}/photos`, {
+      const res = await fetch(`/api/cabinet/listings/${listingId}/photos?collection=${collection}`, {
         method: 'POST',
         body: fd,
       })
@@ -48,9 +50,9 @@ export const PhotoUploader: React.FC<Props> = ({ listingId, initialImages }) => 
         return
       }
       // Подгружаем актуальный список фото.
-      const updated = await fetch(`/api/cabinet/listings/${listingId}`).then((r) =>
-        r.json(),
-      )
+      const updated = await fetch(
+        `/api/cabinet/listings/${listingId}?collection=${collection}`,
+      ).then((r) => r.json())
       setImages(updated.doc?.images ?? [])
     } catch (err: any) {
       setError(err?.message ?? 'Сеть недоступна.')
@@ -63,7 +65,7 @@ export const PhotoUploader: React.FC<Props> = ({ listingId, initialImages }) => 
     if (!confirm('Удалить фото?')) return
     setError(null)
     const res = await fetch(
-      `/api/cabinet/listings/${listingId}/photos?mediaId=${mediaId}`,
+      `/api/cabinet/listings/${listingId}/photos?mediaId=${mediaId}&collection=${collection}`,
       { method: 'DELETE' },
     )
     if (res.ok) {

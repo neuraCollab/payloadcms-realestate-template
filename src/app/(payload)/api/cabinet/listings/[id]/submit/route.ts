@@ -5,6 +5,7 @@ import config from '@/payload.config'
 import { sendEmail } from '@/lib/email'
 import { tg } from '@/lib/telegram/client'
 import { getServerSideURL } from '@/utilities/getURL'
+import { isListingCollection, type ListingCollection } from '@/lib/cabinet/listingValidator'
 
 /**
  * POST /api/cabinet/listings/[id]/submit
@@ -29,18 +30,25 @@ async function getEmailFromCookie(): Promise<string | null> {
 }
 
 export async function POST(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ): Promise<Response> {
   const email = await getEmailFromCookie()
   if (!email) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+
+  const collectionParam =
+    new URL(req.url).searchParams.get('collection') ?? 'flats'
+  if (!isListingCollection(collectionParam)) {
+    return NextResponse.json({ error: 'bad_collection' }, { status: 400 })
+  }
+  const collection: ListingCollection = collectionParam
 
   const { id } = await params
   const payload = await getPayload({ config })
 
   const listing: any = await payload
     .findByID({
-      collection: 'flats',
+      collection: collection as any,
       id,
       depth: 1,
       overrideAccess: true,
@@ -56,16 +64,17 @@ export async function POST(
     )
   }
 
-  // Pre-publish requirements — то что в админке отдельно валидируется
-  // редактором. Хотим чтобы UGC-объявления не приходили модератору
-  // совсем пустыми.
+  // Pre-publish requirements — общие для всех коллекций. Lands —
+  // без обязательного address и без фото (земля редко с фото).
   const errors: Record<string, string> = {}
   if (!listing.title || listing.title.length < 10) errors.title = 'Заголовок обязателен (≥10 символов)'
   if (!listing.location?.city) errors.city = 'Город обязателен'
-  if (!listing.location?.address) errors.address = 'Адрес обязателен'
+  if (collection !== 'lands' && !listing.location?.address) errors.address = 'Адрес обязателен'
   if (!listing.price || listing.price <= 0) errors.price = 'Цена обязательна'
-  if (!Array.isArray(listing.images) || listing.images.length === 0) {
-    errors.images = 'Загрузите хотя бы 1 фото'
+  if (collection !== 'lands') {
+    if (!Array.isArray(listing.images) || listing.images.length === 0) {
+      errors.images = 'Загрузите хотя бы 1 фото'
+    }
   }
   if (Object.keys(errors).length > 0) {
     return NextResponse.json(
@@ -74,9 +83,8 @@ export async function POST(
     )
   }
 
-  // Перевод в pending_review.
   await payload.update({
-    collection: 'flats',
+    collection: collection as any,
     id,
     data: {
       status: 'pending_review' as any,
@@ -85,9 +93,8 @@ export async function POST(
     overrideAccess: true,
   })
 
-  // Нотификации (fire-and-forget).
   const base = getServerSideURL()
-  const adminUrl = `${base}/admin/collections/flats/${id}`
+  const adminUrl = `${base}/admin/collections/${collection}/${id}`
   setImmediate(() => {
     // Email автору
     void sendEmail({

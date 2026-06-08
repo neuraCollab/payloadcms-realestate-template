@@ -7,6 +7,7 @@ interface Listing {
   id: number
   title: string
   status: string
+  collection: 'flats' | 'houses' | 'commercial' | 'lands'
   price?: number
   location?: { city?: string }
   submittedAt?: string
@@ -21,6 +22,13 @@ const STATUS_LABEL: Record<string, { label: string; color: string }> = {
   active: { label: 'Опубликовано', color: 'bg-emerald-100 text-emerald-900' },
   sold: { label: 'Продано', color: 'bg-zinc-200 text-zinc-700' },
   unpublished: { label: 'Снято', color: 'bg-rose-100 text-rose-900' },
+}
+
+const COLLECTION_LABEL: Record<string, string> = {
+  flats: 'Квартира',
+  houses: 'Дом',
+  commercial: 'Коммерческая',
+  lands: 'Участок',
 }
 
 const formatPrice = (n?: number) =>
@@ -38,17 +46,21 @@ export const ListingsList: React.FC = () => {
       .finally(() => setLoading(false))
   }, [])
 
-  const onDelete = async (id: number) => {
+  const onDelete = async (id: number, collection: string) => {
     if (!confirm('Удалить черновик?')) return
-    const res = await fetch(`/api/cabinet/listings/${id}`, { method: 'DELETE' })
+    const res = await fetch(
+      `/api/cabinet/listings/${id}?collection=${collection}`,
+      { method: 'DELETE' },
+    )
     if (res.ok) setItems((it) => it.filter((x) => x.id !== id))
   }
 
-  const onSubmit = async (id: number) => {
+  const onSubmit = async (id: number, collection: string) => {
     if (!confirm('Отправить на модерацию? После этого нельзя будет редактировать в кабинете.')) return
-    const res = await fetch(`/api/cabinet/listings/${id}/submit`, {
-      method: 'POST',
-    })
+    const res = await fetch(
+      `/api/cabinet/listings/${id}/submit?collection=${collection}`,
+      { method: 'POST' },
+    )
     const data = await res.json()
     if (!res.ok) {
       if (data.errors) {
@@ -96,8 +108,11 @@ export const ListingsList: React.FC = () => {
     <div className="bg-card rounded-md shadow-e1 divide-y divide-border">
       {items.map((l) => {
         const status = STATUS_LABEL[l.status] ?? STATUS_LABEL.draft
+        const collection = l.collection
+        const previewHref = `/cabinet/listings/${l.id}/preview?collection=${collection}`
+        const editHref = `/cabinet/listings/${l.id}/edit?collection=${collection}`
         return (
-          <div key={l.id} className="p-5 flex items-start justify-between gap-3">
+          <div key={`${collection}-${l.id}`} className="p-5 flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <span
@@ -105,16 +120,21 @@ export const ListingsList: React.FC = () => {
                 >
                   {status?.label}
                 </span>
+                <span className="inline-flex h-6 px-2 items-center rounded-full text-label bg-zinc-100 text-zinc-700">
+                  {COLLECTION_LABEL[collection] ?? collection}
+                </span>
               </div>
               <Link
-                href={`/cabinet/listings/${l.id}/preview`}
+                href={previewHref}
                 className="block text-title text-on-surface hover:text-primary mt-1.5 line-clamp-2"
               >
                 {l.title || '(без заголовка)'}
               </Link>
               <p className="text-body-sm text-on-surface-variant mt-1">
                 {l.location?.city ?? '—'} · {formatPrice(l.price)}
-                {' · '}фото: {Array.isArray(l.images) ? l.images.length : 0}
+                {collection !== 'lands' ? (
+                  <>{' · '}фото: {Array.isArray(l.images) ? l.images.length : 0}</>
+                ) : null}
               </p>
               {l.moderationNote && l.status !== 'active' ? (
                 <p className="text-body-sm text-rose-700 mt-2 bg-rose-50 border border-rose-200 rounded p-2">
@@ -124,7 +144,7 @@ export const ListingsList: React.FC = () => {
             </div>
             <div className="shrink-0 flex flex-col gap-1.5">
               <Link
-                href={`/cabinet/listings/${l.id}/preview`}
+                href={previewHref}
                 title="Превью"
                 className="inline-flex w-9 h-9 items-center justify-center rounded-full text-on-surface hover:bg-surface-container"
               >
@@ -133,7 +153,7 @@ export const ListingsList: React.FC = () => {
               {l.status === 'draft' ? (
                 <>
                   <Link
-                    href={`/cabinet/listings/${l.id}/edit`}
+                    href={editHref}
                     title="Редактировать"
                     className="inline-flex w-9 h-9 items-center justify-center rounded-full text-on-surface hover:bg-surface-container"
                   >
@@ -141,7 +161,7 @@ export const ListingsList: React.FC = () => {
                   </Link>
                   <button
                     type="button"
-                    onClick={() => onSubmit(l.id)}
+                    onClick={() => onSubmit(l.id, collection)}
                     title="Отправить на модерацию"
                     className="inline-flex w-9 h-9 items-center justify-center rounded-full text-primary hover:bg-primary/5"
                   >
@@ -149,7 +169,7 @@ export const ListingsList: React.FC = () => {
                   </button>
                   <button
                     type="button"
-                    onClick={() => onDelete(l.id)}
+                    onClick={() => onDelete(l.id, collection)}
                     title="Удалить"
                     className="inline-flex w-9 h-9 items-center justify-center rounded-full text-rose-600 hover:bg-rose-50"
                   >

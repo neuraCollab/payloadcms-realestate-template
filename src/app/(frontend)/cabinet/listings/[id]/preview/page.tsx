@@ -3,11 +3,15 @@ import React from 'react'
 import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { redirect, notFound } from 'next/navigation'
-import { ChevronLeft, Edit, Send } from 'lucide-react'
+import { ChevronLeft, Edit } from 'lucide-react'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { PropertyDetailPage } from '@/components/PropertyDetailPage'
 import { SubmitButton } from './SubmitButton'
+import {
+  isListingCollection,
+  type ListingCollection,
+} from '@/lib/cabinet/listingValidator'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,18 +22,23 @@ export const metadata: Metadata = {
 
 interface Props {
   params: Promise<{ id: string }>
+  searchParams: Promise<{ collection?: string }>
 }
 
 /**
- * Preview существующего объявления (любого статуса). Рендерит ровно
- * как публичная детальная — для этого PropertyDetailPage умеет
- * принимать готовый `doc` через prop, не дёргая БД повторно.
- *
- * Шапка превью + кнопки «Редактировать» и «Отправить на модерацию» —
- * только для status='draft'.
+ * Превью UGC-объявления. Рендерит ровно как публичная детальная
+ * через PropertyDetailPage(doc, previewMode). PropertyDetailPage
+ * поддерживает только 4 типа из PropertyType — для lands/houses/
+ * commercial используем тот же компонент, для houses — fallback
+ * на 'flats' UI (минимум, что есть для UGC).
  */
-export default async function PreviewListingPage({ params }: Props) {
+export default async function PreviewListingPage({ params, searchParams }: Props) {
   const { id } = await params
+  const sp = await searchParams
+  const collectionParam = sp.collection ?? 'flats'
+  if (!isListingCollection(collectionParam)) notFound()
+  const collection: ListingCollection = collectionParam
+
   const c = await cookies()
   const email = c.get('realty_email')?.value
     ? decodeURIComponent(c.get('realty_email')!.value).toLowerCase()
@@ -40,7 +49,7 @@ export default async function PreviewListingPage({ params }: Props) {
   let doc: any = null
   try {
     doc = await payload.findByID({
-      collection: 'flats',
+      collection: collection as any,
       id,
       depth: 2,
       overrideAccess: true,
@@ -49,6 +58,13 @@ export default async function PreviewListingPage({ params }: Props) {
     /* notFound */
   }
   if (!doc || doc.contactEmail !== email) notFound()
+
+  // PropertyDetailPage поддерживает 4 типа: flats/commercial/lands/
+  // residential-complexes. Houses — мапим в flats (UI квартиры — самый
+  // полный, для UGC-просмотра достаточно общего layout). Когда
+  // появится отдельный HouseDetailPage — заменить.
+  const previewType =
+    collection === 'houses' ? 'flats' : (collection as 'flats' | 'commercial' | 'lands')
 
   return (
     <div className="space-y-4">
@@ -69,19 +85,18 @@ export default async function PreviewListingPage({ params }: Props) {
         {doc.status === 'draft' ? (
           <div className="flex items-center gap-2">
             <Link
-              href={`/cabinet/listings/${id}/edit`}
+              href={`/cabinet/listings/${id}/edit?collection=${collection}`}
               className="inline-flex items-center gap-1 h-9 px-3 rounded-full border border-amber-300 text-amber-900 text-body-sm bg-white hover:bg-amber-100"
             >
               <Edit className="w-4 h-4" />
               Редактировать
             </Link>
-            <SubmitButton listingId={id} />
+            <SubmitButton listingId={id} collection={collection} />
           </div>
         ) : null}
       </div>
 
-      {/* Сам рендер детальной — переиспользуем компонент. */}
-      <PropertyDetailPage type="flats" slug={doc.slug} doc={doc} previewMode />
+      <PropertyDetailPage type={previewType as any} slug={doc.slug} doc={doc} previewMode />
     </div>
   )
 }

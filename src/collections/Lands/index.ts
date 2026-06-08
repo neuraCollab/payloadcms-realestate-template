@@ -107,7 +107,18 @@ export const Lands: CollectionConfig = {
         { label: 'Активно', value: 'active' },
         { label: 'Продано', value: 'sold' },
         { label: 'Снято', value: 'unpublished' },
+        { label: 'Черновик', value: 'draft' },
+        { label: 'На модерации', value: 'pending_review' },
       ],
     },
+    // UGC-поля (создание через личный кабинет).
+    {
+      name: 'contactEmail',
+      type: 'email',
+      admin: { position: 'sidebar', readOnly: true },
+      index: true,
+    },
+    { name: 'submittedAt', type: 'date', admin: { position: 'sidebar', readOnly: true } },
+    { name: 'moderationNote', type: 'textarea', admin: { position: 'sidebar' } },
   ],
 }

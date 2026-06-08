@@ -7,6 +7,8 @@ import * as migration_20260607_auth_tokens from './20260607_auth_tokens';
 import * as migration_20260607_saved_searches from './20260607_saved_searches';
 import * as migration_20260607_telegram from './20260607_telegram';
 import * as migration_20260607_cabinet_listings from './20260607_cabinet_listings';
+import * as migration_20260607_houses from './20260607_houses';
+import * as migration_20260607_lands_draft from './20260607_lands_draft';
 
 export const migrations = [
   {
@@ -53,5 +55,15 @@ export const migrations = [
     up: migration_20260607_cabinet_listings.up,
     down: migration_20260607_cabinet_listings.down,
     name: '20260607_cabinet_listings',
+  },
+  {
+    up: migration_20260607_houses.up,
+    down: migration_20260607_houses.down,
+    name: '20260607_houses',
+  },
+  {
+    up: migration_20260607_lands_draft.up,
+    down: migration_20260607_lands_draft.down,
+    name: '20260607_lands_draft',
   },
 ];
