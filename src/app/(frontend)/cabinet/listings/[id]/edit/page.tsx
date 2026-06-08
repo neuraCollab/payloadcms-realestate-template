@@ -7,6 +7,10 @@ import { ChevronLeft, Eye } from 'lucide-react'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { ListingForm } from '../../ListingForm'
+import {
+  isListingCollection,
+  type ListingCollection,
+} from '@/lib/cabinet/listingValidator'
 
 export const dynamic = 'force-dynamic'
 
@@ -16,22 +20,27 @@ export const metadata: Metadata = {
 
 interface Props {
   params: Promise<{ id: string }>
+  searchParams: Promise<{ collection?: string }>
 }
 
-export default async function EditListingPage({ params }: Props) {
+export default async function EditListingPage({ params, searchParams }: Props) {
   const { id } = await params
+  const sp = await searchParams
+  const collectionParam = sp.collection ?? 'flats'
+  if (!isListingCollection(collectionParam)) notFound()
+  const collection: ListingCollection = collectionParam
+
   const c = await cookies()
   const email = c.get('realty_email')?.value
     ? decodeURIComponent(c.get('realty_email')!.value).toLowerCase()
     : null
-
   if (!email) redirect('/cabinet/login')
 
   const payload = await getPayload({ config })
   let doc: any = null
   try {
     doc = await payload.findByID({
-      collection: 'flats',
+      collection: collection as any,
       id,
       depth: 1,
       overrideAccess: true,
@@ -51,7 +60,7 @@ export default async function EditListingPage({ params }: Props) {
           <ChevronLeft className="w-4 h-4" />К моим объявлениям
         </Link>
         <Link
-          href={`/cabinet/listings/${id}/preview`}
+          href={`/cabinet/listings/${id}/preview?collection=${collection}`}
           className="inline-flex items-center gap-1 h-10 px-4 rounded-full border border-border text-body-sm text-on-surface hover:bg-surface-container"
         >
           <Eye className="w-4 h-4" />
@@ -68,7 +77,7 @@ export default async function EditListingPage({ params }: Props) {
         </p>
       </div>
       {doc.status === 'draft' ? (
-        <ListingForm initial={doc} listingId={id} />
+        <ListingForm collection={collection} initial={doc} listingId={id} />
       ) : null}
     </div>
   )
