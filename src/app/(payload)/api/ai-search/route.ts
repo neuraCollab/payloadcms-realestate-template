@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
+import { sql } from '@payloadcms/db-postgres'
 import config from '@/payload.config'
 import {
   embedQuery,
@@ -115,6 +116,29 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
   // 3. Hydrate docs in batch per collection
   const hydrated = await hydrate(payload, hits, limit)
+
+  // Лог запроса в search_queries для будущих suggestions.
+  // Fire-and-forget: setImmediate + try/catch — никогда не блокируем
+  // ответ. Только разумные запросы (3..200 символов).
+  if (q.length >= 3 && q.length <= 200) {
+    setImmediate(async () => {
+      try {
+        // @ts-expect-error drizzle exposed by postgres-adapter at runtime
+        const drizzle = payload.db.drizzle
+        await drizzle.execute(sql`
+          INSERT INTO search_queries (query, query_lower, city, results_count)
+          VALUES (
+            ${q},
+            ${q.toLowerCase()},
+            ${parsed.city ?? null},
+            ${hydrated.length}
+          )
+        `)
+      } catch {
+        /* ignore — миграция могла ещё не пройти, не лочим ответ */
+      }
+    })
+  }
 
   return NextResponse.json({
     query: q,
