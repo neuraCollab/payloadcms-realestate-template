@@ -271,15 +271,25 @@ jobs:
               sleep 2
             done
 
-            echo "▸ Apply pending migrations..."
+            echo "▸ Apply pending migrations (non-blocking)..."
             # CRON_SECRET уже в shell после `infisical export ... eval` выше.
+            # Не валим деплой если миграция через endpoint не сработала —
+            # Payload в любом случае применит pending миграции при старте.
             if [ -z "${CRON_SECRET:-}" ]; then
-              echo "  ⚠ CRON_SECRET пусто — миграция пропущена"
+              echo "  ⚠ CRON_SECRET пусто — пропускаем endpoint, Payload сам мигрирует на старте"
             else
+              set +e
               MIGRATE_RES=$(curl -sS -X POST http://127.0.0.1:3000/api/admin/migrate \
                 -H "Authorization: Bearer $CRON_SECRET" \
-                -H 'Content-Type: application/json' -d '{}')
-              echo "  $MIGRATE_RES"
+                -H 'Content-Type: application/json' -d '{}' 2>&1)
+              MIGRATE_CODE=$?
+              set -e
+              if [ $MIGRATE_CODE -ne 0 ]; then
+                echo "  ⚠ migrate endpoint вернул код $MIGRATE_CODE — Payload startup также применяет миграции, deploy не валим"
+                echo "  raw: $MIGRATE_RES"
+              else
+                echo "  $MIGRATE_RES"
+              fi
             fi
 
             echo "▸ Cleanup old images (keep last 3)..."
