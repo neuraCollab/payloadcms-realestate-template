@@ -100,14 +100,19 @@ jobs:
           # не задавать (CLI сходит на app.infisical.com по умолчанию).
           INFISICAL_API_URL: ${{ vars.INFISICAL_API_URL || 'https://eu.infisical.com/api' }}
         run: |
-          # --format=dotenv даёт `KEY=VALUE` строки, кладём в GH-step
-          # env через специальный GITHUB_ENV. Maskedим автоматически
-          # через add-mask.
+          # --format=dotenv даёт `KEY="VALUE"` (со ВКЛЮЧЁННЫМИ кавычками).
+          # GITHUB_ENV не делает unwrap кавычек — process.env получит их
+          # литералом и URL/JSON-парсинг падает. Поэтому снимаем сами.
           set -e
           infisical export --env=prod --format=dotenv > /tmp/secrets.env
           while IFS='=' read -r k v; do
             [[ -z "$k" || "$k" == \#* ]] && continue
-            # add-mask маскирует значение в логах GitHub
+            # Снимаем парные кавычки если value ими обёрнут
+            v="${v%\"}"; v="${v#\"}"
+            v="${v%\'}"; v="${v#\'}"
+            # Пропускаем пустые значения — они только мешают (next.config
+            # делает `new URL(NEXT_PUBLIC_SERVER_URL)` и падает на "")
+            [[ -z "$v" ]] && continue
             echo "::add-mask::$v"
             echo "$k=$v" >> "$GITHUB_ENV"
           done < /tmp/secrets.env
