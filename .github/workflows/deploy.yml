@@ -115,6 +115,28 @@ jobs:
           sudo apt-get update && sudo apt-get install -y infisical
           infisical --version
 
+      # Прогоняем миграции против postgres-сервиса до билда — иначе
+      # next build падает на `relation "header" does not exist` когда
+      # server components обращаются к Globals.
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.3.0
+      - name: Setup Node 22 + pnpm cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: pnpm install
+        run: pnpm install --frozen-lockfile --prefer-offline
+        env:
+          PAYLOAD_SKIP_DEPENDENCY_CHECKS: "true"
+      - name: Run migrations against build-postgres
+        env:
+          DATABASE_URI: postgresql://builduser:buildpass@127.0.0.1:5432/builddb
+          PAYLOAD_SECRET: build-time-noop-secret-for-migrate-only
+        run: pnpm payload migrate
+
       - name: Fetch secrets from Infisical
         env:
           INFISICAL_TOKEN: ${{ secrets.INFISICAL_TOKEN }}
