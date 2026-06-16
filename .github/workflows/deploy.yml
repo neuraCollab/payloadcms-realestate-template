@@ -96,6 +96,9 @@ jobs:
       - name: Fetch secrets from Infisical
         env:
           INFISICAL_TOKEN: ${{ secrets.INFISICAL_TOKEN }}
+          # EU-регион требует override URL. Если используешь US — можно
+          # не задавать (CLI сходит на app.infisical.com по умолчанию).
+          INFISICAL_API_URL: ${{ vars.INFISICAL_API_URL || 'https://eu.infisical.com/api' }}
         run: |
           # --format=dotenv даёт `KEY=VALUE` строки, кладём в GH-step
           # env через специальный GITHUB_ENV. Maskedим автоматически

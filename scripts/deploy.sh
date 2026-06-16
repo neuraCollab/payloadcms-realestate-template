@@ -42,11 +42,22 @@ fi
 # + установлен INFISICAL_TOKEN (или есть .infisical.json).
 # .env остаётся как fallback на случай если Infisical не настроен —
 # для одноразовых ручных деплоев.
+#
+# .env сорсим в обоих режимах: при Infisical он нужен только для
+# `INFISICAL_TOKEN` + `INFISICAL_API_URL` (например, eu.infisical.com).
+# Сами секреты Infisical отдаст потом через `infisical export`.
+if [[ -f .env ]]; then
+  set -a
+  # shellcheck disable=SC1091
+  source .env
+  set +a
+fi
+
 USE_INFISICAL=0
 if command -v infisical &>/dev/null; then
   if [[ -n "${INFISICAL_TOKEN:-}" ]] || [[ -f .infisical.json ]]; then
     USE_INFISICAL=1
-    echo "▸ Источник секретов: Infisical (.env не требуется)"
+    echo "▸ Источник секретов: Infisical (region: ${INFISICAL_API_URL:-default})"
   fi
 fi
 
@@ -111,8 +122,8 @@ if [[ $RESTORE_FROM_SNAPSHOT -eq 1 ]]; then
 fi
 
 # -------- Step 3: bring up Postgres (always) --------
-# Загружаем секреты в окружение. Infisical CLI работает прозрачно —
-# `infisical export --format=dotenv` отдаёт нам .env-формат, source'им как обычно.
+# Если Infisical активен — забираем боевые секреты оттуда, они
+# перекрывают то что было в .env. Если нет — .env уже засорсен выше.
 if [[ $USE_INFISICAL -eq 1 ]]; then
   echo "▸ Loading secrets from Infisical..."
   # --format=dotenv-export даёт `export KEY=VALUE` строки, пригодные
@@ -120,15 +131,12 @@ if [[ $USE_INFISICAL -eq 1 ]]; then
   INFISICAL_SECRETS="$(infisical export --env="${INFISICAL_ENV:-prod}" --format=dotenv-export 2>/dev/null)"
   if [[ -z "$INFISICAL_SECRETS" ]]; then
     echo "❌ Infisical export вернул пусто. Проверьте INFISICAL_TOKEN/.infisical.json"
+    echo "   Если ты в EU регионе — должно быть в .env:"
+    echo "     INFISICAL_API_URL=https://eu.infisical.com/api"
     exit 1
   fi
   set -a
   eval "$INFISICAL_SECRETS"
-  set +a
-else
-  # shellcheck disable=SC1091
-  set -a
-  source .env
   set +a
 fi
 
