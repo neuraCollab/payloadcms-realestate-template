@@ -1,0 +1,99 @@
+# MegaDomic
+
+> Russian real estate listings platform built on Next.js 15 (App Router) + Payload CMS v3 + PostgreSQL with pgvector. Multi-city catalog with AI-powered search, listing recommendations, SEO landing pages, and Telegram channel publishing.
+
+## Stack
+
+- **Frontend**: Next.js 15 App Router, React 19, TypeScript, Tailwind, shadcn/ui
+- **CMS / Backend**: Payload CMS v3 (Drizzle adapter for postgres)
+- **DB**: PostgreSQL 17 + pgvector extension (vector embeddings for AI search)
+- **AI**: Anthropic Claude Haiku 4.5 (recommendations, personalization), OpenAI gpt-4o-mini (bulk SEO copy), HuggingFace text-embeddings-inference (multilingual-e5-small, 384-dim)
+- **Email**: Resend (magic-link auth, saved-search digests)
+- **Maps**: Mapbox
+- **OAuth**: Google, Yandex, Mail.ru
+- **Analytics**: Yandex Metrika + Google Analytics 4
+- **Notifications**: Telegram bot (per-city channel publishing)
+- **Hosting**: self-hosted Docker on a single VPS (Hetzner-class), nginx reverse-proxy
+- **Secrets**: Infisical SaaS (EU region) — never `.env` in git
+- **CI/CD**: GitHub Actions → ghcr.io image → SSH deploy
+
+## Domain model
+
+The platform sells 4 property categories, each its own Payload collection:
+- `flats` — apartments (rooms, area, floor, building type, etc.)
+- `houses` — private houses (land area, communications, ...)
+- `lands` — land plots (purpose, communications)
+- `commercial` — commercial real estate (office, warehouse, ...)
+
+Each listing has `status` (`draft`/`pending_review`/`active`/`archived`), `transactionType` (`sale`/`rent`), location, price, images, amenities, realtor or owner. Listings can be agent-uploaded or user-submitted via cabinet form (UGC). Embeddings are precomputed in `*_embeddings` tables and used for both AI semantic search and similar-listing recommendations.
+
+## Project layout
+
+- [src/collections/](src/collections/): Payload collections — domain schema lives here. Modify a collection's fields → run `pnpm payload migrate:create` to generate SQL.
+- [src/globals/](src/globals/): singleton documents (Header, Footer, LegalInfo).
+- [src/app/(frontend)/](src/app/(frontend)/): public-facing Next.js routes. Layered SEO content overlays catalog routes.
+- [src/app/(payload)/](src/app/(payload)/): Payload admin (`/admin`) + REST endpoints (`/api/...`).
+- [src/lib/](src/lib/): cross-cutting helpers — `llm.ts` (Anthropic + OpenAI), `embeddings/`, `recommendations/`, `seo/`, `auth/`, `telegram/`.
+- [src/migrations/](src/migrations/): Drizzle SQL migrations, **auto-generated** — don't edit by hand.
+- [scripts/](scripts/): operational shell — `deploy.sh` (manual prod deploy), `dc.sh` (compose wrapper with env), `snapshot.ps1` (backup), `infisical-import-env.sh` (one-shot .env migration).
+- [docs/](docs/): technical docs (deploy, CI/CD, seeds).
+- [obsidian/недвижка/](obsidian/недвижка/): Russian-language team notes — onboarding, Infisical setup, content checklists.
+
+## Key architectural notes
+
+- **All env is in Infisical (EU region)**. Server reads via `infisical export` (see `scripts/deploy.sh`). GitHub Actions reads via `INFISICAL_TOKEN` secret. Local dev runs `infisical run --env=dev -- pnpm dev`.
+- **Migrations apply on app boot** (Payload startup hook). No separate migration step needed in normal deploys.
+- **Build needs DB access**. Both prod (`deploy.sh` uses `--network=host`) and GHA (postgres service container) provide a Postgres for `next build`'s `generateStaticParams`. Build args inject runtime secrets into Next.js bundle.
+- **SEO landings are LLM-generated** in bulk (`/api/admin/seo/generate`) — 8 cities × 12 filters ≈ 96 pages × $0.0005 = $0.05/run via gpt-4o-mini. Stored in `seo_landings` table, layered onto `[slug]/[filterSlug]` routes.
+- **Recommendations are pgvector ANN search** (ivfflat index) — see `src/lib/recommendations/`.
+- **AI search rewrites natural-language queries** ("дёшево около метро" → structured filter) via Claude Haiku — `src/lib/embeddings/queryParser.ts`.
+- **Telegram bot publishes per-city** — channel bindings stored in `telegram_channels` table; webhook `/api/admin/telegram-setup` registers bot.
+
+## Auth model
+
+- Users authenticate via magic-link email (Resend) **or** OAuth (Google/Yandex/Mail.ru) — see `src/app/(payload)/api/auth/`.
+- Cabinet (`/cabinet/*`) is gated for any authenticated user. Listing submission, saved searches, favorites, mortgage applications live there.
+- Admin (`/admin`) is Payload-native, gated by `roles: ['admin' | 'moderator']`.
+- AI features (semantic search, recommendations) are intentionally auth-gated — disclosed in privacy policy under "Рекомендательные технологии" per 152-ФЗ / 149-ФЗ.
+
+## Legal / compliance
+
+Russian-market app — falls under 152-ФЗ (PII) + 149-ФЗ (recommender systems disclosure). Implementation:
+- `src/globals/LegalInfo.ts` — company info shown in footer, /privacy, /terms, JSON-LD.
+- `ConsentCheckbox` component required on all data-collection forms.
+- /privacy explicitly discloses recommender system use; /terms covers AI search.
+
+## Build & run
+
+- Local dev: see [SETUP.md](SETUP.md)
+- Production deploy: `git push origin main` → GitHub Actions auto-deploys
+- Manual prod: `ssh root@server && cd ~/payloadcms-realestate-template && ./scripts/deploy.sh`
+- Database backup: `./scripts/snapshot.ps1` (Windows) or equivalent — produces a `.tar.gz` with `db.sql` + `media/`
+
+## Files an AI agent should read first
+
+- [CLAUDE.md](CLAUDE.md) — user-private behavioral guidelines for AI assistance.
+- [SETUP.md](SETUP.md) — getting a working copy on a new machine.
+- [docker-compose.prod.yml](docker-compose.prod.yml) — what runs in production.
+- [src/payload.config.ts](src/payload.config.ts) — Payload collection registry + plugins.
+- [scripts/deploy.sh](scripts/deploy.sh) — deployment flow ground truth.
+- [.github/workflows/deploy.yml](.github/workflows/deploy.yml) — CI/CD ground truth.
+
+## Conventions
+
+- TypeScript strict mode, ESLint blocking in dev (skipped in prod build for memory).
+- Import alias `@/` → `src/`.
+- Server components by default; `'use client'` only when needed (forms, maps, interactive panels).
+- API routes return JSON only. Errors as `{ error: 'code', message: 'human' }` with appropriate HTTP status.
+- Bearer `CRON_SECRET` auth for all `/api/admin/*` and `/next/seed-*` endpoints.
+- Migrations are append-only — never edit a merged migration file; create a new one.
+- All user-facing strings are Russian. No i18n layer (single locale).
+- Currency: RUB everywhere; sometimes USD/EUR stored alongside for legacy listings.
+
+## What's NOT here
+
+- No paywall, no monetization layer yet (no subscriptions, no commission tracking — leads go to realtors directly).
+- No mobile app — responsive web only.
+- No Search Console Indexing API integration yet (manual sitemap submit).
+- No multi-region/multi-tenant — single Russian market.
+- No CRM integration — leads collected to `leads` table, processed manually.
