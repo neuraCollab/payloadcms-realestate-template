@@ -44,6 +44,25 @@ jobs:
       contents: read
       packages: write
 
+    # Postgres-сервис для build-time payload.init() (generateStaticParams).
+    # Без него next build падает ECONNREFUSED при попытке достучаться до БД.
+    # На проде build делает ./scripts/deploy.sh через --network=host и реальный
+    # контейнер postgres; на GHA — этот service.
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_USER: builduser
+          POSTGRES_PASSWORD: buildpass
+          POSTGRES_DB: builddb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U builduser"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
     outputs:
       image_uri: ${{ steps.meta.outputs.tags }}
       image_sha_tag: ${{ steps.sha-tag.outputs.tag }}
@@ -61,6 +80,9 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+        with:
+          # network=host чтобы buildkit видел postgres-сервис на 127.0.0.1:5432
+          driver-opts: network=host
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -127,6 +149,9 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          # network=host чтобы внутри билда payload мог достучаться до
+          # postgres-сервиса GHA-job'а на 127.0.0.1:5432
+          network: host
           # GHA cache → последующие билды переиспользуют node_modules
           # и Next.js cache. Первый билд ~10мин, повторные 2-3мин.
           cache-from: type=gha
@@ -137,7 +162,7 @@ jobs:
             NEXT_PUBLIC_MAPBOX_STYLE=${{ env.NEXT_PUBLIC_MAPBOX_STYLE }}
             NEXT_PUBLIC_YANDEX_METRIKA_ID=${{ env.NEXT_PUBLIC_YANDEX_METRIKA_ID }}
             NEXT_PUBLIC_GA4_ID=${{ env.NEXT_PUBLIC_GA4_ID }}
-            DATABASE_URI=postgresql://noop:noop@127.0.0.1:5432/noop
+            DATABASE_URI=postgresql://builduser:buildpass@127.0.0.1:5432/builddb
             PAYLOAD_SECRET=${{ env.PAYLOAD_SECRET }}
             CRON_SECRET=${{ env.CRON_SECRET }}
             PREVIEW_SECRET=${{ env.PREVIEW_SECRET }}
