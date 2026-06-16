@@ -237,9 +237,20 @@ jobs:
             [ -f .env ] && source .env
             if command -v infisical &>/dev/null && \
                { [ -n "${INFISICAL_TOKEN:-}" ] || [ -f .infisical.json ]; }; then
-              eval "$(infisical export --env=prod --format=dotenv-export)"
+              INFISICAL_OUT="$(infisical export --env=prod --format=dotenv-export 2>&1)"
+              if [ -z "$INFISICAL_OUT" ] || echo "$INFISICAL_OUT" | grep -qi "error\|unable\|not found"; then
+                echo "❌ Infisical CLI вернул ошибку:"
+                echo "$INFISICAL_OUT"
+                echo ""
+                echo "  Проверь на сервере:"
+                echo "    cat .env  → должны быть INFISICAL_TOKEN + INFISICAL_API_URL"
+                echo "    EU регион: INFISICAL_API_URL=https://eu.infisical.com/api"
+                exit 1
+              fi
+              eval "$INFISICAL_OUT"
             else
-              echo "  ⚠ Infisical CLI не активна — compose возьмёт что есть в .env"
+              echo "❌ Infisical CLI не активна на сервере и INFISICAL_TOKEN не задан."
+              exit 1
             fi
             set +a
 
