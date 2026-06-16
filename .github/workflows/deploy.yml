@@ -228,6 +228,21 @@ jobs:
             # подхватит без правок compose-файла.
             docker tag "$REGISTRY/$REPO:$IMAGE_TAG" realty-app:latest
 
+            # Загружаем секреты в shell ДО compose up, иначе compose не
+            # подставит ${PAYLOAD_SECRET}, ${POSTGRES_*} и т.д. в env'ы
+            # контейнеров — app падает на "missing secret key".
+            echo "▸ Loading secrets from Infisical..."
+            set -a
+            # .env даёт INFISICAL_TOKEN/INFISICAL_API_URL для CLI
+            [ -f .env ] && source .env
+            if command -v infisical &>/dev/null && \
+               { [ -n "${INFISICAL_TOKEN:-}" ] || [ -f .infisical.json ]; }; then
+              eval "$(infisical export --env=prod --format=dotenv-export)"
+            else
+              echo "  ⚠ Infisical CLI не активна — compose возьмёт что есть в .env"
+            fi
+            set +a
+
             echo "▸ Recreate app container..."
             docker compose -f docker-compose.prod.yml up -d --force-recreate app
 
@@ -246,19 +261,12 @@ jobs:
             done
 
             echo "▸ Apply pending migrations..."
-            # CRON_SECRET достаём из Infisical (если установлена CLI)
-            # или из .env как fallback. Логика та же что в deploy.sh.
-            if command -v infisical &>/dev/null && [[ -n "${INFISICAL_TOKEN_SERVER:-}" ]] || [[ -f .infisical.json ]]; then
-              SECRET=$(infisical secrets get CRON_SECRET --env=prod --plain 2>/dev/null || echo "")
-            fi
-            if [[ -z "${SECRET:-}" ]] && [[ -f .env ]]; then
-              SECRET=$(grep '^CRON_SECRET=' .env | cut -d= -f2)
-            fi
-            if [[ -z "${SECRET:-}" ]]; then
-              echo "  ⚠ Не удалось получить CRON_SECRET — миграция пропущена"
+            # CRON_SECRET уже в shell после `infisical export ... eval` выше.
+            if [ -z "${CRON_SECRET:-}" ]; then
+              echo "  ⚠ CRON_SECRET пусто — миграция пропущена"
             else
               MIGRATE_RES=$(curl -sS -X POST http://127.0.0.1:3000/api/admin/migrate \
-                -H "Authorization: Bearer $SECRET" \
+                -H "Authorization: Bearer $CRON_SECRET" \
                 -H 'Content-Type: application/json' -d '{}')
               echo "  $MIGRATE_RES"
             fi
