@@ -370,6 +370,18 @@ openssl rand -hex 32   # для PAYLOAD_SECRET, CRON_SECRET, PREVIEW_SECRET
 ### 6. Админ-эндпоинты
 
 - `POST /api/admin/import-listings` — CSV-импорт квартир (auth: role=admin)
+- `POST /api/admin/import-feed` — импорт стандартного XML/YML-фида
+  (Яндекс.Недвижимость `<realty-feed>` или Avito `<Ads>`). Легальная
+  альтернатива парсингу: агентство сама хостит свой фид (тот же, что
+  отдаёт Яндексу/Avito), а мы его читаем по URL, файлом или сырым XML в
+  теле запроса. Авторизация — любой залогиненный пользователь Payload
+  (admin или realtor, как и сам `/admin`); если зашёл `realtor`,
+  созданные объекты автоматически привязываются к нему (`realtor.id`) —
+  это и есть самообслуживание "в пару кликов" для агентств. Дедуп —
+  по детерминированному slug `feed-{source}-{externalId}`, так что
+  повторная загрузка того же фида ничего не дублирует. UI — карточка
+  "Импорт фида" на дашборде `/admin` (`?dryRun=true` для проверки без
+  записи в базу).
 - `POST /api/admin/maintenance` — массовая деактивация устаревших + dedup
 - `POST /api/admin/generate-description` — rule-based генератор описания
   квартиры (без LLM)
@@ -499,6 +511,7 @@ Payload автоматически создаёт REST + GraphQL эндпоин�
 | `GET` | `/api/cabinet/messages?threadId=…` | cookie `realty_email` | Polling сообщений треда |
 | `POST` | `/api/reviews` | публичный + rate-limit | Отзыв на риэлтора |
 | `POST` | `/api/admin/import-listings` | role=admin | CSV-импорт |
+| `POST` | `/api/admin/import-feed` | любой залогиненный (admin/realtor) | XML/YML-фид (Яндекс.Недвижимость, Avito) |
 | `POST` | `/api/admin/maintenance` | role=admin / `CRON_SECRET` | Maintenance pass |
 | `POST` | `/api/admin/generate-description` | role=admin | Rule-based описание |
 | `POST` | `/api/upload` | role=admin | Доп. upload endpoint |
@@ -856,6 +869,7 @@ POST /api/admin/reindex-embeddings
 - ✅ Юридическая часть (152-ФЗ + 149-ФЗ)
 - ✅ CSV-импорт + maintenance + AI-описание (admin endpoints)
 - ✅ Ингест-пайплайн (мокированные провайдеры)
+- ✅ XML/YML-фид импорт (Яндекс.Недвижимость, Avito) — самообслуживание агентств
 - ✅ SEO (JSON-LD, OG, динамические meta)
 - ✅ Rate-limit + honeypot + cookie consent
 - ✅ Production-пайплайн (snapshot → deploy)
@@ -868,7 +882,6 @@ POST /api/admin/reindex-embeddings
 - ⬜ Email-уведомления (нужен SMTP-адаптер Payload)
 - ⬜ Запись на просмотр (календарь)
 - ⬜ Virtual tour / 360° фото
-- ⬜ Реальный XML-feed парсер (Cian, Avito)
 - ⬜ Telegram-бот для нотификаций
 - ⬜ Admin dashboard с метриками
 

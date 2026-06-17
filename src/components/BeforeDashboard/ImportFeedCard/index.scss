@@ -1,0 +1,68 @@
+.import-feed-card {
+  margin-top: var(--base, 24px);
+  padding: calc(var(--base, 24px) / 2);
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 4px;
+
+  &__hint {
+    opacity: 0.75;
+    max-width: 60ch;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 10px 0;
+  }
+
+  &__input {
+    flex: 1;
+    min-width: 240px;
+    padding: 6px 10px;
+    border: 1px solid var(--theme-elevation-150);
+    border-radius: 4px;
+    background: var(--theme-input-bg);
+    color: var(--theme-text);
+  }
+
+  &__or {
+    opacity: 0.6;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  &__btn {
+    appearance: none;
+    border: 1px solid var(--theme-elevation-150);
+    background: var(--theme-elevation-50);
+    border-radius: 4px;
+    padding: 6px 14px;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.85;
+    }
+
+    &--primary {
+      background: var(--theme-success-500, #2563eb);
+      border-color: transparent;
+      color: #fff;
+    }
+  }
+
+  &__summary {
+    margin-top: 14px;
+    font-size: 0.9em;
+  }
+
+  &__errors {
+    margin: 6px 0 0;
+    padding-left: 18px;
+    opacity: 0.8;
+  }
+}
