@@ -44,16 +44,18 @@ test.describe('/api/messages honeypot + validation', () => {
     baseURL,
   }) => {
     const ctx = await request.newContext({ baseURL })
-    const form = new URLSearchParams()
-    form.set('realtorId', 'doesnt-matter')
-    form.set('subject', 'spam')
-    form.set('name', 'Bot')
-    form.set('email', 'bot@example.com')
-    form.set('message', 'Buy crypto')
-    form.set('website', 'http://spam.example')
+    // The real client only ever sends JSON (RichMessageForm) or
+    // multipart/form-data (MessagePopup) — the route doesn't parse
+    // urlencoded bodies, so exercise the JSON path here.
     const res = await ctx.post('/api/messages', {
-      headers: { 'content-type': 'application/x-www-form-urlencoded' },
-      data: form.toString(),
+      data: {
+        realtorId: 'doesnt-matter',
+        subject: 'spam',
+        name: 'Bot',
+        email: 'bot@example.com',
+        message: 'Buy crypto',
+        website: 'http://spam.example',
+      },
     })
     // Bot path returns 200 to lie to the bot.
     expect(res.status()).toBe(200)

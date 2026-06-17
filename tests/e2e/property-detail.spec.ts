@@ -26,10 +26,12 @@ test.describe('property detail', () => {
 
     await page.goto(`/flats/${slug}`)
 
-    // Breadcrumb shows quartiles section name
-    await expect(page.getByText('Квартиры', { exact: false }).first()).toBeVisible({
-      timeout: 30_000,
-    })
+    // Breadcrumb shows quartiles section name — scope to the breadcrumb
+    // nav so this doesn't resolve to the (mobile-hidden) header nav link
+    // of the same name.
+    await expect(
+      page.getByRole('navigation', { name: 'breadcrumb' }).getByText('Квартиры', { exact: false }),
+    ).toBeVisible({ timeout: 30_000 })
 
     // Specs section
     await expect(

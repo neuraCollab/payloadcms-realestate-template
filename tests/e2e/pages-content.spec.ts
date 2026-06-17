@@ -3,29 +3,21 @@ import { test, expect } from '@playwright/test'
 // UI-content checks. Asserts that real content (headings, key controls,
 // chips) rendered on each major page — beyond just "200 OK".
 
-test.describe('home-v2', () => {
-  test('renders hero search with all selectors and search field', async ({ page }) => {
-    await page.goto('/home-v2')
-
-    await expect(
-      page.getByRole('heading', { name: /дом/i, level: 1 }),
-    ).toBeVisible({ timeout: 30_000 })
-
-    // Hero search form selectors
-    await expect(page.getByLabel('Тип объекта')).toBeVisible()
-    await expect(page.getByLabel('Сделка')).toBeVisible()
-    await expect(page.getByPlaceholder('Город')).toBeVisible()
-    await expect(page.getByRole('button', { name: /найти/i }).first()).toBeVisible()
-  })
-})
+// /home-v2 is intentionally disabled (DISABLED_PAGE_SLUGS in [slug]/page.tsx)
+// — a draft homepage iteration kept in the CMS but not publicly reachable.
+// See smoke.spec.ts for the 404 coverage.
 
 test.describe('about', () => {
   test('shows QuickNav cards with links to all sections', async ({ page }) => {
     await page.goto('/about')
 
-    // QuickNav block ships these chips
+    // Scope to <article> — CMS pages render via [slug]/page.tsx, which
+    // wraps content in <article> (no <main> landmark). The header nav
+    // repeats these labels and is hidden on mobile, which would
+    // otherwise make the locator resolve to a hidden element.
+    const content = page.locator('article')
     for (const label of ['Квартиры', 'Коммерческая', 'Земля', 'ЖК']) {
-      await expect(page.getByText(label, { exact: false }).first()).toBeVisible()
+      await expect(content.getByText(label, { exact: false }).first()).toBeVisible()
     }
   })
 })

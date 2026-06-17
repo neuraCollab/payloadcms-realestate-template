@@ -13,9 +13,18 @@ test.describe('forms — surface checks', () => {
     expect(inputCount).toBeGreaterThanOrEqual(1)
   })
 
-  test('PropertyFilters form on /flats submits via Enter key', async ({ page }) => {
+  test('PropertyFilters form on /flats submits via Enter key', async ({ page, isMobile }) => {
     await page.goto('/flats')
-    const cityInput = page.getByLabel(/город/i).first()
+    // On mobile, the filter form lives behind the "Фильтры" sheet trigger.
+    // The always-mounted desktop form (CSS-hidden on mobile) still has a
+    // matching input, so scope to the open dialog to avoid resolving to
+    // the hidden one.
+    if (isMobile) {
+      await page.getByRole('button', { name: 'Фильтры', exact: true }).click()
+    }
+    const cityInput = isMobile
+      ? page.getByRole('dialog', { name: 'Фильтры' }).getByLabel(/город/i).first()
+      : page.getByLabel(/город/i).first()
     await cityInput.fill('Москва')
     await cityInput.press('Enter')
     await expect(page).toHaveURL(/city=/i)

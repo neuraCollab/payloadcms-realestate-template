@@ -12,7 +12,7 @@ test.describe('cabinet shell', () => {
     ).toBeVisible({ timeout: 30_000 })
     await expect(page.getByPlaceholder('ivan@example.com')).toBeVisible()
     await expect(
-      page.getByRole('button', { name: /открыть кабинет/i }),
+      page.getByRole('button', { name: /получить ссылку на email/i }),
     ).toBeVisible()
   })
 
@@ -43,7 +43,7 @@ test.describe('cabinet shell', () => {
     // Sidebar links present (guest mode shows favorites + recent only)
     await expect(page.getByRole('link', { name: /избранное/i }).first()).toBeVisible()
     await expect(page.getByRole('link', { name: /просмотренные/i }).first()).toBeVisible()
-    await expect(page.getByRole('link', { name: /войти/i })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Войти', exact: true })).toBeVisible()
   })
 })
 

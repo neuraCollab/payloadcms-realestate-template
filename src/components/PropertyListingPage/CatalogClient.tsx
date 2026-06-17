@@ -118,9 +118,15 @@ export const CatalogClient: React.FC<Props> = ({
       {/* --- Мобайл tabs (десктоп всегда split). --- */}
       <div className="lg:hidden flex items-center gap-2 mb-3">
         <PropertyFiltersSheet type={type} totalDocs={totalDocs} />
-        <div className="ml-auto inline-flex p-0.5 rounded-md bg-surface-container border border-border">
+        <div
+          role="tablist"
+          aria-label="Режим просмотра"
+          className="ml-auto inline-flex p-0.5 rounded-md bg-surface-container border border-border"
+        >
           <button
             type="button"
+            role="tab"
+            aria-selected={view === 'list'}
             onClick={() => setView('list')}
             className={cn(
               'inline-flex items-center gap-1 h-9 px-3 rounded-[5px] text-body-sm font-medium transition-colors',
@@ -133,6 +139,8 @@ export const CatalogClient: React.FC<Props> = ({
           </button>
           <button
             type="button"
+            role="tab"
+            aria-selected={view === 'map'}
             onClick={() => setView('map')}
             className={cn(
               'inline-flex items-center gap-1 h-9 px-3 rounded-[5px] text-body-sm font-medium transition-colors',

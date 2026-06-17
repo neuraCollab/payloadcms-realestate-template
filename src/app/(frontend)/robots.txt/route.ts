@@ -20,6 +20,7 @@ export function GET(): Response {
     '',
     `Sitemap: ${base}/pages-sitemap.xml`,
     `Sitemap: ${base}/posts-sitemap.xml`,
+    `Sitemap: ${base}/listings-sitemap.xml`,
     '',
   ].join('\n')
 

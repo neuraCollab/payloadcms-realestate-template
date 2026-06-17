@@ -6,15 +6,11 @@ const SITE_URL =
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
   siteUrl: SITE_URL,
-  generateRobotsTxt: true,
-  exclude: ['/posts-sitemap.xml', '/pages-sitemap.xml', '/*', '/posts/*'],
-  robotsTxtOptions: {
-    policies: [
-      {
-        userAgent: '*',
-        disallow: '/admin/*',
-      },
-    ],
-    additionalSitemaps: [`${SITE_URL}/pages-sitemap.xml`, `${SITE_URL}/posts-sitemap.xml`],
-  },
+  // robots.txt is served by the dynamic route at
+  // src/app/(frontend)/robots.txt/route.ts instead. next-sitemap writing a
+  // static public/robots.txt would shadow that route (Next.js always
+  // prefers a static file in public/ over a route handler at the same
+  // path), undoing its Disallow rules for /api, /next/ and /cabinet/.
+  generateRobotsTxt: false,
+  exclude: ['/posts-sitemap.xml', '/pages-sitemap.xml', '/listings-sitemap.xml', '/*', '/posts/*'],
 }

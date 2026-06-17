@@ -35,7 +35,7 @@ const inter = Inter({
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html className={cn(inter.variable)} lang="en" suppressHydrationWarning>
+    <html className={cn(inter.variable)} lang="ru" suppressHydrationWarning>
       <head>
         <InitTheme />
         {/* MegaDomic icon set — см. /public/site.webmanifest */}

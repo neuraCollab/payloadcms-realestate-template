@@ -4,21 +4,25 @@ import { test, expect } from '@playwright/test'
 // Asserts URL-driven state: filters, sort, view toggle, pagination.
 
 test.describe('/flats listing', () => {
-  test('header shows count, view toggle and sort', async ({ page }) => {
+  test('header shows count, view toggle and sort', async ({ page, isMobile }) => {
     await page.goto('/flats')
 
     await expect(
       page.getByRole('heading', { name: /квартиры/i, level: 1 }),
     ).toBeVisible({ timeout: 30_000 })
 
-    // SortSelect + ViewToggle render in the header
-    await expect(page.getByLabel('Тип объекта')).toBeHidden().catch(() => {})
     await expect(page.getByText(/сортировка/i)).toBeVisible()
-    await expect(page.getByRole('tab', { name: /список/i })).toBeVisible()
-    await expect(page.getByRole('tab', { name: /карта/i })).toBeVisible()
+
+    // List/map view toggle is mobile-only (<lg) — desktop shows a permanent
+    // split-view with list + map side by side, so there's nothing to toggle.
+    if (isMobile) {
+      await expect(page.getByRole('tab', { name: /список/i })).toBeVisible()
+      await expect(page.getByRole('tab', { name: /карта/i })).toBeVisible()
+    }
   })
 
-  test('switching to "Карта" updates URL with ?view=map', async ({ page }) => {
+  test('switching to "Карта" updates URL with ?view=map', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'view toggle only renders on mobile (<lg split-view)')
     await page.goto('/flats')
     await page.getByRole('tab', { name: /карта/i }).click()
     await expect(page).toHaveURL(/\?view=map/)
@@ -32,11 +36,15 @@ test.describe('/flats listing', () => {
     await expect(page).not.toHaveURL(/page=2/)
   })
 
-  test('PropertyFilters expand block shows advanced fields', async ({ page }) => {
+  test('PropertyFilters expand block shows advanced fields', async ({ page, isMobile }) => {
     await page.goto('/flats')
 
-    // Click "Расширенные фильтры"
-    await page.getByRole('button', { name: /расширенные фильтры/i }).click()
+    // On mobile, filters live behind the "Фильтры" sheet trigger.
+    if (isMobile) {
+      await page.getByRole('button', { name: 'Фильтры', exact: true }).click()
+    }
+
+    await page.getByRole('button', { name: /дополнительно/i }).click()
     await expect(page.getByText(/площадь от/i).first()).toBeVisible()
     await expect(page.getByText(/тип жилья/i).first()).toBeVisible()
   })
