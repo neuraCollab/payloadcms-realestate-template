@@ -36,6 +36,8 @@ type Props = {
   label: string
   href: string
   iconKey: TileIconKey
+  /** Тематическая PNG-иллюстрация в правом нижнем углу карточки. */
+  cornerIcon: string
   preview: TilePreview
 }
 
@@ -78,6 +80,7 @@ export const CategoryTileClient: React.FC<Props> = ({
   label,
   href,
   iconKey,
+  cornerIcon,
   preview,
 }) => {
   const iconRef = useRevealOnce()
@@ -152,12 +155,13 @@ export const CategoryTileClient: React.FC<Props> = ({
           <span className="sr-only md:hidden">{description}</span>
         </div>
 
-        {/* Мобильное превью-фото в правом нижнем углу — компактно,
-            всегда видно. */}
+        {/* Тематическая PNG-иллюстрация в правом нижнем углу — видна на
+            всех брейкпоинтах без наведения, чтобы суть категории была
+            понятна сразу. На десктопе гаснет под hover-фото объекта. */}
         <span
           aria-hidden="true"
-          className="md:hidden absolute right-2 bottom-2 w-16 h-16 rounded-md bg-cover bg-center shadow-e1 border border-border z-10"
-          style={{ backgroundImage: `url(${preview.imageUrl})` }}
+          className="absolute right-2 bottom-2 w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-contain bg-no-repeat bg-bottom-right opacity-85 md:group-hover:opacity-0 transition-opacity duration-300 z-0 pointer-events-none"
+          style={{ backgroundImage: `url(${cornerIcon})` }}
         />
       </Link>
     </li>

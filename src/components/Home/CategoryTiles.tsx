@@ -15,6 +15,8 @@ type TileSpec = {
   collection: 'flats' | 'residential-complexes' | 'lands' | 'commercial'
   iconKey: TileIconKey
   fallbackImage: string
+  /** Тематическая PNG-иллюстрация в правом нижнем углу карточки. */
+  cornerIcon: string
 }
 
 const TILES: TileSpec[] = [
@@ -24,6 +26,7 @@ const TILES: TileSpec[] = [
     collection: 'flats',
     iconKey: 'flats',
     fallbackImage: '/category-flats.jpg',
+    cornerIcon: '/category-icon-flats.png',
   },
   {
     label: 'Дома',
@@ -31,6 +34,7 @@ const TILES: TileSpec[] = [
     collection: 'residential-complexes',
     iconKey: 'house',
     fallbackImage: '/category-houses.jpg',
+    cornerIcon: '/category-icon-houses.png',
   },
   {
     label: 'Земля',
@@ -38,6 +42,7 @@ const TILES: TileSpec[] = [
     collection: 'lands',
     iconKey: 'land',
     fallbackImage: '/category-land.jpg',
+    cornerIcon: '/category-icon-land.png',
   },
   {
     label: 'Коммерческая',
@@ -45,6 +50,7 @@ const TILES: TileSpec[] = [
     collection: 'commercial',
     iconKey: 'commercial',
     fallbackImage: '/category-commercial.jpg',
+    cornerIcon: '/category-icon-commercial.png',
   },
 ]
 
@@ -105,6 +111,7 @@ export const CategoryTiles = async () => {
               label={spec.label}
               href={spec.href}
               iconKey={spec.iconKey}
+              cornerIcon={spec.cornerIcon}
               preview={previews[i]!}
             />
           ))}

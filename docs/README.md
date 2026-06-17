@@ -300,6 +300,7 @@ pnpm dev    # http://localhost:3000
 | `PGADMIN_*` | pgAdmin для dev | dev only |
 | `NEXT_PUBLIC_MAPBOX_TOKEN` | Токен Mapbox | для карт |
 | `NEXT_PUBLIC_MAPBOX_STYLE` | Стиль карты, дефолт `streets-v12` | нет |
+| `RESEND_API_KEY` / `EMAIL_FROM` | Отправка писем (magic-link вход). Настройка на Beget → [RESEND-BEGET-SETUP.md](./RESEND-BEGET-SETUP.md) | для email-входа |
 
 Прод-секреты должны быть случайными:
 

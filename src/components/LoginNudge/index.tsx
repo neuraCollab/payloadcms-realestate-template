@@ -24,8 +24,12 @@ const COOKIE = 'realty_email='
  * Для уважения 152-ФЗ — никаких пермишенов на pre-fill email мы не
  * запрашиваем. Просто кнопки OAuth.
  */
+/** Длительность .animate-slideOutRight в globals.css — держим в синхроне. */
+const CLOSE_ANIM_MS = 250
+
 export const LoginNudge: React.FC<Props> = ({ providers = [] }) => {
   const [show, setShow] = React.useState(false)
+  const [closing, setClosing] = React.useState(false)
 
   React.useEffect(() => {
     // Проверки на стороне клиента — никаких SSR-сюрпризов.
@@ -48,7 +52,9 @@ export const LoginNudge: React.FC<Props> = ({ providers = [] }) => {
     } catch {
       /* ignore */
     }
-    setShow(false)
+    // Сначала проигрываем выезд за край экрана, потом убираем из DOM.
+    setClosing(true)
+    setTimeout(() => setShow(false), CLOSE_ANIM_MS)
   }
 
   if (!show) return null
@@ -57,7 +63,9 @@ export const LoginNudge: React.FC<Props> = ({ providers = [] }) => {
     <div
       role="dialog"
       aria-label="Войти быстро"
-      className="fixed top-4 right-4 z-40 w-[340px] max-w-[calc(100vw-2rem)] animate-slideInRight"
+      className={`fixed top-20 right-4 z-40 w-[340px] max-w-[calc(100vw-2rem)] ${
+        closing ? 'animate-slideOutRight' : 'animate-slideInRight'
+      }`}
     >
       <div className="bg-white rounded-xl p-4 shadow-[0_1px_2px_0_rgba(60,64,67,0.3),0_2px_6px_2px_rgba(60,64,67,0.15)]">
         <div className="flex items-start gap-3">

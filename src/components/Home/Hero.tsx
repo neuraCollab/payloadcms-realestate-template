@@ -12,6 +12,18 @@ const CATEGORIES = [
   { value: 'lands', label: 'Земля' },
 ] as const
 
+// Popup-список частых городов под полем «Город» — быстрый выбор без
+// печати на мобильном, где маленькая клавиатура и узкое поле.
+const POPULAR_CITIES = [
+  'Москва',
+  'Санкт-Петербург',
+  'Новосибирск',
+  'Екатеринбург',
+  'Казань',
+  'Нижний Новгород',
+  'Кимры',
+] as const
+
 /**
  * Hero MegaDomic — единая строка поиска.
  *
@@ -44,6 +56,7 @@ export const Hero: React.FC<HeroProps> = ({ h1, subtitle, defaultCity }) => {
   const [city, setCity] = React.useState(defaultCity ?? '')
   const [tx, setTx] = React.useState<'rent' | 'sale' | 'any'>('any')
   const [focused, setFocused] = React.useState(false)
+  const [cityOpen, setCityOpen] = React.useState(false)
 
   // Suggestions state.
   const [suggestions, setSuggestions] = React.useState<string[]>([])
@@ -224,35 +237,75 @@ export const Hero: React.FC<HeroProps> = ({ h1, subtitle, defaultCity }) => {
 
           {/* — Фильтры + CTA. На mobile стэком, на md+ всё в одну строку — */}
           <div className="p-2 md:p-2 flex flex-col md:flex-row md:items-center gap-2">
-            {/* Тип */}
-            <div className="relative flex-1 min-w-0">
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                aria-label="Тип объекта"
-                className="appearance-none w-full h-10 pl-3 pr-8 rounded-md hover:bg-surface-container-low transition-colors bg-transparent text-body-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                {CATEGORIES.map((c) => (
-                  <option key={c.value} value={c.value}>
-                    {c.label}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="pointer-events-none absolute right-2 top-3 w-4 h-4 text-on-surface-variant" />
+            {/* Тип + Город — пара в одной строке на mobile (md:contents
+                распускает обёртку, и на md+ они становятся отдельными
+                флекс-айтемами как раньше). */}
+            <div className="flex gap-2 md:contents">
+              {/* Тип */}
+              <div className="relative flex-1 min-w-0">
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  aria-label="Тип объекта"
+                  className="appearance-none w-full h-10 pl-3 pr-8 rounded-md hover:bg-surface-container-low transition-colors bg-transparent text-body-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {CATEGORIES.map((c) => (
+                    <option key={c.value} value={c.value}>
+                      {c.label}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-2 top-3 w-4 h-4 text-on-surface-variant" />
+              </div>
+
+              {/* Разделитель */}
+              <div className="hidden md:block w-px h-6 bg-border" />
+
+              {/* Город — текстовый ввод + popup частых городов */}
+              <div className="relative flex-1 min-w-0">
+                <input
+                  type="text"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  onFocus={() => setCityOpen(true)}
+                  onBlur={() => setTimeout(() => setCityOpen(false), 150)}
+                  placeholder="Город"
+                  aria-label="Город"
+                  aria-autocomplete="list"
+                  aria-controls="hero-city-suggestions"
+                  aria-expanded={cityOpen}
+                  role="combobox"
+                  className="w-full h-10 px-3 rounded-md hover:bg-surface-container-low transition-colors bg-transparent text-body-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                />
+                {cityOpen ? (
+                  <ul
+                    id="hero-city-suggestions"
+                    role="listbox"
+                    className="absolute left-0 right-0 top-full mt-1 z-20 bg-card border border-border rounded-md shadow-e3 overflow-hidden max-h-60 overflow-y-auto"
+                  >
+                    {POPULAR_CITIES.filter((c) =>
+                      c.toLowerCase().includes(city.trim().toLowerCase()),
+                    ).map((c) => (
+                      <li key={c} role="option">
+                        <button
+                          type="button"
+                          // onMouseDown а не onClick — иначе onBlur инпута
+                          // закроет список раньше, чем сработает клик.
+                          onMouseDown={(e) => {
+                            e.preventDefault()
+                            setCity(c)
+                            setCityOpen(false)
+                          }}
+                          className="w-full text-left px-3 py-2 text-body-sm text-on-surface hover:bg-surface-container-low"
+                        >
+                          {c}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
             </div>
-
-            {/* Разделитель */}
-            <div className="hidden md:block w-px h-6 bg-border" />
-
-            {/* Город */}
-            <input
-              type="text"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              placeholder="Город"
-              aria-label="Город"
-              className="flex-1 min-w-0 h-10 px-3 rounded-md hover:bg-surface-container-low transition-colors bg-transparent text-body-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            />
 
             {/* Разделитель */}
             <div className="hidden md:block w-px h-6 bg-border" />
@@ -296,7 +349,7 @@ export const Hero: React.FC<HeroProps> = ({ h1, subtitle, defaultCity }) => {
               onClick={() => setAiOpen(true)}
               aria-label="AI-помощник"
               title="AI-помощник учитывает прошлые поиски и предпочтения"
-              className="inline-flex items-center gap-1.5 h-10 px-3 rounded-md border border-primary/30 text-primary text-body-sm font-medium hover:bg-primary/5 whitespace-nowrap"
+              className="self-start md:self-auto inline-flex items-center justify-center gap-1.5 h-10 px-3 rounded-md border border-primary/30 text-primary text-body-sm font-medium hover:bg-primary/5 whitespace-nowrap"
             >
               <Sparkles className="w-4 h-4" />
               AI
