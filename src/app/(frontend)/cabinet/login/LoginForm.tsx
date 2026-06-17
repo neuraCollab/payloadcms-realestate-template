@@ -34,7 +34,12 @@ const ERROR_LABELS: Record<string, string> = {
   oauth_unknown_provider: 'Неизвестный провайдер.',
 }
 
-export const LoginForm: React.FC = () => {
+interface Props {
+  /** Настроенные провайдеры (есть client_id/secret) — вычисляется на сервере. */
+  providers?: Array<'google' | 'yandex' | 'mailru'>
+}
+
+export const LoginForm: React.FC<Props> = ({ providers = [] }) => {
   const searchParams = useSearchParams()
   const initialError = searchParams.get('error')
 
@@ -104,18 +109,22 @@ export const LoginForm: React.FC = () => {
         </div>
       ) : null}
 
-      {/* Быстрый вход через провайдеров — Google, Yandex, Mail.ru.
-          Один клик — никакой почты ждать не надо. */}
-      <div>
-        <p className="text-label text-on-surface-variant mb-2">Войти через</p>
-        <OAuthButtons />
-      </div>
+      {providers.length > 0 ? (
+        <>
+          {/* Быстрый вход через провайдеров — только настроенные (есть client_id/secret).
+              Один клик — никакой почты ждать не надо. */}
+          <div>
+            <p className="text-label text-on-surface-variant mb-2">Войти через</p>
+            <OAuthButtons providers={providers} />
+          </div>
 
-      <div className="flex items-center gap-3 text-label text-on-surface-variant">
-        <span className="h-px bg-border flex-1" />
-        или по email
-        <span className="h-px bg-border flex-1" />
-      </div>
+          <div className="flex items-center gap-3 text-label text-on-surface-variant">
+            <span className="h-px bg-border flex-1" />
+            или по email
+            <span className="h-px bg-border flex-1" />
+          </div>
+        </>
+      ) : null}
 
       <form onSubmit={submit} className="space-y-3">
       <Input

@@ -4,22 +4,16 @@ import React from 'react'
 interface Props {
   /** Куда вернуть после успешного логина. Default /cabinet/chats. */
   next?: string
-  /** Только эти провайдеры (по умолчанию все 3). */
+  /** Только эти провайдеры — передаётся с сервера (только настроенные, у кого есть client_id/secret). */
   providers?: Array<'google' | 'yandex' | 'mailru'>
   className?: string
 }
 
-const PROVIDER_META: Record<
-  string,
-  { label: string; icon: React.ReactNode; bg: string; text: string; border?: string }
-> = {
+const PROVIDER_META: Record<string, { label: string; icon: React.ReactNode }> = {
   google: {
     label: 'Google',
-    bg: '#fff',
-    text: '#1f1f1f',
-    border: '#dadce0',
     icon: (
-      <svg viewBox="0 0 18 18" className="w-4 h-4" aria-hidden="true">
+      <svg viewBox="0 0 18 18" className="w-[18px] h-[18px]" aria-hidden="true">
         <path
           fill="#4285F4"
           d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.716v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"
@@ -41,26 +35,22 @@ const PROVIDER_META: Record<
   },
   yandex: {
     label: 'Yandex',
-    bg: '#fc3f1d',
-    text: '#fff',
     icon: (
-      <svg viewBox="0 0 24 24" className="w-4 h-4" aria-hidden="true">
+      <svg viewBox="0 0 24 24" className="w-[18px] h-[18px]" aria-hidden="true">
         <path
-          fill="currentColor"
-          d="M2.04 0 9.7 22.2h-2.1L3.45 9.7H.97L2.04 0Zm12.8 0H9.7l1.97 5.7h-1.4l3.16 9.16-1.69 7.34h5.16L23 0h-5.5l-2.66 9.16L14.84 0Z"
+          fill="#FC3F1D"
+          d="M1.902 16.349v-2.85L0 8.398h.957l1.4 3.938L3.97 7.573h.877l-2.069 5.96v2.815h-.876zm5.638 0h-.734c-.033-.125-.065-.3-.075-.447h-.057c-.246.313-.559.525-1.051.525-.798 0-1.344-.601-1.344-1.704 0-1.2.611-1.956 2.18-1.956h.123v-.333c0-.735-.246-1.048-.735-1.048-.445 0-.824.234-1.112.49l-.167-.766c.256-.213.766-.447 1.336-.447.99 0 1.533.424 1.533 1.781v2.636c0 .534.055 1.002.1 1.267l.003.002zm-.955-2.925h-.101c-1.08 0-1.313.479-1.313 1.2 0 .645.21 1.067.655 1.067.3 0 .601-.2.757-.445l.002-1.822zm2.802 2.925h-.869v-5.621h.869v.491h.056c.154-.21.578-.556 1.101-.556.732 0 1.121.412 1.121 1.268v4.418h-.878v-4.34c0-.423-.188-.57-.524-.57-.364 0-.675.279-.877.559v4.35l.001.001zm3.135-2.592c0-2.08.78-3.094 1.901-3.094.268 0 .545.09.713.211V8.398h.869v7.95h-.645l-.069-.445h-.055c-.245.312-.556.521-1.013.521-1.1 0-1.699-.933-1.699-2.667h-.002zm2.615-2.115c-.176-.176-.366-.266-.656-.266-.7 0-1.035 1.057-1.035 2.202 0 1.313.246 2.114.881 2.114.436 0 .666-.213.811-.435v-3.615zm3.604 4.785c-1.155 0-1.869-.924-1.869-2.647 0-1.804.501-3.116 1.69-3.116.935 0 1.544.701 1.544 2.604v.478h-2.331c0 1.268.355 1.935 1.045 1.935.489 0 .847-.222 1.068-.378l.2.667c-.354.278-.79.456-1.345.456l-.002.001zm-.957-3.394h1.435c0-.957-.155-1.657-.656-1.657-.532 0-.72.657-.78 1.657h.001zm6.095-2.292l-1.045 2.625L24 16.349h-.899l-.87-2.314-.844 2.313h-.855l1.166-2.904-1.057-2.702h.901l.727 2.035.765-2.036h.846z"
         />
       </svg>
     ),
   },
   mailru: {
     label: 'Mail.ru',
-    bg: '#005ff9',
-    text: '#fff',
     icon: (
-      <svg viewBox="0 0 24 24" className="w-4 h-4" aria-hidden="true">
+      <svg viewBox="0 0 24 24" className="w-[18px] h-[18px]" aria-hidden="true">
         <path
-          fill="currentColor"
-          d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12c1.66 0 3.32-.34 4.88-1l-.8-1.66c-1.28.54-2.66.82-4.08.82-5.4 0-9.84-4.44-9.84-9.84C2.16 6.76 6.6 2.32 12 2.32S21.84 6.76 21.84 12c0 1.04-.34 1.96-.96 1.96-.96 0-1.16-1.16-1.16-2.32V7.36h-2v.94C16.92 7.5 15.6 7 14.18 7c-2.96 0-5.4 2.42-5.4 5.4 0 2.96 2.42 5.4 5.4 5.4 1.42 0 2.78-.56 3.78-1.5.7 1 1.8 1.5 3.04 1.5 2.34 0 4.16-2.16 4.16-4.8.04-6.6-5.36-12-11.96-12Zm2.18 16.5c-2.04 0-3.66-1.62-3.66-3.66s1.62-3.66 3.66-3.66 3.66 1.62 3.66 3.66-1.62 3.66-3.66 3.66Z"
+          fill="#005FF9"
+          d="M11.585 5.267c1.834 0 3.558.811 4.824 2.08v.004c0-.609.41-1.068.979-1.068h.145c.891 0 1.073.842 1.073 1.109l.005 9.475c-.063.621.64.941 1.029.543 1.521-1.564 3.342-8.038-.946-11.79-3.996-3.497-9.357-2.921-12.209-.955-3.031 2.091-4.971 6.718-3.086 11.064 2.054 4.74 7.931 6.152 11.424 4.744 1.769-.715 2.586 1.676.749 2.457-2.776 1.184-10.502 1.064-14.11-5.188C-.977 13.521-.847 6.093 5.62 2.245 10.567-.698 17.09.117 21.022 4.224c4.111 4.294 3.872 12.334-.139 15.461-1.816 1.42-4.516.037-4.498-2.031l-.019-.678c-1.265 1.256-2.948 1.988-4.782 1.988-3.625 0-6.813-3.189-6.813-6.812 0-3.659 3.189-6.885 6.814-6.885zm4.561 6.623c-.137-2.653-2.106-4.249-4.484-4.249h-.09c-2.745 0-4.268 2.159-4.268 4.61 0 2.747 1.842 4.481 4.256 4.481 2.693 0 4.464-1.973 4.592-4.306l-.006-.536z"
         />
       </svg>
     ),
@@ -68,33 +58,35 @@ const PROVIDER_META: Record<
 }
 
 /**
- * 3 кнопки OAuth-входа: Google, Yandex, Mail.ru.
+ * Кнопки OAuth-входа (Google, Yandex, Mail.ru) в едином
+ * google-like стиле: белый фон, тонкая серая граница, цветная
+ * иконка провайдера, лёгкая elevation на hover вместо fade.
  *
- * Каждая ведёт на /api/auth/oauth/<provider>/start?next=<...>.
- * Реальные client_id/secret — в .env (см. docs/AUTH-OAUTH-SETUP.md).
- * Без них endpoint вернёт 503, юзер увидит ошибку — но сами кнопки
- * всё равно показываются (чтобы было видно куда нажать когда станет
- * настроено).
+ * `providers` — список провайдеров приходит с сервера уже
+ * отфильтрованным по `getConfiguredProviders()`, так что кнопка без
+ * настроенного client_id/secret здесь просто не появляется.
  */
 export const OAuthButtons: React.FC<Props> = ({
   next = '/cabinet/chats',
-  providers = ['google', 'yandex', 'mailru'],
+  providers = [],
   className = '',
 }) => {
+  const known = providers.filter((id) => PROVIDER_META[id])
+  if (known.length === 0) return null
+
   return (
     <div className={`grid grid-cols-1 sm:grid-cols-3 gap-2 ${className}`}>
-      {providers.map((id) => {
+      {known.map((id) => {
         const meta = PROVIDER_META[id]
         if (!meta) return null
         return (
           <a
             key={id}
             href={`/api/auth/oauth/${id}/start?next=${encodeURIComponent(next)}`}
-            className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-md border text-body-sm font-medium transition-opacity hover:opacity-90"
-            style={{ background: meta.bg, color: meta.text, borderColor: meta.border ?? meta.bg }}
+            className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-md border border-[#dadce0] bg-white text-[#3c4043] text-body-sm font-medium shadow-e0 transition-shadow hover:shadow-e2"
             rel="nofollow"
           >
-            {meta.icon}
+            <span className="shrink-0 inline-flex">{meta.icon}</span>
             {meta.label}
           </a>
         )

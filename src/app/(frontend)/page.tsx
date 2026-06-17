@@ -15,6 +15,7 @@ import { RecentlyViewed } from '@/blocks/house/RecentlyViewed/component'
 import { SeoSections } from '@/components/Home/SeoSections'
 import { FaqSection } from '@/components/Home/FaqSection'
 import { HomeJsonLd } from '@/components/Home/HomeJsonLd'
+import { getConfiguredProviders } from '@/lib/auth/oauth/providers'
 
 // `/` — bespoke брендовая главная MegaDomic.
 //
@@ -60,7 +61,7 @@ export default async function HomePage() {
 
       {/* Однократный toast-prompt справа сверху — Google/Yandex/Mail.
           Сам решает по cookie + localStorage показывать или нет. */}
-      <LoginNudge />
+      <LoginNudge providers={getConfiguredProviders()} />
 
       <Hero
         h1={seo?.h1}

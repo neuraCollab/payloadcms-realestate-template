@@ -2,8 +2,10 @@ import type { Metadata } from 'next'
 import React from 'react'
 import { LoginForm } from './LoginForm'
 import { MessageSquare } from 'lucide-react'
+import { getConfiguredProviders } from '@/lib/auth/oauth/providers'
 
 export default function CabinetLoginPage() {
+  const providers = getConfiguredProviders()
   return (
     <div className="bg-card rounded-md shadow-e1 p-8 text-center max-w-md mx-auto">
       <div className="w-12 h-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center mb-4">
@@ -14,7 +16,7 @@ export default function CabinetLoginPage() {
         Введите email, который вы использовали при отправке сообщения риэлтору —
         мы покажем все ваши переписки.
       </p>
-      <LoginForm />
+      <LoginForm providers={providers} />
     </div>
   )
 }

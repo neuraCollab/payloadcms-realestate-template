@@ -3,6 +3,11 @@ import React from 'react'
 import { X, Sparkles } from 'lucide-react'
 import { OAuthButtons } from '@/components/OAuthButtons'
 
+interface Props {
+  /** Настроенные провайдеры (есть client_id/secret) — вычисляется на сервере. */
+  providers?: Array<'google' | 'yandex' | 'mailru'>
+}
+
 const DISMISS_KEY = 'realty_login_nudge_v1'
 const SHOW_DELAY_MS = 4000
 const COOKIE = 'realty_email='
@@ -17,9 +22,9 @@ const COOKIE = 'realty_email='
  *   • можно закрыть крестиком, тогда флаг ставится навсегда
  *
  * Для уважения 152-ФЗ — никаких пермишенов на pre-fill email мы не
- * запрашиваем. Просто 3 кнопки OAuth.
+ * запрашиваем. Просто кнопки OAuth.
  */
-export const LoginNudge: React.FC = () => {
+export const LoginNudge: React.FC<Props> = ({ providers = [] }) => {
   const [show, setShow] = React.useState(false)
 
   React.useEffect(() => {
@@ -54,7 +59,7 @@ export const LoginNudge: React.FC = () => {
       aria-label="Войти быстро"
       className="fixed top-4 right-4 z-40 w-[340px] max-w-[calc(100vw-2rem)] animate-slideInRight"
     >
-      <div className="bg-card border border-border rounded-md shadow-e3 p-4">
+      <div className="bg-white rounded-xl p-4 shadow-[0_1px_2px_0_rgba(60,64,67,0.3),0_2px_6px_2px_rgba(60,64,67,0.15)]">
         <div className="flex items-start gap-3">
           <span className="shrink-0 inline-flex w-8 h-8 items-center justify-center rounded-full bg-primary/10 text-primary">
             <Sparkles className="w-4 h-4" />
@@ -65,9 +70,11 @@ export const LoginNudge: React.FC = () => {
               Сохраняйте избранное, ведите переписку с риэлторами и
               получайте уведомления о новых матчах.
             </p>
-            <div className="mt-3">
-              <OAuthButtons next="/" />
-            </div>
+            {providers.length > 0 ? (
+              <div className="mt-3">
+                <OAuthButtons next="/" providers={providers} />
+              </div>
+            ) : null}
             <a
               href="/cabinet/login"
               className="block mt-2 text-label text-on-surface-variant hover:text-on-surface"

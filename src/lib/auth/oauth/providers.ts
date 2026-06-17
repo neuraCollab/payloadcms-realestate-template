@@ -82,6 +82,11 @@ export function providerConfigured(id: ProviderId): boolean {
   return Boolean(process.env[cfg.envClientId] && process.env[cfg.envClientSecret])
 }
 
+/** Провайдеры, у которых заданы и client_id, и client_secret — только их кнопки показываем в UI. */
+export function getConfiguredProviders(): ProviderId[] {
+  return PROVIDER_IDS.filter(providerConfigured)
+}
+
 export function getProvider(id: ProviderId): ProviderConfig {
   return PROVIDERS[id]
 }
