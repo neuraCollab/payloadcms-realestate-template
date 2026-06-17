@@ -14,7 +14,12 @@ export const CookieConsent: React.FC = () => {
 
   React.useEffect(() => {
     try {
-      if (!window.localStorage.getItem(STORAGE_KEY)) setOpen(true)
+      if (!window.localStorage.getItem(STORAGE_KEY)) {
+        // Small delay so the banner doesn't slam over content the instant
+        // a page loads — gives the first paint a beat to be seen clean.
+        const t = setTimeout(() => setOpen(true), 1200)
+        return () => clearTimeout(t)
+      }
     } catch {
       /* ignore */
     }
@@ -35,44 +40,32 @@ export const CookieConsent: React.FC = () => {
     <div
       role="dialog"
       aria-label="Согласие на использование cookie"
-      className="fixed bottom-3 left-3 right-3 sm:left-auto sm:right-6 sm:bottom-6 sm:max-w-md z-40"
+      className="fixed inset-x-0 bottom-0 z-40 px-3 pb-3 sm:px-4 sm:pb-4"
     >
-      <div className="bg-card rounded-md shadow-e3 border border-border p-4">
-        <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
-            <Cookie className="w-4 h-4" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="text-title text-on-surface text-sm">Мы используем cookie</h3>
-            <p className="text-body-sm text-on-surface-variant mt-1">
-              Файлы cookie помогают сайту работать — запоминают избранное, фильтры и
-              переписки. Продолжая, вы соглашаетесь с{' '}
-              <Link href="/privacy" className="text-primary hover:underline">
-                политикой обработки данных
-              </Link>
-              .
-            </p>
-            <div className="mt-3 flex gap-2">
-              <button
-                type="button"
-                onClick={accept}
-                className="inline-flex h-9 px-4 items-center justify-center rounded-full bg-primary text-primary-foreground text-body-sm font-medium hover:bg-primary/90"
-              >
-                Принять
-              </button>
-              <Link
-                href="/privacy"
-                className="inline-flex h-9 px-4 items-center justify-center rounded-full border border-border text-body-sm text-on-surface hover:bg-surface-container"
-              >
-                Подробнее
-              </Link>
-            </div>
-          </div>
+      <div className="mx-auto max-w-4xl bg-card rounded-md shadow-e3 border border-border px-4 py-3 flex flex-wrap sm:flex-nowrap items-center gap-3">
+        <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+          <Cookie className="w-4 h-4" />
+        </div>
+        <p className="text-body-sm text-on-surface-variant flex-1 min-w-[200px]">
+          Используем cookie.{' '}
+          <Link href="/privacy" className="text-primary hover:underline">
+            Подробнее
+          </Link>
+          .
+        </p>
+        <div className="flex items-center gap-2 shrink-0 ml-auto">
+          <button
+            type="button"
+            onClick={accept}
+            className="inline-flex h-9 px-4 items-center justify-center rounded-full bg-primary text-primary-foreground text-body-sm font-medium hover:bg-primary/90"
+          >
+            Принять
+          </button>
           <button
             type="button"
             onClick={() => setOpen(false)}
             aria-label="Закрыть"
-            className="p-1 -m-1 rounded-full text-on-surface-variant hover:bg-surface-container"
+            className="p-1.5 rounded-full text-on-surface-variant hover:bg-surface-container"
           >
             <X className="w-4 h-4" />
           </button>

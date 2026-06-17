@@ -97,7 +97,8 @@ export const sutochnoMockProvider: ListingsProvider = {
   normalize(raw) {
     const d = raw.data as Record<string, any>
     const title = String(d.title)
-    const fullAddress = `${d.city}, ${d.street}, ${d.house}`
+    const streetAddress = `${d.street}, ${d.house}`
+    const fullAddress = `${d.city}, ${streetAddress}`
     const slug = slugify(`${title}-${raw.externalId}`)
 
     return {
@@ -112,7 +113,7 @@ export const sutochnoMockProvider: ListingsProvider = {
         location: {
           city: d.city,
           district: d.district,
-          address: fullAddress,
+          address: streetAddress,
           metro: d.metro,
           metroTime: d.metroTime,
         },

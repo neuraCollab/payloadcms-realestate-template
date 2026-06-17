@@ -80,7 +80,7 @@ export const etagiMockProvider: ListingsProvider = {
           title: pick(LAND_TITLES, i),
           city: 'Подмосковье',
           district: `${district.name}-район`,
-          address: `Подмосковье, ${district.name}-район, СНТ Берёзка, уч. ${i + 1}`,
+          address: `СНТ Берёзка, уч. ${i + 1}`,
           area,
           price,
           purpose,
@@ -97,7 +97,8 @@ export const etagiMockProvider: ListingsProvider = {
     const slug = slugify(`${title}-${raw.externalId}`)
 
     if (d.kind === 'commercial') {
-      const fullAddress = `${d.city}, ул. ${d.street}, ${d.house}`
+      const streetAddress = `ул. ${d.street}, ${d.house}`
+      const fullAddress = `${d.city}, ${streetAddress}`
       return {
         source: raw.source,
         externalId: raw.externalId,
@@ -110,7 +111,7 @@ export const etagiMockProvider: ListingsProvider = {
           location: {
             city: d.city,
             district: d.district,
-            address: fullAddress,
+            address: streetAddress,
           },
           coordinates: {
             lat: d.lat,

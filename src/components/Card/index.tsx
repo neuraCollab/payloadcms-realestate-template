@@ -40,7 +40,7 @@ export const Card: React.FC<{
       <div className="relative w-full aspect-[4/3] overflow-hidden">
         {!metaImage && (
           <div className="w-full h-full bg-surface-container flex items-center justify-center">
-            <span className="text-on-surface-variant">No image</span>
+            <span className="text-on-surface-variant">Нет фото</span>
           </div>
         )}
         {metaImage && typeof metaImage !== 'string' && (
@@ -59,7 +59,7 @@ export const Card: React.FC<{
               {categories?.map((category, index) => {
                 if (typeof category === 'object') {
                   const { title: titleFromCategory } = category
-                  const categoryTitle = titleFromCategory || 'Untitled category'
+                  const categoryTitle = titleFromCategory || 'Без названия'
 
                   return (
                     <span 
