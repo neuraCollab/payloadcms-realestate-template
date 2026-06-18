@@ -165,9 +165,7 @@ export const PropertyMap: React.FC<PropertyMapProps> = ({
           <div className="max-w-sm space-y-2">
             <MapIcon className="w-8 h-8 text-on-surface-variant/40 mx-auto" />
             <p className="text-body-sm text-on-surface-variant">
-              Карта временно недоступна — не задан Mapbox-токен. Установите
-              <code className="px-1 mx-1 rounded bg-card font-mono">NEXT_PUBLIC_MAPBOX_TOKEN</code>
-              в <code className="font-mono">.env</code> и перезапустите приложение.
+              Карта временно недоступна.
             </p>
           </div>
         </div>

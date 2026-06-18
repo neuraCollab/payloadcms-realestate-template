@@ -6,7 +6,7 @@ import { PropertyFilters } from '@/components/PropertyFilters'
 import { ListingsPagination } from '@/components/ListingsPagination'
 import { SortSelect, type SortOption } from '@/components/SortSelect'
 import { CatalogClient } from './CatalogClient'
-import type { PropertyType } from '@/components/PropertyFilters/schemas'
+import { FILTER_SCHEMAS, type PropertyType } from '@/components/PropertyFilters/schemas'
 import type { CatalogMapItem } from '@/components/CatalogMap'
 import { buildBreadcrumbJsonLd, buildItemListJsonLd } from '@/utilities/seo'
 
@@ -150,8 +150,11 @@ const pickMeta = (doc: any, type: PropertyType): Array<{ label: string }> => {
     ) as Array<{ label: string }>
   }
   if (type === 'commercial') {
+    const commercialTypeLabel = FILTER_SCHEMAS.commercial
+      .find((f) => f.key === 'commercialType')
+      ?.options?.find((o) => o.value === doc.commercialType)?.label
     return [
-      doc.commercialType ? { label: String(doc.commercialType) } : null,
+      commercialTypeLabel ? { label: commercialTypeLabel } : null,
       doc.area?.total ? { label: `${doc.area.total} м²` } : null,
     ].filter(Boolean) as Array<{ label: string }>
   }

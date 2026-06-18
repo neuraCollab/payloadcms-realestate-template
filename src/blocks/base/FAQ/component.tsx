@@ -28,14 +28,7 @@ export const FAQBlock: React.FC<FAQBlockType> = ({ label, title, items }) => {
         {/* Заголовок */}
         <div className="text-center mb-12 opacity-0 animate-[fadeInUp_0.6s_ease-out_0.1s_forwards]">
           {label && <div className="text-sm text-primary mb-2 font-medium">{label}</div>}
-          <h2 className="text-headline md:text-display text-on-surface">
-            {title.split('Answered').map((part, i) => (
-              <React.Fragment key={i}>
-                {part}
-                {i === 0 && <span className="text-primary">Answered</span>}
-              </React.Fragment>
-            ))}
-          </h2>
+          <h2 className="text-headline md:text-display text-on-surface">{title}</h2>
         </div>
 
         {/* FAQ аккордеон */}

@@ -108,7 +108,8 @@ export const avitoMockProvider: ListingsProvider = {
   normalize(raw) {
     const d = raw.data as Record<string, any>
     const title = String(d.title)
-    const fullAddress = `Москва, ул. ${d.street}, ${d.house}`
+    const streetAddress = `ул. ${d.street}, ${d.house}`
+    const fullAddress = `${d.city}, ${streetAddress}`
     const slug = slugify(`${title}-${raw.externalId}`)
 
     return {
@@ -123,7 +124,7 @@ export const avitoMockProvider: ListingsProvider = {
         location: {
           city: d.city,
           district: d.district,
-          address: fullAddress,
+          address: streetAddress,
           metro: d.metro,
           metroTime: d.metroTime,
         },

@@ -165,7 +165,12 @@ export const CatalogClient: React.FC<Props> = ({
           />
           {resultsSlot}
         </div>
-        <aside className="sticky top-20 self-start h-[calc(100vh-6rem)]">
+        <aside
+          className={cn(
+            'sticky top-20 self-start',
+            cards.length === 0 ? 'h-80' : 'h-[calc(100vh-6rem)]',
+          )}
+        >
           <CatalogMap
             items={mapItems}
             baseUrl={mapBaseUrl}

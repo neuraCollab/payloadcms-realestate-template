@@ -26,8 +26,8 @@ export const MapNearby = async () => {
         title: d.title,
         price: typeof d.price === 'number' ? d.price : undefined,
         address: d.location?.address ?? d.location?.city,
-        lat: d.location?.coordinates?.lat,
-        lng: d.location?.coordinates?.lng,
+        lat: d.coordinates?.lat,
+        lng: d.coordinates?.lng,
         slug: d.slug,
       }))
       .filter(
