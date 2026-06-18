@@ -71,7 +71,7 @@ export const agentsPage = ({
     ctaBlock(),
   ],
   meta: {
-    title: 'Наши агенты — Realty',
+    title: 'Наши агенты — MegaDomic',
     description:
       'Команда профессионалов, которая ведёт сделки с недвижимостью под ключ.',
   },

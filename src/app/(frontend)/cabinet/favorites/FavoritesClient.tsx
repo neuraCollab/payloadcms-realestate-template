@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Heart, Trash2 } from 'lucide-react'
 import { listFavorites, clearFavorites, type FavoriteRef } from '@/lib/favorites'
 import { PropertyCard } from '@/components/PropertyCard'
+import { getTransactionBadge, getPriceSuffix } from '@/utilities/transactionType'
 
 interface FetchedDoc {
   ref: FavoriteRef
@@ -15,12 +16,6 @@ const CATEGORY_LABEL: Record<FavoriteRef['collection'], string> = {
   commercial: 'Коммерческая',
   lands: 'Земля',
   'residential-complexes': 'ЖК',
-}
-
-const BADGE: Record<'sale' | 'rent' | 'daily', string> = {
-  sale: 'Продажа',
-  rent: 'Аренда',
-  daily: 'Посуточно',
 }
 
 export const FavoritesClient: React.FC = () => {
@@ -127,13 +122,9 @@ export const FavoritesClient: React.FC = () => {
                 title={doc.title}
                 address={doc.location?.address}
                 imageUrl={doc.images?.[0]?.image?.url ?? null}
-                badge={
-                  doc.transactionType && BADGE[doc.transactionType as keyof typeof BADGE]
-                    ? BADGE[doc.transactionType as keyof typeof BADGE]
-                    : undefined
-                }
+                badge={getTransactionBadge(doc.transactionType)}
                 price={doc.price}
-                priceSuffix={doc.transactionType === 'rent' ? '/ мес' : undefined}
+                priceSuffix={getPriceSuffix(doc.transactionType)}
                 meta={[
                   { label: CATEGORY_LABEL[ref.collection] },
                   ...(doc.rooms ? [{ label: `${doc.rooms} комн.` }] : []),

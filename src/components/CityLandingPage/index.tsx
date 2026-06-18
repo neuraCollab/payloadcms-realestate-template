@@ -8,6 +8,7 @@ import { PropertyCard } from '@/components/PropertyCard'
 import { POPULAR_FILTERS_FOR_CITY, parseFilterSlug } from '@/lib/cityUrls'
 import { buildBreadcrumbJsonLd } from '@/utilities/seo'
 import { getServerSideURL } from '@/utilities/getURL'
+import { getTransactionBadge, getPriceSuffix } from '@/utilities/transactionType'
 
 interface Props {
   city: any
@@ -312,19 +313,15 @@ export const CityLandingPage: React.FC<Props> = async ({ city }) => {
                 title={doc.title}
                 address={doc.location?.address}
                 imageUrl={doc.images?.[0]?.image?.url ?? null}
-                badge={
-                  doc.transactionType === 'sale'
-                    ? 'Продажа'
-                    : doc.transactionType === 'rent'
-                    ? 'Аренда'
-                    : undefined
-                }
+                badge={getTransactionBadge(doc.transactionType)}
                 price={doc.price}
-                priceSuffix={doc.transactionType === 'rent' ? '/ мес' : undefined}
+                priceSuffix={getPriceSuffix(doc.transactionType)}
                 meta={[
                   doc.rooms ? { label: `${doc.rooms} комн.` } : null,
                   doc.area?.total ? { label: `${doc.area.total} м²` } : null,
                 ].filter(Boolean) as Array<{ label: string }>}
+                favCollection="flats"
+                favId={doc.id}
               />
             ))}
           </div>

@@ -9,6 +9,7 @@ import { CatalogClient } from './CatalogClient'
 import { FILTER_SCHEMAS, type PropertyType } from '@/components/PropertyFilters/schemas'
 import type { CatalogMapItem } from '@/components/CatalogMap'
 import { buildBreadcrumbJsonLd, buildItemListJsonLd } from '@/utilities/seo'
+import { getTransactionBadge, getPriceSuffix } from '@/utilities/transactionType'
 
 const PAGE_SIZE = 20
 
@@ -125,9 +126,7 @@ const buildWhere = (type: PropertyType, sp: Record<string, string | undefined>) 
 
 const pickBadge = (doc: any, type: PropertyType): string | undefined => {
   if (type === 'residential-complexes') return undefined
-  if (doc.transactionType === 'sale') return 'Продажа'
-  if (doc.transactionType === 'rent') return 'Аренда'
-  return undefined
+  return getTransactionBadge(doc.transactionType)
 }
 
 const pickMeta = (doc: any, type: PropertyType): Array<{ label: string }> => {
@@ -214,7 +213,7 @@ export const PropertyListingPage: React.FC<Props> = async ({
     imageUrl: doc.images?.[0]?.image?.url ?? null,
     badge: pickBadge(doc, type),
     price: typeof doc.price === 'number' ? doc.price : undefined,
-    priceSuffix: doc.transactionType === 'rent' ? '/ мес' : undefined,
+    priceSuffix: getPriceSuffix(doc.transactionType),
     meta: pickMeta(doc, type),
   }))
 

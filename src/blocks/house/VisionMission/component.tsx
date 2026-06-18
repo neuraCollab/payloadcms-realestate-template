@@ -42,16 +42,16 @@ export const VisionMissionBlock: React.FC<VisionMissionBlockType> = ({
         </div>
 
         {/* Нижняя часть - статистика */}
-        <div className="bg-muted/40 rounded-3xl p-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="bg-muted/40 rounded-3xl p-6 sm:p-8 md:p-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-6 md:gap-8">
             {stats.map((stat, index) => (
-              <div key={index} className="text-center relative">
+              <div key={index} className="text-center relative min-w-0">
                 {/* Разделительная точка */}
                 {index < stats.length - 1 && (
                   <div className="hidden md:block absolute top-1/2 right-0 w-2 h-2 rounded-full bg-primary/20 translate-x-full" />
                 )}
                 <div className="text-headline text-primary mb-2">{stat.value}</div>
-                <div className="text-muted-foreground">{stat.label}</div>
+                <div className="text-muted-foreground text-body-sm break-words">{stat.label}</div>
               </div>
             ))}
           </div>

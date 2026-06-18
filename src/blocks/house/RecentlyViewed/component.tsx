@@ -3,6 +3,7 @@ import React from 'react'
 import { Clock } from 'lucide-react'
 import { useRecentlyViewed, clearRecentlyViewed, type RecentRef } from '@/lib/recentlyViewed'
 import { PropertyCard } from '@/components/PropertyCard'
+import { getTransactionBadge, getPriceSuffix } from '@/utilities/transactionType'
 
 export type RecentlyViewedBlockType = {
   blockType: 'recently-viewed'
@@ -13,12 +14,6 @@ export type RecentlyViewedBlockType = {
 interface FetchedDoc {
   ref: RecentRef
   doc: any | null
-}
-
-const BADGE: Record<string, string> = {
-  sale: 'Продажа',
-  rent: 'Аренда',
-  daily: 'Посуточно',
 }
 
 const CATEGORY_LABEL: Record<RecentRef['collection'], string> = {
@@ -106,13 +101,9 @@ export const RecentlyViewed: React.FC<RecentlyViewedBlockType> = ({
                   title={doc.title}
                   address={doc.location?.address}
                   imageUrl={doc.images?.[0]?.image?.url ?? null}
-                  badge={
-                    doc.transactionType && BADGE[doc.transactionType]
-                      ? BADGE[doc.transactionType]
-                      : undefined
-                  }
+                  badge={getTransactionBadge(doc.transactionType)}
                   price={doc.price}
-                  priceSuffix={doc.transactionType === 'rent' ? '/ мес' : undefined}
+                  priceSuffix={getPriceSuffix(doc.transactionType)}
                   meta={[
                     { label: CATEGORY_LABEL[ref.collection] },
                     ...(doc.rooms ? [{ label: `${doc.rooms} комн.` }] : []),

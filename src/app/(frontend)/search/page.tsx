@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { PropertyCard } from '@/components/PropertyCard'
 import { SearchFilters } from '@/components/SearchFilters'
 import { AiHelperButton } from '@/components/AiHelperButton'
+import { getTransactionBadge, getPriceSuffix } from '@/utilities/transactionType'
 import PageClient from './page.client'
 
 // SSG skipped — DB unreachable at build-time inside docker compose.
@@ -55,12 +56,6 @@ const CATEGORY_LABEL: Record<Category, string> = {
   commercial: 'Коммерческая',
   lands: 'Земля',
   'residential-complexes': 'Жилые комплексы',
-}
-
-const BADGE: Record<'sale' | 'rent' | 'daily', string> = {
-  sale: 'Продажа',
-  rent: 'Аренда',
-  daily: 'Посуточно',
 }
 
 const parseIntOrUndef = (v: string | undefined): number | undefined => {
@@ -297,9 +292,9 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
                 title={hit.title}
                 address={hit.address ?? hit.city}
                 imageUrl={hit.imageUrl}
-                badge={hit.transactionType ? BADGE[hit.transactionType] : undefined}
+                badge={getTransactionBadge(hit.transactionType)}
                 price={hit.price}
-                priceSuffix={hit.transactionType === 'rent' ? '/ мес' : undefined}
+                priceSuffix={getPriceSuffix(hit.transactionType)}
                 meta={hit.meta}
                 favCollection={hit.collection}
                 favId={hit.id}

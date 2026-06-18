@@ -8,16 +8,11 @@ import {
   type RecentRef,
 } from '@/lib/recentlyViewed'
 import { PropertyCard } from '@/components/PropertyCard'
+import { getTransactionBadge, getPriceSuffix } from '@/utilities/transactionType'
 
 interface FetchedDoc {
   ref: RecentRef
   doc: any | null
-}
-
-const BADGE: Record<string, string> = {
-  sale: 'Продажа',
-  rent: 'Аренда',
-  daily: 'Посуточно',
 }
 
 const CATEGORY_LABEL: Record<RecentRef['collection'], string> = {
@@ -123,13 +118,9 @@ export const RecentClient: React.FC = () => {
                 title={doc.title}
                 address={doc.location?.address}
                 imageUrl={doc.images?.[0]?.image?.url ?? null}
-                badge={
-                  doc.transactionType && BADGE[doc.transactionType]
-                    ? BADGE[doc.transactionType]
-                    : undefined
-                }
+                badge={getTransactionBadge(doc.transactionType)}
                 price={doc.price}
-                priceSuffix={doc.transactionType === 'rent' ? '/ мес' : undefined}
+                priceSuffix={getPriceSuffix(doc.transactionType)}
                 meta={[
                   { label: CATEGORY_LABEL[ref.collection] },
                   ...(doc.rooms ? [{ label: `${doc.rooms} комн.` }] : []),

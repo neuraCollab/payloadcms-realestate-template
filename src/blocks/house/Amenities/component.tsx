@@ -47,14 +47,14 @@ export const AmenitiesBlock: React.FC<AmenitiesBlockType> = ({
           <div className="rounded-3xl overflow-hidden">
             <img
               src={typeof image === 'object' && image?.url ? image.url : '/placeholder.jpg'}
-              alt="Luxury amenities"
+              alt="Удобства комплекса"
               className="w-full h-[600px] object-cover"
             />
           </div>
 
           {/* Список удобств */}
           <div className="absolute top-8 right-8 bg-card/90 backdrop-blur-sm rounded-3xl p-8 w-80">
-            <div className="text-primary font-medium mb-4">Including:</div>
+            <div className="text-primary font-medium mb-4">В составе:</div>
             <div className="space-y-4">
               {amenities.map((amenity, index) => {
                 const Icon = ICONS[amenity.icon] || Sparkles

@@ -31,6 +31,16 @@ const SEO_DESCRIPTION: Record<TileIconKey, string> = {
     'Офисы, торговля, склады и общепит. Аренда и покупка без скрытых комиссий.',
 }
 
+// Когда в коллекции пока нет ни одного документа (цена/город неизвестны),
+// показываем короткую заглушку вместо пустого места — иначе плитка
+// выглядит «битой» на фоне соседей с ценой.
+const FALLBACK_SUBTITLE: Record<TileIconKey, string> = {
+  flats: 'Смотреть каталог',
+  house: 'Смотреть каталог',
+  land: 'Смотреть каталог',
+  commercial: 'Смотреть каталог',
+}
+
 type Props = {
   index: number
   label: string
@@ -136,12 +146,11 @@ export const CategoryTileClient: React.FC<Props> = ({
               ячейка), переключаем opacity. Так высота плитки
               стабильная и текст не съезжает. */}
           <span className="relative block min-h-[2.4em]">
-            {priceText ? (
-              <span className="absolute inset-0 text-label text-on-surface-variant md:group-hover:opacity-0 transition-opacity duration-200 line-clamp-1">
-                от {priceText}
-                {preview.city ? ` · ${preview.city}` : ''}
-              </span>
-            ) : null}
+            <span className="absolute inset-0 text-label text-on-surface-variant md:group-hover:opacity-0 transition-opacity duration-200 line-clamp-1">
+              {priceText
+                ? `от ${priceText}${preview.city ? ` · ${preview.city}` : ''}`
+                : FALLBACK_SUBTITLE[iconKey]}
+            </span>
 
             {/* SEO-описание поверх (md+). На мобильном — sr-only ниже. */}
             <span

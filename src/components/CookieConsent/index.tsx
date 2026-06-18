@@ -11,6 +11,7 @@ const STORAGE_KEY = 'realty_cookie_consent_v1'
  */
 export const CookieConsent: React.FC = () => {
   const [open, setOpen] = React.useState(false)
+  const bannerRef = React.useRef<HTMLDivElement>(null)
 
   React.useEffect(() => {
     try {
@@ -25,6 +26,29 @@ export const CookieConsent: React.FC = () => {
     }
   }, [])
 
+  // The banner is `fixed`, so on short pages it sits directly on top of
+  // the last in-flow element (e.g. a card on a catalog page with few
+  // results). Reserve the same amount of space at the bottom of the page
+  // so it never overlaps real content; re-measure on resize since the
+  // banner wraps to two lines on narrow viewports.
+  React.useEffect(() => {
+    if (!open) return
+    const el = bannerRef.current
+    if (!el) return
+
+    const sync = () => {
+      document.body.style.paddingBottom = `${el.offsetHeight}px`
+    }
+    sync()
+
+    const ro = new ResizeObserver(sync)
+    ro.observe(el)
+    return () => {
+      ro.disconnect()
+      document.body.style.paddingBottom = ''
+    }
+  }, [open])
+
   const accept = () => {
     try {
       window.localStorage.setItem(STORAGE_KEY, 'accepted')
@@ -38,6 +62,7 @@ export const CookieConsent: React.FC = () => {
 
   return (
     <div
+      ref={bannerRef}
       role="dialog"
       aria-label="Согласие на использование cookie"
       className="fixed inset-x-0 bottom-0 z-40 px-3 pb-3 sm:px-4 sm:pb-4"

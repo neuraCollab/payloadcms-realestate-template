@@ -31,6 +31,16 @@ export interface PropertyCardProps {
 
 const formatPrice = (n: number) => n.toLocaleString('ru-RU') + ' ₽'
 
+// Без своего фото показываем тематическую заглушку по типу объекта —
+// иначе квартира, участок и склад выглядят одинаково (один и тот же
+// дом на фото), что бросается в глаза в каталоге с разными категориями.
+const FALLBACK_BY_COLLECTION: Record<FavCollection, string> = {
+  flats: '/category-flats.jpg',
+  commercial: '/category-commercial.jpg',
+  lands: '/category-land.jpg',
+  'residential-complexes': '/category-houses.jpg',
+}
+
 export const PropertyCard: React.FC<PropertyCardProps> = ({
   href,
   title,
@@ -56,10 +66,11 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
       )}
     >
       <div className="relative aspect-[16/10] bg-surface-container">
-        {/* При отсутствии настоящего фото подставляем единый
-            placeholder.jpg — карточка не выглядит пустой. */}
+        {/* При отсутствии настоящего фото подставляем тематическую
+            заглушку по категории — карточка не выглядит пустой и не
+            путает пользователя одинаковым фото на разных типах. */}
         <Image
-          src={imageUrl || '/placeholder.jpg'}
+          src={imageUrl || (favCollection ? FALLBACK_BY_COLLECTION[favCollection] : '/placeholder.jpg')}
           alt={title}
           fill
           sizes={

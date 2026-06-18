@@ -19,7 +19,7 @@ export const contactPage = ({
             label: 'Контакты',
             title: 'Свяжитесь с нами сегодня — мы поможем',
             image: primaryImageId,
-            email: 'hello@realty.local',
+            email: 'hello@megadomic.ru',
             phone: '+7 (495) 123-45-67',
             location: 'Москва, Тверская 12',
           },
@@ -38,11 +38,11 @@ export const contactPage = ({
     {
       blockType: 'map',
       title: 'Наш офис на карте',
-      center: { lat: 59.9398, lng: 30.3146, zoom: 15 },
+      center: { lat: 55.7651, lng: 37.6055, zoom: 15 },
       autoLoad: false,
       officeMarker: {
         label: 'Наш офис',
-        address: 'Санкт-Петербург, Дворцовая площадь, 2 (Государственный Эрмитаж)',
+        address: 'Москва, ул. Тверская, д. 12, стр. 1',
       },
     },
     {
@@ -70,8 +70,8 @@ export const contactPage = ({
     ctaBlock(),
   ],
   meta: {
-    title: 'Контакты — Realty',
+    title: 'Контакты — MegaDomic',
     description:
-      'Свяжитесь с командой Realty — email, телефон, форма обратной связи и карта объектов.',
+      'Свяжитесь с командой MegaDomic — email, телефон, форма обратной связи и карта объектов.',
   },
 })

@@ -3,6 +3,7 @@ import type { Payload, PayloadRequest, RequiredDataFromCollectionSlug } from 'pa
 import { aboutPage } from './about-page'
 import { agentsPage } from './agents-page'
 import { blogsPage } from './blogs-page'
+import { contactFormRu } from './contact-form-ru'
 import { contactPage } from './contact-page'
 import { homeV2Page } from './home-v2-page'
 import type { PageDeps } from './shared'
@@ -29,10 +30,19 @@ export const seedPages = async ({
     payload.find({ collection: 'forms', limit: 1, depth: 0 }),
   ])
 
+  // Лёгкий seed (в отличие от полного src/endpoints/seed) не создаёт forms —
+  // без этого блок contact-us-form на /contact молча не рендерится.
+  let contactFormId = (forms.docs[0]?.id as number | undefined) ?? null
+  if (!contactFormId) {
+    payload.logger.info('Seeding contact form…')
+    const created = await payload.create({ collection: 'forms', depth: 0, data: contactFormRu, req })
+    contactFormId = created.id as number
+  }
+
   const deps: PageDeps = {
     primaryImageId: (media.docs[0]?.id as number | undefined) ?? null,
     secondaryImageId: (media.docs[1]?.id as number | undefined) ?? null,
-    contactFormId: (forms.docs[0]?.id as number | undefined) ?? null,
+    contactFormId,
   }
 
   const pages: RequiredDataFromCollectionSlug<'pages'>[] = [

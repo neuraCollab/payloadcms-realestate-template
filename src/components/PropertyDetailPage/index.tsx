@@ -159,6 +159,9 @@ export const PropertyDetailPage: React.FC<Props> = async ({
               {data.transactionType === 'rent' ? (
                 <div className="text-body-sm text-on-surface-variant">в месяц</div>
               ) : null}
+              {data.transactionType === 'daily' ? (
+                <div className="text-body-sm text-on-surface-variant">в сутки</div>
+              ) : null}
             </div>
           ) : null}
         </div>

@@ -35,6 +35,16 @@ interface Props {
 
 const formatPrice = (n: number) => n.toLocaleString('ru-RU') + ' ₽'
 
+// Тематическая заглушка по категории — без неё карточки без своего
+// фото показывали голый блок «Нет фото», что в каталоге с десятками
+// объектов выглядит как будто сайт сломан.
+const FALLBACK_BY_TYPE: Record<PropertyType, string> = {
+  flats: '/category-flats.jpg',
+  commercial: '/category-commercial.jpg',
+  lands: '/category-land.jpg',
+  'residential-complexes': '/category-houses.jpg',
+}
+
 /**
  * CatalogClient — клиентский каркас каталога с картой.
  *
@@ -168,7 +178,15 @@ export const CatalogClient: React.FC<Props> = ({
         <aside
           className={cn(
             'sticky top-20 self-start',
-            cards.length === 0 ? 'h-80' : 'h-[calc(100vh-6rem)]',
+            // A sticky full-viewport map next to a couple of small cards
+            // towers awkwardly over the list. Scale the map's height to
+            // the list so the split-view stays visually balanced — only
+            // a longer list earns the full sticky height.
+            cards.length === 0
+              ? 'h-80'
+              : cards.length <= 4
+              ? 'h-[480px]'
+              : 'h-[calc(100vh-6rem)]',
           )}
         >
           <CatalogMap
@@ -269,24 +287,18 @@ const CardList: React.FC<{
             className="grid grid-cols-[120px_1fr] sm:grid-cols-[180px_1fr] gap-3 sm:gap-4 p-2 sm:p-3"
           >
             <div className="relative aspect-[4/3] bg-surface-container rounded overflow-hidden">
-              {c.imageUrl ? (
-                <Image
-                  src={c.imageUrl}
-                  alt={c.title}
-                  fill
-                  sizes="180px"
-                  className="object-cover"
-                  // Первые 3 строки списка обычно above-the-fold даже на
-                  // тесном ноутбучном экране — на них priority снимает
-                  // lazy и хинтит fetchpriority=high. Заметно ускоряет
-                  // LCP, остальные грузятся как обычно.
-                  priority={i < 3}
-                />
-              ) : (
-                <div className="absolute inset-0 grid place-items-center text-on-surface-variant text-label">
-                  Нет фото
-                </div>
-              )}
+              <Image
+                src={c.imageUrl || FALLBACK_BY_TYPE[type]}
+                alt={c.title}
+                fill
+                sizes="180px"
+                className="object-cover"
+                // Первые 3 строки списка обычно above-the-fold даже на
+                // тесном ноутбучном экране — на них priority снимает
+                // lazy и хинтит fetchpriority=high. Заметно ускоряет
+                // LCP, остальные грузятся как обычно.
+                priority={i < 3}
+              />
               {c.badge ? (
                 <span className="absolute top-2 left-2 inline-flex h-6 px-2 items-center rounded-full bg-primary text-primary-foreground text-label font-medium">
                   {c.badge}

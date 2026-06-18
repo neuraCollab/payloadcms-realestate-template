@@ -171,7 +171,7 @@ export const homeV2Page = ({
     ctaBlock(),
   ],
   meta: {
-    title: 'Главная (Realestic) — Realty',
+    title: 'Главная (Realestic) — MegaDomic',
     description:
       'Найдите дом, который подходит вашей жизни. Демонстрационная главная страница в стиле Realestic.',
   },

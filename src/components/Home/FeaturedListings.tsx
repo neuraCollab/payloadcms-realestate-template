@@ -4,6 +4,7 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { ArrowRight } from 'lucide-react'
 import { PropertyCard } from '@/components/PropertyCard'
+import { getTransactionBadge, getPriceSuffix } from '@/utilities/transactionType'
 
 // «Витрина объектов» главной — 8 свежих активных квартир.
 // Кнопка «Все объекты» справа вверху (см. бриф п.2.4).
@@ -67,9 +68,9 @@ export const FeaturedListings = async () => {
                     title={d.title}
                     address={d.location?.address ?? d.location?.city}
                     imageUrl={d.images?.[0]?.image?.url ?? null}
-                    badge={d.transactionType === 'rent' ? 'Аренда' : 'Продажа'}
+                    badge={getTransactionBadge(d.transactionType)}
                     price={typeof d.price === 'number' ? d.price : undefined}
-                    priceSuffix={d.transactionType === 'rent' ? '/ мес' : undefined}
+                    priceSuffix={getPriceSuffix(d.transactionType)}
                     meta={meta}
                     favCollection="flats"
                     favId={d.id}

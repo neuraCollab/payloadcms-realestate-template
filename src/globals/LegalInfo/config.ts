@@ -1,5 +1,7 @@
 import type { GlobalConfig } from 'payload'
 
+import { revalidateLegalInfo } from './hooks/revalidateLegalInfo'
+
 /**
  * Реквизиты юр. лица — глобальный документ, редактируется в админке.
  * Используется футером, страницами /privacy и /terms, а также чекбоксом
@@ -14,6 +16,9 @@ export const LegalInfo: GlobalConfig = {
   },
   admin: {
     group: 'Юридическое',
+  },
+  hooks: {
+    afterChange: [revalidateLegalInfo],
   },
   fields: [
     {

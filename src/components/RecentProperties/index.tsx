@@ -2,6 +2,7 @@ import React from 'react'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { PropertyCard } from '@/components/PropertyCard'
+import { getTransactionBadge, getPriceSuffix } from '@/utilities/transactionType'
 
 export const RecentProperties: React.FC = async () => {
   const payload = await getPayload({ config })
@@ -26,9 +27,9 @@ export const RecentProperties: React.FC = async () => {
             title={doc.title}
             address={doc.location?.address}
             imageUrl={doc.images?.[0]?.image?.url ?? null}
-            badge={doc.transactionType === 'sale' ? 'Продажа' : 'Аренда'}
+            badge={getTransactionBadge(doc.transactionType)}
             price={doc.price}
-            priceSuffix={doc.transactionType === 'rent' ? '/ мес' : undefined}
+            priceSuffix={getPriceSuffix(doc.transactionType)}
           />
         ))}
       </div>

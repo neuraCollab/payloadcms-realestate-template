@@ -34,7 +34,7 @@ export const AgentsSearch: React.FC<Props> = ({ initialQ }) => {
         type="search"
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder="Имя, агентство, специализация…"
+        placeholder="Имя или специализация…"
         className="flex-1 bg-transparent border-none outline-none text-body-sm placeholder-on-surface-variant"
       />
       {value ? (

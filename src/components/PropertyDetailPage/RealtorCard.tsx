@@ -158,6 +158,7 @@ export const RealtorCard: React.FC<Props> = async ({
                         <div className="text-label text-on-surface-variant">
                           {formatPrice(d.price)}
                           {d.transactionType === 'rent' ? ' / мес' : ''}
+                          {d.transactionType === 'daily' ? ' / сутки' : ''}
                         </div>
                       ) : null}
                     </div>

@@ -56,8 +56,8 @@ export const blogsPage = ({
     ctaBlock(),
   ],
   meta: {
-    title: 'Блог — Realty',
+    title: 'Блог — MegaDomic',
     description:
-      'Гайды и обзоры рынка недвижимости от команды Realty.',
+      'Гайды и обзоры рынка недвижимости от команды MegaDomic.',
   },
 })

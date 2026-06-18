@@ -31,9 +31,9 @@ const FOOTER_NAV = [
 
 // Mock legal info. Реквизиты — заменить в админке /admin/globals/legal-info.
 const LEGAL_INFO_MOCK = {
-  displayName: 'Realty',
+  displayName: 'MegaDomic',
   legalForm: 'ooo' as const,
-  fullName: 'Общество с ограниченной ответственностью «Агентство Недвижимости Реалти»',
+  fullName: 'Общество с ограниченной ответственностью «МегаДомик»',
   ceoName: 'Иванов Иван Иванович',
   ceoTitle: 'Генеральный директор',
   ogrn: '1234567890123',
@@ -45,7 +45,7 @@ const LEGAL_INFO_MOCK = {
   legalAddress: '125009, г. Москва, ул. Тверская, д. 12, стр. 1, оф. 405',
   actualAddress: '125009, г. Москва, ул. Тверская, д. 12, стр. 1, оф. 405',
   phone: '+7 (495) 123-45-67',
-  email: 'hello@realty.local',
+  email: 'hello@megadomic.ru',
   workingHours: 'Пн–Пт 10:00–19:00, Сб 11:00–17:00',
   privacyPolicyUrl: '/privacy',
   termsUrl: '/terms',

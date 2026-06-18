@@ -38,10 +38,15 @@ export const Card: React.FC<{
       ref={card.ref}
     >
       <div className="relative w-full aspect-[4/3] overflow-hidden">
+        {/* Без обложки поста показываем тематическую заглушку — пустой
+            серый блок на каждой карточке блога выглядит как баг. */}
         {!metaImage && (
-          <div className="w-full h-full bg-surface-container flex items-center justify-center">
-            <span className="text-on-surface-variant">Нет фото</span>
-          </div>
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src="/placeholder.jpg"
+            alt=""
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
         )}
         {metaImage && typeof metaImage !== 'string' && (
           <Media 
