@@ -45,11 +45,10 @@ export async function POST(req: Request): Promise<Response> {
 
   const hasThreads = found.totalDocs > 0
 
+  // The client must go through /api/auth/magic-link and /api/auth/verify to get a cookie.
+  // This endpoint only tells the client if the email is valid and if they have threads.
+  // We no longer set the cookie here to prevent auth bypass.
   const res = Response.json({ success: true, hasThreads, email })
-  res.headers.append(
-    'Set-Cookie',
-    `${COOKIE_NAME}=${encodeURIComponent(email)}; Path=/; Max-Age=${MAX_AGE}; SameSite=Lax`,
-  )
   return res
 }
 
