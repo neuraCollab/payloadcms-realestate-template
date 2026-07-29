@@ -2,6 +2,7 @@
 import React from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight, MapPin, Home as HomeIcon, Bed, Square } from 'lucide-react'
+import DOMPurify from 'isomorphic-dompurify'
 import {
   FLAT_OPTIONS,
   HOUSE_OPTIONS,
@@ -218,7 +219,9 @@ function descriptionHtml(input: any): string {
   const trimmed = input.trim()
   if (!trimmed) return ''
   // tiptap-вывод начинается с <p> / <h2> и т.п.
-  if (trimmed.startsWith('<')) return trimmed
+  if (trimmed.startsWith('<')) {
+    return DOMPurify.sanitize(trimmed)
+  }
   return `<p>${escapeHtml(trimmed)}</p>`
 }
 

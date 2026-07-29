@@ -1,0 +1,25 @@
+
+> duka2@1.0.0 dev:prod /app
+> cross-env NODE_OPTIONS=--no-deprecation rm -rf .next && pnpm build && pnpm start
+
+
+> duka2@1.0.0 build /app
+> cross-env NODE_OPTIONS="--no-deprecation --max-old-space-size=3072" next build
+
+   ▲ Next.js 15.4.7
+
+   Creating an optimized production build ...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+ ✓ Compiled successfully in 2.7min
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+unhandledRejection [Error [PageNotFoundError]: Cannot find module for page: /_document] {
+  type: 'PageNotFoundError',
+  code: 'ENOENT'
+}
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
