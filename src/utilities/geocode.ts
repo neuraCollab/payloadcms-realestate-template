@@ -245,21 +245,3 @@ export function normalizeAddress(address: string): string {
     .replace(/\s+/g, ' ') // Снова убираем множественные пробелы
     .trim()
 }
-
-// Пример использования:
-/*
-// Базовое геокодирование
-const result = await geocodeAddress('Москва, Тверская улица, 1');
-if (result) {
-  console.log('Координаты:', result.lat, result.lng);
-  console.log('Адрес:', result.displayName);
-}
-
-// Обратное геокодирование
-const address = await reverseGeocode(55.7558, 37.6173);
-console.log('Адрес по координатам:', address);
-
-// Расчет расстояния
-const distance = calculateDistance(55.7558, 37.6173, 59.9343, 30.3351);
-console.log('Расстояние Москва-СПб:', distance, 'км');
-*/
