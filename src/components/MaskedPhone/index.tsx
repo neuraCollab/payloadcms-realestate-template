@@ -2,6 +2,7 @@
 import React from 'react'
 import { Phone, Eye } from 'lucide-react'
 import { cn } from '@/utilities/ui'
+import { trackEvent } from '@/lib/analytics'
 
 interface Props {
   phone: string
@@ -9,6 +10,8 @@ interface Props {
   variant?: 'inline' | 'button'
   className?: string
   label?: string
+  collection?: string
+  propertyId?: string
 }
 
 // Keeps the last `keep` digits and a +country prefix visible; the middle is
@@ -33,6 +36,8 @@ export const MaskedPhone: React.FC<Props> = ({
   variant = 'button',
   className,
   label,
+  collection,
+  propertyId,
 }) => {
   const [revealed, setRevealed] = React.useState(false)
 
@@ -61,6 +66,9 @@ export const MaskedPhone: React.FC<Props> = ({
       onClick={(e) => {
         e.preventDefault()
         e.stopPropagation()
+        if (!revealed) {
+          trackEvent('phone_reveal', { collection, id: propertyId })
+        }
         setRevealed(true)
       }}
       aria-label="Показать телефон"

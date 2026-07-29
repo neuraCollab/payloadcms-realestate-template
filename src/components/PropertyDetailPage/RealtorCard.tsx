@@ -106,7 +106,13 @@ export const RealtorCard: React.FC<Props> = async ({
 
       {/* Masked phone — top of CTAs row when present */}
       {realtor.phone ? (
-        <MaskedPhone phone={realtor.phone} variant="button" className="w-full" />
+        <MaskedPhone
+          phone={realtor.phone}
+          variant="button"
+          className="w-full"
+          collection={propertyCollection}
+          propertyId={String(propertyId)}
+        />
       ) : null}
 
       {/* CTAs */}
@@ -121,6 +127,8 @@ export const RealtorCard: React.FC<Props> = async ({
           realtorId={String(realtor.id)}
           realtorName={realtor.name ?? 'Риэлтор'}
           propertyTitle={propertyTitle}
+          propertyCollection={propertyCollection}
+          propertyId={String(propertyId)}
         />
       </div>
 

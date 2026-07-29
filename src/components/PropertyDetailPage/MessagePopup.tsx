@@ -6,6 +6,7 @@ import { X, Paperclip, Send, FileText } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ConsentCheckbox } from '@/components/ConsentCheckbox'
+import { trackEvent } from '@/lib/analytics'
 
 interface Props {
   open: boolean
@@ -13,6 +14,8 @@ interface Props {
   realtorId: string
   realtorName: string
   propertyTitle?: string
+  propertyCollection?: string
+  propertyId?: string
 }
 
 const MAX_BYTES = 10 * 1024 * 1024 // 10MB
@@ -25,6 +28,8 @@ export const MessagePopup: React.FC<Props> = ({
   realtorId,
   realtorName,
   propertyTitle,
+  propertyCollection,
+  propertyId,
 }) => {
   const router = useRouter()
   const [name, setName] = React.useState('')
@@ -125,6 +130,9 @@ export const MessagePopup: React.FC<Props> = ({
       const res = await fetch('/api/messages', { method: 'POST', body: form })
       if (res.ok) {
         const data = await res.json().catch(() => ({}))
+
+        trackEvent('message_sent', { collection: propertyCollection, id: String(propertyId) })
+
         setSuccess(true)
         setMessage('')
         setFile(null)

@@ -1,34 +1,5 @@
 # Backlog
 
-## [1] Добавить аналитику для действий \`phone_reveal\`, \`message_sent\`, \`ai_search\`
-
-**Тип:** feature
-**Приоритет:** high
-**Файлы:**
-- \`src/components/MaskedPhone/index.tsx\`
-- \`src/components/PropertyDetailPage/MessagePopup.tsx\`
-- \`src/app/(frontend)/search/page.tsx\`
-- \`src/app/(frontend)/search/page.client.tsx\`
-
-**Контекст:**
-В файле \`docs/ANALYTICS-SETUP.md\` есть TODO: "после задач #4, #5 из аудита — phone_reveal, message_sent, lead_callback".
-Событие \`lead_callback\` уже интегрировано (см. \`ContactDialog.tsx\`). Однако, \`phone_reveal\` (раскрытие номера телефона), \`message_sent\` (отправка сообщения риэлтору) и \`ai_search\` (AI-запрос в поиске) не триггерятся.
-
-**Что нужно сделать:**
-1. \`MaskedPhone/index.tsx\`: импортировать \`trackEvent\` из \`@/lib/analytics\`. В \`onClick\` кнопки добавить \`trackEvent('phone_reveal')\`. Для передачи коллекции и id можно добавить опциональные пропсы \`collection?: string\` и \`propertyId?: string\`, чтобы передавать их в событие (как описано в документации).
-2. \`MessagePopup.tsx\`: после успешной отправки сообщения (внутри \`handleSubmit\`, перед/после \`setSent(true)\`) добавить вызов \`trackEvent('message_sent', { collection: propertyCollection, id: String(propertyId) })\`.
-3. \`search/page.client.tsx\`: добавить \`useEffect\`, который проверяет пропс (например \`isAiSearch: boolean\`) и вызывает \`trackEvent('ai_search')\`. В \`search/page.tsx\` прокинуть этот пропс в \`PageClient\`.
-
-**Критерии приёмки:**
-- Вызов \`trackEvent('phone_reveal')\` срабатывает при клике на замаскированный номер.
-- Вызов \`trackEvent('message_sent')\` срабатывает при успешной отправке формы сообщения.
-- Вызов \`trackEvent('ai_search')\` срабатывает при открытии страницы поиска с AI-режимом (наличие \`ai=1\` в query-параметрах).
-- Все существующие тесты остаются зелёными.
-
-**Оценка сложности:** small (< 30 мин)
-
----
-
 ## [2] Устранить ошибки линтера: модуль \`lib/\`
 
 **Тип:** tech-debt
@@ -130,10 +101,10 @@
 ---
 ## Сводка
 
-- **High:** 1 (1 feature)
+- **High:** 0
 - **Medium:** 4 (2 tech-debt, 1 test, 1 bug)
 - **Low:** 0
-- **Total:** 5 задач
+- **Total:** 4 задачи
 
 ## Требуют уточнения
 - В документации (`docs/ANALYTICS-SETUP.md`) указано `ai_search: AI-запрос в hero-поиск (/search?ai=1 -> результат)`. Нужно ли отправлять событие только один раз при загрузке страницы с `ai=1` (через клиентский `useEffect`), или также при выполнении самого поиска из Hero-блока на клиенте, когда происходит навигация?
