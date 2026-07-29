@@ -52,7 +52,7 @@ export const ingestListings = async ({
 
     for (const raw of raws) {
       try {
-        const normalized = provider.normalize(raw)
+        const normalized = await provider.normalize(raw)
 
         // Idempotency: don't insert duplicate slugs.
         const existing = await payload.find({

@@ -29,6 +29,7 @@
  */
 
 import type { ListingsProvider, RawListing, NormalizedListing } from '../types'
+import { slugify } from '../mock-data'
 
 const ENABLED = false
 
@@ -116,15 +117,76 @@ export const createPlaywrightProvider = (
       return [] as RawListing[]
     },
 
-    normalize(raw): NormalizedListing {
-      // Production: parse `data.price` into an integer (strip currency, spaces,
-      // handle "от XXX", normalise "₽/мес" vs total). Geocode `data.address`
-      // through a Yandex/OSM API. Map source-specific fields onto the Payload
-      // schema for `flats` / `commercial` / `lands`.
-      throw new Error(
-        'normalize() not implemented in the skeleton — wire selectors and ' +
-          'transforms when enabling. See avito-mock.ts for a reference shape.',
-      )
+    async normalize(raw): Promise<NormalizedListing> {
+      const data = raw.data as Record<string, any>
+      const title = String(data.title || '')
+      const priceStr = String(data.price || '')
+      const address = String(data.address || '')
+
+      // Parse price
+      const strippedPrice = priceStr.toLowerCase().replace(/\s+/g, '')
+      const isRent = strippedPrice.includes('/мес') || strippedPrice.includes('сут') || strippedPrice.includes('месяц')
+      const transactionType = isRent ? 'rent' : 'sale'
+      const numericMatch = strippedPrice.match(/\d+/)
+      const amount = numericMatch ? parseInt(numericMatch[0], 10) : 0
+
+      // Geocode address
+      let lat = 55.7558
+      let lng = 37.6173
+      let formattedAddress = address || 'Москва'
+      if (address) {
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`, {
+            headers: { 'User-Agent': 'RealEstateParser/1.0' }
+          })
+          const geo = await res.json()
+          if (geo && geo.length > 0) {
+            lat = parseFloat(geo[0].lat)
+            lng = parseFloat(geo[0].lon)
+            formattedAddress = geo[0].display_name
+          }
+        } catch (_e) {
+          // ignore and fallback
+        }
+      }
+
+      const slug = slugify(`${title}-${raw.externalId}`)
+      const t = title.toLowerCase()
+      let collection: 'flats' | 'commercial' | 'lands' = 'flats'
+      if (t.includes('офис') || t.includes('помещение') || t.includes('склад') || t.includes('коммерч') || t.includes('торгов')) {
+        collection = 'commercial'
+      } else if (t.includes('участок') || t.includes('соток') || t.includes('земл') || t.includes('ижс') || t.includes('снт')) {
+        collection = 'lands'
+      }
+
+      const basePayload: any = {
+        title,
+        slug,
+        status: 'active',
+        price: amount,
+        location: { address: formattedAddress },
+        coordinates: { lat, lng, formattedAddress }
+      }
+
+      if (collection === 'flats') {
+        basePayload.propertyCategory = t.includes('студия') ? 'studio' : 'apartment'
+        basePayload.transactionType = transactionType
+        basePayload.currency = 'RUB'
+      } else if (collection === 'commercial') {
+        basePayload.commercialType = t.includes('офис') ? 'office' : t.includes('склад') ? 'warehouse' : 'free-purpose'
+        basePayload.transactionType = transactionType
+        basePayload.priceType = 'total'
+        basePayload.currency = 'RUB'
+      } else if (collection === 'lands') {
+        basePayload.purpose = t.includes('ижс') ? 'ijs' : t.includes('снт') ? 'snt' : 'agricultural'
+      }
+
+      return {
+        source: raw.source,
+        externalId: raw.externalId,
+        collection,
+        payload: basePayload
+      }
     },
   }
 }
