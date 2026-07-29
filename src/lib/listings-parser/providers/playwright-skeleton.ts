@@ -29,6 +29,7 @@
  */
 
 import type { ListingsProvider, RawListing, NormalizedListing } from '../types'
+import { slugify } from '../mock-data'
 
 const ENABLED = false
 
@@ -117,14 +118,50 @@ export const createPlaywrightProvider = (
     },
 
     normalize(raw): NormalizedListing {
-      // Production: parse `data.price` into an integer (strip currency, spaces,
-      // handle "от XXX", normalise "₽/мес" vs total). Geocode `data.address`
-      // through a Yandex/OSM API. Map source-specific fields onto the Payload
-      // schema for `flats` / `commercial` / `lands`.
-      throw new Error(
-        'normalize() not implemented in the skeleton — wire selectors and ' +
-          'transforms when enabling. See avito-mock.ts for a reference shape.',
-      )
+      const d = raw.data as Record<string, string>
+      const title = d.title || 'Без названия'
+
+      // Parse `data.price` into an integer
+      // Strip currency, spaces, non-breaking spaces, text like "от" or "/мес"
+      const rawPrice = d.price || '0'
+      const numericPriceString = rawPrice.replace(/[^0-9]/g, '')
+      const price = parseInt(numericPriceString, 10) || 0
+
+      // Split `data.address` to try parsing out a city, fallback if needed
+      // Format usually like: "Москва, улица Тверская, 1"
+      const rawAddress = d.address || ''
+      const addressParts = rawAddress.split(',').map((p) => p.trim())
+      const city = addressParts.length > 0 ? addressParts[0] : 'Неизвестно'
+      const district = addressParts.length > 1 ? addressParts[1] : 'Неизвестно'
+
+      const slug = slugify(`${title}-${raw.externalId}`)
+
+      // The beforeChange hook in collections/Flat/index.ts handles actual
+      // geocoding of the `location.address` via utilities/geocode.ts.
+      // We map source-specific fields onto the Payload schema for flats here.
+      return {
+        source: raw.source,
+        externalId: raw.externalId,
+        collection: 'flats',
+        payload: {
+          title,
+          slug,
+          propertyCategory: 'apartment',
+          transactionType: 'sale',
+          location: {
+            city,
+            district,
+            address: rawAddress,
+          },
+          rooms: d.rooms || '1',
+          area: {
+            total: parseFloat((d.area || '0').replace(/[^0-9.,]/g, '').replace(',', '.')) || 40,
+          },
+          price,
+          currency: 'RUB',
+          status: 'active',
+        },
+      }
     },
   }
 }
