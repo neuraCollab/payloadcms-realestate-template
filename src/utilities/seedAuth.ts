@@ -9,6 +9,8 @@
  * первый деплой — после `git pull` на сервере не было способа
  * засеять контент. Теперь — единый Bearer-токен решает.
  */
+import { secureCompare } from './secureCompare'
+
 export function requireSeedAuth(req: Request): Response | null {
   if (process.env.NODE_ENV !== 'production') return null
 
@@ -22,7 +24,13 @@ export function requireSeedAuth(req: Request): Response | null {
       { status: 500, headers: { 'Content-Type': 'application/json' } },
     )
   }
-  if (auth !== `Bearer ${expected}`) {
+
+  let isAuthorized = false
+  if (auth) {
+    isAuthorized = secureCompare(auth, `Bearer ${expected}`)
+  }
+
+  if (!isAuthorized) {
     return new Response(
       JSON.stringify({
         error: 'Unauthorized. Send header: Authorization: Bearer <CRON_SECRET>',

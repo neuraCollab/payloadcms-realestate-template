@@ -11,6 +11,7 @@ import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
+import { secureCompare } from './utilities/secureCompare'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { plugins } from './plugins'
@@ -133,7 +134,10 @@ export default buildConfig({
         // for the Vercel Cron secret to be present as an
         // Authorization header:
         const authHeader = req.headers.get('authorization')
-        return authHeader === `Bearer ${process.env.CRON_SECRET}`
+        const expected = process.env.CRON_SECRET
+        if (!expected || !authHeader) return false
+
+        return secureCompare(authHeader, `Bearer ${expected}`)
       },
     },
     tasks: [],
