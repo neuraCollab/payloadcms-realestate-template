@@ -1,6 +1,5 @@
 // storage-adapter-import-placeholder
 import { postgresAdapter } from '@payloadcms/db-postgres'
-// import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import sharp from 'sharp' // sharp-import
 import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
@@ -86,9 +85,6 @@ export default buildConfig({
     // `pnpm payload migrate`.
     push: false,
   }),
-  // db: mongooseAdapter({
-  //   url: process.env.DATABASE_URI || '',
-  // }),
   collections: [
     Pages,
     Posts,
