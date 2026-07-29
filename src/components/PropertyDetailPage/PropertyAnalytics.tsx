@@ -9,6 +9,8 @@ import {
   type FlatLike,
 } from '@/lib/marketAnalytics'
 import { PriceTrendChart, PriceCompareChart } from './AnalyticsCharts'
+import { formatPrice } from '@/utilities/formatPrice'
+
 
 interface Props {
   subject: any
@@ -16,7 +18,6 @@ interface Props {
 
 const MIN_COMPARABLES = 3
 
-const formatPrice = (n: number) => n.toLocaleString('ru-RU') + ' ₽'
 
 interface StatCardProps {
   label: string

@@ -5,6 +5,8 @@ import React from 'react'
 import { Map as MapIcon } from 'lucide-react'
 import type { Map as MapboxMap, Marker, Popup } from 'mapbox-gl'
 import { MyLocationButton } from '@/components/MyLocationButton'
+import { formatPrice } from '@/utilities/formatPrice'
+
 
 export interface PropertyMapItem {
   id: string
@@ -34,8 +36,6 @@ const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? ''
 const STYLE_URL =
   process.env.NEXT_PUBLIC_MAPBOX_STYLE ?? 'mapbox://styles/mapbox/streets-v12'
 
-const formatPrice = (n: number) =>
-  n.toLocaleString('ru-RU', { maximumFractionDigits: 0 })
 
 const escapeHtml = (s: string) =>
   s

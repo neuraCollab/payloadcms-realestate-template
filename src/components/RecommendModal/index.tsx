@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { X, Sparkles, Send, MapPin, Crosshair, Info } from 'lucide-react'
 import { listFavorites } from '@/lib/favorites'
 import { listRecentlyViewed } from '@/lib/recentlyViewed'
+import { formatPrice } from '@/utilities/formatPrice'
+
 
 interface Props {
   open: boolean
@@ -26,11 +28,6 @@ const COLLECTION_LABEL: Record<string, string> = {
   'residential-complexes': 'ЖК',
 }
 
-const formatPrice = (n: any): string => {
-  const num = Number(n)
-  if (!Number.isFinite(num) || num <= 0) return '—'
-  return num.toLocaleString('ru-RU') + ' ₽'
-}
 
 /**
  * Модальное окно AI-рекомендаций. Shared между:

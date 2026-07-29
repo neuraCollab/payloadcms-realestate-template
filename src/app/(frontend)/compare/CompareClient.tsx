@@ -4,9 +4,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { X } from 'lucide-react'
 import { useCompare, toggleCompare, clearCompare } from '@/lib/compare'
+import { formatPrice } from '@/utilities/formatPrice'
 
-const formatPrice = (n: number | undefined) =>
-  typeof n === 'number' ? n.toLocaleString('ru-RU') + ' ₽' : '—'
+
 
 const ROWS: Array<{
   label: string

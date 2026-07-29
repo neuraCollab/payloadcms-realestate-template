@@ -2,6 +2,8 @@
 
 import React, { useState, useMemo, useEffect } from 'react'
 import { MapPin, Bed, Bath, Maximize, Search } from 'lucide-react'
+import { formatPrice } from '@/utilities/formatPrice'
+
 
 // Типы
 export type UnifiedProperty = {
@@ -317,12 +319,6 @@ const PropertyCard: React.FC<{ property: any }> = ({ property: rawProperty }) =>
     ? { ...rawProperty.value, collection: rawProperty.relationTo }
     : rawProperty;
 
-  const formatPrice = (price: number) =>
-    new Intl.NumberFormat('ru-RU', {
-      style: 'currency',
-      currency: 'RUB',
-      maximumFractionDigits: 0,
-    }).format(price);
 
   // Извлекаем площадь
   const areaValue = typeof property.area === 'object' && property.area !== null

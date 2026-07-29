@@ -3,6 +3,8 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { getServerSideURL } from '@/utilities/getURL'
 import type { PropertyType } from '@/components/PropertyFilters/schemas'
+import { formatPrice } from '@/utilities/formatPrice'
+
 
 const COLLECTION_MAP: Record<PropertyType, string> = {
   flats: 'flats',
@@ -18,7 +20,6 @@ const TYPE_LABEL: Record<PropertyType, string> = {
   'residential-complexes': 'Жилой комплекс',
 }
 
-const formatPrice = (n: number): string => n.toLocaleString('ru-RU') + ' ₽'
 
 /**
  * Generates SEO metadata for a property detail page.

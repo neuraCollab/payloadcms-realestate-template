@@ -2,6 +2,8 @@
 import React from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight, MapPin, Home as HomeIcon, Bed, Square } from 'lucide-react'
+import { formatPrice } from '@/utilities/formatPrice'
+
 import {
   FLAT_OPTIONS,
   HOUSE_OPTIONS,
@@ -17,11 +19,6 @@ interface Props {
   imageUrls?: string[]
 }
 
-const formatPrice = (v: any): string => {
-  const n = Number(v)
-  if (!Number.isFinite(n) || n <= 0) return '—'
-  return n.toLocaleString('ru-RU') + ' ₽'
-}
 
 /**
  * Визуальное превью объявления, рендерится прямо в форме.

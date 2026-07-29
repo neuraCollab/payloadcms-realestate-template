@@ -1,6 +1,8 @@
 import { tg } from './client'
 import type { Payload } from 'payload'
 import { getServerSideURL } from '@/utilities/getURL'
+import { formatPrice } from '@/utilities/formatPrice'
+
 
 /**
  * Универсальная публикация объекта в city-канал Telegram.
@@ -29,7 +31,6 @@ const TX_LABEL: Record<string, string> = {
   daily: '🛏 Посуточно',
 }
 
-const formatPrice = (n: number) => n.toLocaleString('ru-RU') + ' ₽'
 
 export async function publishListingToCity(
   payload: Payload,

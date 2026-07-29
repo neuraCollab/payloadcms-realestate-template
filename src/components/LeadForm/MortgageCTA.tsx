@@ -2,6 +2,8 @@
 import React from 'react'
 import { Landmark } from 'lucide-react'
 import { trackEvent } from '@/lib/analytics'
+import { formatPrice } from '@/utilities/formatPrice'
+
 
 interface Props {
   propertyCollection: string
@@ -29,7 +31,6 @@ interface Props {
  * по префиксу «Ипотека:» в комментарии. Это сознательный шорткат:
  * отдельный enum-канал потребовал бы миграции и перебилда схемы.
  */
-const formatPrice = (n: number) => Math.round(n).toLocaleString('ru-RU') + ' ₽'
 
 export const MortgageCTA: React.FC<Props> = ({
   propertyCollection,

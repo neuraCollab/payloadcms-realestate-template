@@ -2,6 +2,8 @@ import React from 'react'
 import Link from 'next/link'
 import { MapPin, Bed, Bath, Maximize } from 'lucide-react'
 import { Property, Media } from '@/payload-types'
+import { formatPrice } from '@/utilities/formatPrice'
+
 
 interface RelatedPropertiesProps {
   currentProperty: Property
@@ -12,13 +14,6 @@ export const RelatedProperties: React.FC<RelatedPropertiesProps> = ({
   currentProperty, 
   properties 
 }) => {
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('ru-RU', {
-      style: 'currency',
-      currency: 'RUB',
-      maximumFractionDigits: 0,
-    }).format(price)
-  }
 
   // Фильтрация похожих properties (исключаем текущую)
   const relatedProperties = properties

@@ -4,6 +4,8 @@ import React from 'react'
 import { Map as MapIcon, ChevronLeft, Crosshair } from 'lucide-react'
 import { MyLocationButton } from '@/components/MyLocationButton'
 import type { Map as MapboxMap, GeoJSONSource, MapMouseEvent } from 'mapbox-gl'
+import { formatPrice } from '@/utilities/formatPrice'
+
 
 export interface CatalogMapItem {
   id: string
@@ -41,8 +43,6 @@ const MOSCOW = { lat: 55.751244, lng: 37.618423, zoom: 10 }
 const PRIMARY = '#2563EB'
 const PRIMARY_DARK = '#1D4ED8'
 
-const formatPrice = (n: number) =>
-  n.toLocaleString('ru-RU', { maximumFractionDigits: 0 })
 
 const escapeHtml = (s: string) =>
   s

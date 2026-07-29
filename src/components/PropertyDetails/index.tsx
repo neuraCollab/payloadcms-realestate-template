@@ -6,6 +6,8 @@ import { formatDateTime } from '@/utilities/formatDateTime'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { formatPrice } from '@/utilities/formatPrice'
+
 
 interface PropertyDetailsProps {
   property: Property
@@ -14,13 +16,6 @@ interface PropertyDetailsProps {
 export const PropertyDetails: React.FC<PropertyDetailsProps> = ({ property }) => {
   const { description, features, bedrooms, bathrooms, area, status, createdAt, updatedAt, address } = property
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('ru-RU', {
-      style: 'currency',
-      currency: 'RUB',
-      maximumFractionDigits: 0,
-    }).format(price)
-  }
 
   const propertyStats = [
     { icon: Bed, label: 'Спальни', value: bedrooms },
