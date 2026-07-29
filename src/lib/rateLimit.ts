@@ -1,9 +1,5 @@
 // In-memory sliding-window rate limiter. Good enough for a single-instance
 // deployment; swap for Redis (Upstash, etc.) when scaling horizontally.
-//
-// Usage:
-//   const rl = rateLimitOk(req, { key: 'messages', limit: 10, windowMs: 5 * 60_000 })
-//   if (!rl.ok) return rl.response
 
 interface Options {
   /** Bucket name to namespace counters. */
