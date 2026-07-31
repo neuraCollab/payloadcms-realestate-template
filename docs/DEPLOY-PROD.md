@@ -208,6 +208,24 @@ docker compose -f docker-compose.prod.yml up -d --build app
 
 ## Периодические задачи
 
+### Автоматическое обновление SSL-сертификатов
+
+Настроено через systemd-таймеры, которые запускают скрипт `scripts/certbot-renew.sh` (он сам умеет перезапускать nginx как на хосте, так и в докере).
+На сервере выполните:
+
+```bash
+cd /srv/realty
+sudo cp deploy/systemd/certbot-renew.service /etc/systemd/system/
+sudo cp deploy/systemd/certbot-renew.timer /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now certbot-renew.timer
+```
+
+Можно проверить статус таймера:
+```bash
+sudo systemctl status certbot-renew.timer
+```
+
 ### Регулярный бэкап БД и media
 
 `crontab -e`:
