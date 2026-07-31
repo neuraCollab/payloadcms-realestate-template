@@ -128,7 +128,7 @@ interface SearchParams {
 }
 
 /**
- * ANN search через ivfflat. Если задан docIdsByCollection — выдаём
+ * ANN search через hnsw/ivfflat. Если задан docIdsByCollection — выдаём
  * только тех, кто прошёл предварительный SQL-фильтр (city/rooms/price).
  *
  * Дистанция cosine: меньше = ближе.
@@ -153,7 +153,7 @@ export async function searchEmbeddings(
   // фильтра. Все запросы пускаются параллельно, результаты сливаются
   // и сортируются в JS — это:
   //   • избегает проблем с биндингом массивов в UNNEST через drizzle
-  //   • использует индекс ivfflat внутри каждой выборки
+  //   • использует векторный индекс внутри каждой выборки
   //   • поддерживает любое число коллекций без динамического SQL
   const queries = collections.map(async (coll): Promise<SearchHit[]> => {
     const ids = docIdsByCollection?.[coll]
