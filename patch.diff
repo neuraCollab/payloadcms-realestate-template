@@ -1,0 +1,29 @@
+<<<<<<< SEARCH
+import { Heart } from 'lucide-react'
+import { isFavorite, toggleFavorite, type FavCollection } from '@/lib/favorites'
+import { cn } from '@/utilities/ui'
+=======
+import { Heart } from 'lucide-react'
+import { isFavorite, toggleFavorite, type FavCollection } from '@/lib/favorites'
+import { trackEvent } from '@/lib/analytics'
+import { cn } from '@/utilities/ui'
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+  const onClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const next = toggleFavorite({ collection, id })
+    setFav(next)
+  }
+=======
+  const onClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const next = toggleFavorite({ collection, id })
+    setFav(next)
+
+    if (next) {
+      trackEvent('favorite_added', { collection, id: String(id) })
+    }
+  }
+>>>>>>> REPLACE

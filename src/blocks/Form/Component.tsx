@@ -10,6 +10,7 @@ import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical
 
 import { fields } from './fields'
 import { getClientSideURL } from '@/utilities/getURL'
+import { trackEvent } from '@/lib/analytics'
 
 export type FormBlockType = {
   blockName?: string
@@ -91,6 +92,7 @@ export const FormBlock: React.FC<
 
           setIsLoading(false)
           setHasSubmitted(true)
+          trackEvent('lead_form_submit', { formId: formID })
 
           if (confirmationType === 'redirect' && redirect) {
             const { url } = redirect

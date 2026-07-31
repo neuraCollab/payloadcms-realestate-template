@@ -2,6 +2,7 @@
 import React from 'react'
 import { useRouter } from 'next/navigation'
 import { Sparkles, ArrowRight, Loader2 } from 'lucide-react'
+import { trackEvent } from '@/lib/analytics'
 
 /**
  * Большой textarea + кнопка для AI-поиска по NL-запросу.
@@ -26,6 +27,7 @@ export const AiSearchBox: React.FC<{
     const text = q.trim()
     if (!text) return
     setSubmitting(true)
+    trackEvent('search_ai_used', { q: text })
     const p = new URLSearchParams()
     p.set('ai', '1')
     p.set('q', text)
