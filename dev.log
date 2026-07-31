@@ -1,0 +1,980 @@
+
+> duka2@1.0.0 dev /app
+> cross-env NODE_OPTIONS=--no-deprecation next dev --turbopack
+
+   ▲ Next.js 15.4.7 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.0.2:3000
+
+ ✓ Starting...
+ ✓ Ready in 1596ms
+ ⚠ Webpack is configured while Turbopack is not, which may cause problems.
+ ⚠ See instructions if you need to configure Turbopack:
+  https://nextjs.org/docs/app/api-reference/next-config-js/turbopack
+
+ ○ Compiling / ...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+ ✓ Compiled / in 18.9s
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '3700746964'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '3700746964'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '3700746964'
+}
+ GET / 500 in 23113ms
+ ○ Compiling /flats ...
+ ✓ Compiled /flats in 1094ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async PropertyListingPage (src/components/PropertyListingPage/index.tsx:184:18)
+  182 |   mapBaseUrl,
+  183 | }) => {
+> 184 |   const payload = await getPayload({ config })
+      |                  ^
+  185 |   const where = buildWhere(type, searchParams)
+  186 |
+  187 |   const sortParam = {
+  payloadInitError: true,
+  digest: '1964570780'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /flats 500 in 1388ms
+ ○ Compiling /commercial ...
+ ✓ Compiled /commercial in 871ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async PropertyListingPage (src/components/PropertyListingPage/index.tsx:184:18)
+  182 |   mapBaseUrl,
+  183 | }) => {
+> 184 |   const payload = await getPayload({ config })
+      |                  ^
+  185 |   const where = buildWhere(type, searchParams)
+  186 |
+  187 |   const sortParam = {
+  payloadInitError: true,
+  digest: '1964570780'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /commercial 500 in 1142ms
+ ○ Compiling /lands ...
+ ✓ Compiled /lands in 874ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async PropertyListingPage (src/components/PropertyListingPage/index.tsx:184:18)
+  182 |   mapBaseUrl,
+  183 | }) => {
+> 184 |   const payload = await getPayload({ config })
+      |                  ^
+  185 |   const where = buildWhere(type, searchParams)
+  186 |
+  187 |   const sortParam = {
+  payloadInitError: true,
+  digest: '1964570780'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /lands 500 in 1132ms
+ ○ Compiling /residential-complexes ...
+ ✓ Compiled /residential-complexes in 843ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async PropertyListingPage (src/components/PropertyListingPage/index.tsx:184:18)
+  182 |   mapBaseUrl,
+  183 | }) => {
+> 184 |   const payload = await getPayload({ config })
+      |                  ^
+  185 |   const where = buildWhere(type, searchParams)
+  186 |
+  187 |   const sortParam = {
+  payloadInitError: true,
+  digest: '1964570780'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /residential-complexes 500 in 1085ms
+ ○ Compiling /posts ...
+ ✓ Compiled /posts in 1034ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async Page (src/app/(frontend)/posts/page.tsx:18:18)
+  16 |
+  17 | export default async function Page() {
+> 18 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  19 |
+  20 |   const posts = await payload.find({
+  21 |     collection: 'posts', {
+  payloadInitError: true,
+  digest: '3783917924'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /posts 500 in 1266ms
+ ○ Compiling /search ...
+ ✓ Compiled /search in 808ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async Page (src/app/(frontend)/search/page.tsx:148:18)
+  146 | export default async function Page({ searchParams: searchParamsPromise }: Args) {
+  147 |   const sp = await searchParamsPromise
+> 148 |   const payload = await getPayload({ config: configPromise })
+      |                  ^
+  149 |
+  150 |   // ── AI-режим ──
+  151 |   // Если ai=1 и q непустой — пытаемся семантический поиск напрямую через {
+  payloadInitError: true,
+  digest: '2225776312'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /search 500 in 1021ms
+ ○ Compiling /admin/[[...segments]] ...
+ ✓ Compiled /admin/[[...segments]] in 17.8s
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '4281477913'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '4281477913'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '4281477913'
+}
+ GET /admin 500 in 25195ms
+ ○ Compiling /[slug] ...
+ ✓ Compiled /[slug] in 2.7s
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async (src/app/(frontend)/[slug]/page.tsx:110:18)
+    at async Page (src/app/(frontend)/[slug]/page.tsx:44:15)
+  108 |
+  109 | const queryCityBySlug = cache(async ({ slug }: { slug: string }) => {
+> 110 |   const payload = await getPayload({ config: configPromise })
+      |                  ^
+  111 |   const result = await payload.find({
+  112 |     collection: 'cities',
+  113 |     where: { {
+  payloadInitError: true,
+  digest: '3873787850'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /about 500 in 5897ms
+ ○ Compiling /agents ...
+ ✓ Compiled /agents in 981ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async AgentsPage (src/app/(frontend)/agents/page.tsx:168:18)
+  166 |   const sp = await searchParamsPromise
+  167 |   const q = sp.q?.trim()
+> 168 |   const payload = await getPayload({ config: configPromise })
+      |                  ^
+  169 |
+  170 |   // Fetch all realtors. Filter by q on the server (case-insensitive in name/agency).
+  171 |   const where: any = { role: { equals: 'realtor' } } {
+  payloadInitError: true,
+  digest: '346667683'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /agents 500 in 1261ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async (src/app/(frontend)/[slug]/page.tsx:110:18)
+    at async Page (src/app/(frontend)/[slug]/page.tsx:44:15)
+  108 |
+  109 | const queryCityBySlug = cache(async ({ slug }: { slug: string }) => {
+> 110 |   const payload = await getPayload({ config: configPromise })
+      |                  ^
+  111 |   const result = await payload.find({
+  112 |     collection: 'cities',
+  113 |     where: { {
+  payloadInitError: true,
+  digest: '3873787850'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /contact 500 in 251ms
+ ○ Compiling /privacy ...
+ ✓ Compiled /privacy in 906ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /privacy 500 in 1132ms
+ ○ Compiling /terms ...
+ ✓ Compiled /terms in 662ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /terms 500 in 856ms
+ ○ Compiling /cabinet/chats ...
+ ✓ Compiled /cabinet/chats in 883ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /cabinet/chats 500 in 1085ms
+ ○ Compiling /cabinet/favorites ...
+ ✓ Compiled /cabinet/favorites in 871ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /cabinet/favorites 500 in 1088ms
+ ○ Compiling /cabinet/recent ...
+ ✓ Compiled /cabinet/recent in 759ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /cabinet/recent 500 in 949ms
+ ○ Compiling /cabinet/saved-searches ...
+ ✓ Compiled /cabinet/saved-searches in 875ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /cabinet/saved-searches 500 in 1063ms
+ ○ Compiling /cabinet/login ...
+ ✓ Compiled /cabinet/login in 720ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /cabinet/login 500 in 902ms
+ ○ Compiling /flats/[slug] ...
+ ✓ Compiled /flats/[slug] in 1087ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async PropertyDetailPage (src/components/PropertyDetailPage/index.tsx:62:18)
+  60 |   previewMode = false,
+  61 | }) => {
+> 62 |   const payload = await getPayload({ config })
+     |                  ^
+  63 |
+  64 |   let data: any = docProp ?? null
+  65 | {
+  payloadInitError: true,
+  digest: '3637594586'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /flats/non-existing-slug-zzz 500 in 5143ms
+ ○ Compiling /commercial/[slug] ...
+ ✓ Compiled /commercial/[slug] in 1063ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async PropertyDetailPage (src/components/PropertyDetailPage/index.tsx:62:18)
+  60 |   previewMode = false,
+  61 | }) => {
+> 62 |   const payload = await getPayload({ config })
+     |                  ^
+  63 |
+  64 |   let data: any = docProp ?? null
+  65 | {
+  payloadInitError: true,
+  digest: '3637594586'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /commercial/non-existing-slug-zzz 500 in 4706ms
+ ○ Compiling /lands/[slug] ...
+ ✓ Compiled /lands/[slug] in 1021ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async PropertyDetailPage (src/components/PropertyDetailPage/index.tsx:62:18)
+  60 |   previewMode = false,
+  61 | }) => {
+> 62 |   const payload = await getPayload({ config })
+     |                  ^
+  63 |
+  64 |   let data: any = docProp ?? null
+  65 | {
+  payloadInitError: true,
+  digest: '3637594586'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /lands/non-existing-slug-zzz 500 in 4117ms
+ ○ Compiling /residential-complexes/[slug] ...
+ ✓ Compiled /residential-complexes/[slug] in 1141ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async PropertyDetailPage (src/components/PropertyDetailPage/index.tsx:62:18)
+  60 |   previewMode = false,
+  61 | }) => {
+> 62 |   const payload = await getPayload({ config })
+     |                  ^
+  63 |
+  64 |   let data: any = docProp ?? null
+  65 | {
+  payloadInitError: true,
+  digest: '3637594586'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /residential-complexes/non-existing-slug-zzz 500 in 4245ms
+ ○ Compiling /realtors/[slug] ...
+ ✓ Compiled /realtors/[slug] in 1043ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async RealtorProfilePage (src/app/(frontend)/realtors/[slug]/page.tsx:49:18)
+  47 |
+  48 | export default async function RealtorProfilePage({ params }: { params: { slug: string } }) {
+> 49 |   const payload = await getPayload({ config })
+     |                  ^
+  50 |   const { slug } = params
+  51 |
+  52 |   // Находим риелтора (пользователя с ролью realtor и нужным slug) {
+  payloadInitError: true,
+  digest: '2155274392'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at Module.generateMetadata (src/app/(frontend)/realtors/[slug]/page.tsx:16:18)
+  14 |   params: { slug: string }
+  15 | }): Promise<Metadata> {
+> 16 |   const payload = await getPayload({ config })
+     |                  ^
+  17 |   const { slug } = params
+  18 |   const users = await payload.find({
+  19 |     collection: 'users', {
+  environmentName: 'Server',
+  digest: '1228682566'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /realtors/non-existing-slug-zzz 500 in 4533ms
+ ○ Compiling /posts/[slug] ...
+ ✓ Compiled /posts/[slug] in 1012ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async (src/app/(frontend)/posts/[slug]/page.tsx:112:18)
+    at async Post (src/app/(frontend)/posts/[slug]/page.tsx:33:15)
+  110 |   const { isEnabled: draft } = await draftMode()
+  111 |
+> 112 |   const payload = await getPayload({ config: configPromise })
+      |                  ^
+  113 |
+  114 |   const result = await payload.find({
+  115 |     collection: 'posts', {
+  payloadInitError: true,
+  digest: '863344643'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /posts/non-existing-slug-zzz 500 in 4715ms
+ ○ Compiling /[slug]/[filterSlug] ...
+ ✓ Compiled /[slug]/[filterSlug] in 1015ms
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '4165781688'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /nonexistent-city/arenda-kvartir 500 in 4114ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /home-v2 404 in 286ms
+ ○ Compiling /robots.txt ...
+ ✓ Compiled /robots.txt in 1040ms
+ GET /robots.txt 200 in 1229ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async (src/app/(frontend)/[slug]/page.tsx:110:18)
+    at async Page (src/app/(frontend)/[slug]/page.tsx:44:15)
+  108 |
+  109 | const queryCityBySlug = cache(async ({ slug }: { slug: string }) => {
+> 110 |   const payload = await getPayload({ config: configPromise })
+      |                  ^
+  111 |   const result = await payload.find({
+  112 |     collection: 'cities',
+  113 |     where: { {
+  payloadInitError: true,
+  digest: '3873787850'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ GET /sitemap.xml 500 in 238ms
