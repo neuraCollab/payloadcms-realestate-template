@@ -1718,7 +1718,7 @@ export interface TelegramChannel {
    * Для публичных каналов. Используется чтобы выдать ссылку t.me/<username>.
    */
   channelUsername?: string | null;
-  isActive?: boolean | null;
+  status: 'active' | 'inactive';
   postedCount?: number | null;
   updatedAt: string;
   createdAt: string;
@@ -3193,7 +3193,7 @@ export interface TelegramChannelsSelect<T extends boolean = true> {
   citySlug?: T;
   channelId?: T;
   channelUsername?: T;
-  isActive?: T;
+  status?: T;
   postedCount?: T;
   updatedAt?: T;
   createdAt?: T;
