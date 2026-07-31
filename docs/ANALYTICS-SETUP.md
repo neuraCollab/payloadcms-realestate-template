@@ -34,7 +34,7 @@
 Поток `G-L7KQ9W2PJ8` уже работает. В админке GA4:
 
 1. https://analytics.google.com → выбрать property с этим ID.
-2. Подтвердить что хост `megadomic.ru` в Data Streams → Web.
+2. Подтвердить что хост `example.com` в Data Streams → Web.
 
 ### Конверсии для отслеживания
 
@@ -62,7 +62,7 @@ NEXT_PUBLIC_* (и хардкод-defaults) запекаются на этапе 
 ## 4. Проверка что счётчики установлены
 
 ```bash
-curl -s https://megadomic.ru/ | grep -oE 'metrika.yandex|googletagmanager'
+curl -s https://example.com/ | grep -oE 'metrika.yandex|googletagmanager'
 # Должно вернуть оба источника
 ```
 

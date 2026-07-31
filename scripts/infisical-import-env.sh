@@ -2,7 +2,7 @@
 # Одноразовая миграция: переносит секреты из локального .env в Infisical.
 # Запускать ПОСЛЕ:
 #   1. Регистрации в Infisical (https://app.infisical.com)
-#   2. Создания проекта MegaDomic + environment 'prod'
+#   2. Создания проекта Demo Realty + environment 'prod'
 #   3. Логина: `infisical login` (или infisical login --machine-identity)
 #
 # Использование:

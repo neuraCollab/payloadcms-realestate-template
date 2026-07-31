@@ -27,7 +27,7 @@ export const HomeSeo: GlobalConfig = {
               label: 'Title (60-70 символов)',
               required: true,
               defaultValue:
-                'MegaDomic — квартиры, дома и коммерческая недвижимость',
+                'Demo Realty — квартиры, дома и коммерческая недвижимость',
               admin: {
                 description:
                   'Текст вкладки браузера и заголовок в выдаче. Включите ключевое слово в начало.',

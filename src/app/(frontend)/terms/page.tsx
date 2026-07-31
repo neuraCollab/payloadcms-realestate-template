@@ -107,10 +107,10 @@ export default async function TermsPage() {
 }
 
 export const metadata: Metadata = {
-  // Brand-suffix `— MegaDomic` добавит layout.tsx через title.template.
+  // Brand-suffix `— Demo Realty` добавит layout.tsx через title.template.
   title: 'Пользовательское соглашение',
   description:
-    'Условия использования сайта MegaDomic: правила публикации объявлений, ' +
+    'Условия использования сайта Demo Realty: правила публикации объявлений, ' +
     'ответственность сторон, ограничения и порядок разрешения споров.',
   alternates: { canonical: '/terms' },
 }

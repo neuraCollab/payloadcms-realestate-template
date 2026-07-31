@@ -7,7 +7,7 @@ import { ListingsList } from './ListingsList'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Мои объявления — MegaDomic',
+  title: 'Мои объявления — Demo Realty',
   description: 'Управление вашими объявлениями: черновики, на модерации, опубликованные.',
 }
 

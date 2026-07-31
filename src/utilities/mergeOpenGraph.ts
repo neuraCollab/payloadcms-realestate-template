@@ -4,17 +4,17 @@ import { getServerSideURL } from './getURL'
 const defaultOpenGraph: Metadata['openGraph'] = {
   type: 'website',
   description:
-    'MegaDomic — поиск и покупка недвижимости: квартиры, дома, земля, коммерческая. Тысячи проверенных объявлений и прозрачные сделки.',
+    'Demo Realty — поиск и покупка недвижимости: квартиры, дома, земля, коммерческая. Тысячи проверенных объявлений и прозрачные сделки.',
   images: [
     {
       url: `${getServerSideURL()}/og-image.png`,
       width: 1200,
       height: 630,
-      alt: 'MegaDomic — недвижимость',
+      alt: 'Demo Realty — недвижимость',
     },
   ],
-  siteName: 'MegaDomic',
-  title: 'MegaDomic — недвижимость',
+  siteName: 'Demo Realty',
+  title: 'Demo Realty — недвижимость',
 }
 
 export const mergeOpenGraph = (og?: Metadata['openGraph']): Metadata['openGraph'] => {

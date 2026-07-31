@@ -143,7 +143,7 @@ export const PropertyJsonLd: React.FC<Props> = ({ data, type, aggregateRating })
   const organization = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'MegaDomic',
+    name: 'Demo Realty',
     url: baseUrl,
     logo: `${baseUrl}/favicon.svg`,
   }

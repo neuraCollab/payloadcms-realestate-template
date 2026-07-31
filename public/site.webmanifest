@@ -1,6 +1,6 @@
 {
-  "name": "MegaDomic — недвижимость и аренда",
-  "short_name": "MegaDomic",
+  "name": "Demo Realty — недвижимость и аренда",
+  "short_name": "Demo Realty",
   "description": "Поиск недвижимости: квартиры, дома, гаражи, земля, аренда и продажа.",
   "start_url": "/",
   "display": "standalone",

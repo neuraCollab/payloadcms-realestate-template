@@ -72,16 +72,16 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   // Текст письма — обычный, без HTML-шаблонов. Можно усложнить
   // (логотип, кнопка) позже.
-  const subject = 'Вход в личный кабинет MegaDomic'
+  const subject = 'Вход в личный кабинет Demo Realty'
   const text =
     `Здравствуйте!\n\n` +
-    `Чтобы войти в кабинет MegaDomic, перейдите по ссылке:\n` +
+    `Чтобы войти в кабинет Demo Realty, перейдите по ссылке:\n` +
     `${verifyUrl}\n\n` +
     `Ссылка действительна 15 минут и работает один раз.\n` +
     `Если вы не запрашивали вход — просто проигнорируйте письмо.`
   const html =
     `<p>Здравствуйте!</p>` +
-    `<p>Чтобы войти в кабинет MegaDomic, перейдите по ссылке:</p>` +
+    `<p>Чтобы войти в кабинет Demo Realty, перейдите по ссылке:</p>` +
     `<p><a href="${verifyUrl}" style="background:#1d4ed8;color:#fff;padding:12px 24px;text-decoration:none;border-radius:24px;display:inline-block">Войти в кабинет</a></p>` +
     `<p style="color:#666;font-size:13px">Ссылка действительна 15 минут и работает один раз. ` +
     `Если вы не запрашивали вход — просто проигнорируйте письмо.</p>` +

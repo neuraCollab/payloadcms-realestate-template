@@ -138,7 +138,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       }
 
       // Письмо.
-      const subject = `Новые объекты по вашему поиску «${s.name}» — MegaDomic`
+      const subject = `Новые объекты по вашему поиску «${s.name}» — Demo Realty`
       const items = matches.docs as any[]
       const textLines = items
         .slice(0, 10)

@@ -1,4 +1,4 @@
-# MegaDomic — setup on a new machine
+# Demo Realty — setup on a new machine
 
 Получи рабочую копию (dev + продовый деплой) с нуля. ~20 минут.
 
@@ -27,7 +27,7 @@ brew install infisical/get-cli/infisical
 ## 1. Доступы которые нужно получить у тимлида
 
 Один раз перед началом:
-- Приглашение в Infisical workspace `MegaDomic` (на твой email) — apply через
+- Приглашение в Infisical workspace `Demo Realty` (на твой email) — apply через
   https://app.infisical.com (региона **EU**)
 - Read-доступ к GitHub репо
 - (опц.) SSH key для прод-сервера — только тем кто деплоит руками
@@ -47,7 +47,7 @@ infisical login
 # браузер → подтвердить вход. Регион выбираем EU.
 
 infisical init
-# выбираем проект `MegaDomic` + env `dev` (для разработки)
+# выбираем проект `Demo Realty` + env `dev` (для разработки)
 # создаёт .infisical.json — он в .gitignore, не коммитим
 ```
 
@@ -115,7 +115,7 @@ infisical run --env=dev -- pnpm payload migrate
 
 **Вручную (если есть прод-SSH):**
 ```bash
-ssh root@megadomic.ru
+ssh root@example.com
 cd ~/payloadcms-realestate-template
 ./scripts/deploy.sh
 ```

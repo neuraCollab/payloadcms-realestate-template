@@ -77,7 +77,7 @@ const ROOMS_LABEL: Record<string, string> = {
  *
  * Пример:
  *   /flats?city=Москва&transactionType=sale&rooms=2
- *   → title:    «2-комнатные квартиры в Москве — продажа | MegaDomic»
+ *   → title:    «2-комнатные квартиры в Москве — продажа | Demo Realty»
  *   → desc:     «Купить 2-комнатную квартиру в Москве. Прямые контакты…»
  */
 export function buildCatalogMeta(
@@ -91,7 +91,7 @@ export function buildCatalogMeta(
   const tx = searchParams.transactionType
   const rooms = searchParams.rooms
 
-  // — Title (без « — MegaDomic», layout.tsx добавит сам через template) —
+  // — Title (без « — Demo Realty», layout.tsx добавит сам через template) —
   const titleParts: string[] = []
   if (type === 'flats' && rooms && ROOMS_LABEL[rooms]) {
     titleParts.push(ROOMS_LABEL[rooms])

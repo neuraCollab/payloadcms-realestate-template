@@ -16,7 +16,7 @@ import {
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Превью объявления — MegaDomic',
+  title: 'Превью объявления — Demo Realty',
   robots: { index: false, follow: false },
 }
 

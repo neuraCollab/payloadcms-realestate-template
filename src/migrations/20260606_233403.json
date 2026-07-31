@@ -21276,7 +21276,7 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": true,
-          "default": "'MegaDomic — квартиры, дома и коммерческая недвижимость'"
+          "default": "'Demo Realty — квартиры, дома и коммерческая недвижимость'"
         },
         "meta_description": {
           "name": "meta_description",

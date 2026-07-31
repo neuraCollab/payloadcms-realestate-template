@@ -21,7 +21,7 @@ export const HomeJsonLd: React.FC<{
   } | null
 }> = ({ legal }) => {
   const base = getServerSideURL()
-  const orgName = legal?.displayName || 'MegaDomic'
+  const orgName = legal?.displayName || 'Demo Realty'
 
   const organization = {
     '@context': 'https://schema.org',

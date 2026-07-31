@@ -147,7 +147,7 @@ export const CityLandingPage: React.FC<Props> = async ({ city }) => {
   const localBusinessJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'RealEstateAgent',
-    name: `MegaDomic — недвижимость в ${city.name}`,
+    name: `Demo Realty — недвижимость в ${city.name}`,
     url: cityUrl,
     image: heroUrl ? new URL(heroUrl, baseUrl).toString() : undefined,
     areaServed: {

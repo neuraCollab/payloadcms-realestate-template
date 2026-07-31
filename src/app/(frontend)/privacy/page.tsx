@@ -100,7 +100,7 @@ export default async function PrivacyPage() {
 
       <h2 id="ai-recommendations">8. Рекомендательная система</h2>
       <p>
-        В <strong>{legal?.displayName ?? 'MegaDomic'}</strong> используется
+        В <strong>{legal?.displayName ?? 'Demo Realty'}</strong> используется
         рекомендательная система для подбора подходящих объявлений по
         вашему запросу — комбинация семантического поиска (векторных
         эмбеддингов) и большой языковой модели (LLM).
@@ -163,10 +163,10 @@ export default async function PrivacyPage() {
 }
 
 export const metadata: Metadata = {
-  // Brand-suffix `— MegaDomic` добавит layout.tsx через title.template.
+  // Brand-suffix `— Demo Realty` добавит layout.tsx через title.template.
   title: 'Политика обработки персональных данных',
   description:
-    'Как MegaDomic собирает, использует и защищает персональные данные ' +
+    'Как Demo Realty собирает, использует и защищает персональные данные ' +
     'пользователей: цели обработки, сроки хранения, права субъекта данных. ' +
     'Соответствует 152-ФЗ и GDPR.',
   alternates: { canonical: '/privacy' },

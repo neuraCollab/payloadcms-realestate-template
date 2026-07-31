@@ -60,7 +60,7 @@ export default async function Post({ params: paramsPromise }: Args) {
     mainEntityOfPage: `${base}/posts/${slug}`,
     publisher: {
       '@type': 'Organization',
-      name: 'MegaDomic',
+      name: 'Demo Realty',
       logo: { '@type': 'ImageObject', url: `${base}/logo-light.svg` },
     },
   }

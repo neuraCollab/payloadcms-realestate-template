@@ -23,7 +23,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   
   CREATE TABLE "home_seo" (
   	"id" serial PRIMARY KEY NOT NULL,
-  	"meta_title" varchar DEFAULT 'MegaDomic — квартиры, дома и коммерческая недвижимость' NOT NULL,
+  	"meta_title" varchar DEFAULT 'Demo Realty — квартиры, дома и коммерческая недвижимость' NOT NULL,
   	"meta_description" varchar DEFAULT 'Поиск квартир, домов и коммерческой недвижимости. Проверенные объявления, прозрачные сделки, прямые контакты с собственниками.' NOT NULL,
   	"h1" varchar DEFAULT 'Недвижимость, которой доверяют' NOT NULL,
   	"subtitle" varchar DEFAULT 'Прозрачные сделки, проверенные объявления, удобный кабинет.',

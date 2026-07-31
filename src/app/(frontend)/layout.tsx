@@ -38,7 +38,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html className={cn(inter.variable)} lang="ru" suppressHydrationWarning>
       <head>
         <InitTheme />
-        {/* MegaDomic icon set — см. /public/site.webmanifest */}
+        {/* Demo Realty icon set — см. /public/site.webmanifest */}
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
@@ -46,7 +46,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
         <meta name="theme-color" content="#1D4ED8" />
-        <meta name="apple-mobile-web-app-title" content="MegaDomic" />
+        <meta name="apple-mobile-web-app-title" content="Demo Realty" />
       </head>
       <body>
         <Providers>
@@ -65,11 +65,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 export const metadata: Metadata = {
   metadataBase: new URL(getServerSideURL()),
   title: {
-    default: 'MegaDomic — недвижимость',
-    template: '%s — MegaDomic',
+    default: 'Demo Realty — недвижимость',
+    template: '%s — Demo Realty',
   },
   description:
-    'MegaDomic — поиск и покупка недвижимости: квартиры, дома, земля, коммерческая.',
+    'Demo Realty — поиск и покупка недвижимости: квартиры, дома, земля, коммерческая.',
   openGraph: mergeOpenGraph(),
   twitter: {
     card: 'summary_large_image',

@@ -8,7 +8,7 @@
  *
  * Env:
  *   RESEND_API_KEY    — получить в https://resend.com/api-keys
- *   EMAIL_FROM        — «MegaDomic <no-reply@megadomic.ru>» — домен
+ *   EMAIL_FROM        — «Demo Realty <no-reply@example.com>» — домен
  *                       должен быть верифицирован в Resend
  *
  * Если RESEND_API_KEY не задан — пишет в console.warn (dev/тест).
@@ -34,7 +34,7 @@ export async function sendEmail(params: SendEmailParams): Promise<{
   error?: string
 }> {
   const apiKey = process.env.RESEND_API_KEY
-  const from = process.env.EMAIL_FROM || 'MegaDomic <onboarding@resend.dev>'
+  const from = process.env.EMAIL_FROM || 'Demo Realty <onboarding@resend.dev>'
 
   // В деве (или если ключ не настроен) — пишем в лог + 200. Без падений.
   if (!apiKey) {

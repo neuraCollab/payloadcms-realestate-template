@@ -24,8 +24,8 @@
 
 ## 3. Хардкод (Специфичные для текущего владельца данные)
 - **Бренд и домены:**
-  - Имя `MegaDomic` и домен `megadomic.ru` фигурируют в конфигурации nginx (`deploy/nginx/conf.d/megadomic.conf`), `src/components/Logo/Logo.tsx`, `src/Footer/Component.tsx`, SEO-настройках (`src/globals/HomeSeo/config.ts`), `public/site.webmanifest` и `src/app/(frontend)/page.tsx`.
-  - В `.env.example` захардкожен email отправителя: `MegaDomic <no-reply@megadomic.ru>`.
+  - Имя `Demo Realty` и домен `example.com` фигурируют в конфигурации nginx (`deploy/nginx/conf.d/demorealty.conf`), `src/components/Logo/Logo.tsx`, `src/Footer/Component.tsx`, SEO-настройках (`src/globals/HomeSeo/config.ts`), `public/site.webmanifest` и `src/app/(frontend)/page.tsx`.
+  - В `.env.example` захардкожен email отправителя: `Demo Realty <no-reply@example.com>`.
 - **Документация и конфигурация:**
   - В `docs/DEPLOY-PROD.md`, `docs/CI-CD-SETUP.md` и `docs/RESEND-BEGET-SETUP.md` присутствуют детали реального сервера, хостинга Beget и настроек DNS.
 - **Seed-скрипты:**

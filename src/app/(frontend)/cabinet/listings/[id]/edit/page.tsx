@@ -15,7 +15,7 @@ import {
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Редактирование объявления — MegaDomic',
+  title: 'Редактирование объявления — Demo Realty',
 }
 
 interface Props {

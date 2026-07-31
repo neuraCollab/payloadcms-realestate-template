@@ -61,8 +61,8 @@ export const messageNotifyAfterChange: CollectionAfterChangeHook = ({
 
       const subject =
         direction === 'inbound'
-          ? `Новое сообщение от ${doc.name ?? 'пользователя'} — MegaDomic`
-          : `Ответ риэлтора по вашему запросу — MegaDomic`
+          ? `Новое сообщение от ${doc.name ?? 'пользователя'} — Demo Realty`
+          : `Ответ риэлтора по вашему запросу — Demo Realty`
 
       const text =
         `Здравствуйте${recipientLabel ? ', ' + recipientLabel : ''}!\n\n` +

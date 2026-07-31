@@ -17,7 +17,7 @@ import { FaqSection } from '@/components/Home/FaqSection'
 import { HomeJsonLd } from '@/components/Home/HomeJsonLd'
 import { getConfiguredProviders } from '@/lib/auth/oauth/providers'
 
-// `/` — bespoke брендовая главная MegaDomic.
+// `/` — bespoke брендовая главная Demo Realty.
 //
 // Контент-блоки (H1, subtitle, нишевые SEO-секции, FAQ) подтягиваются
 // из глобала `home-seo` — редактируется из админки контент-менеджером
@@ -97,10 +97,10 @@ export default async function HomePage() {
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await fetchHomeSeo()
   return {
-    title: seo?.metaTitle || 'MegaDomic — недвижимость',
+    title: seo?.metaTitle || 'Demo Realty — недвижимость',
     description:
       seo?.metaDescription ||
-      'MegaDomic — поиск и покупка недвижимости: квартиры, дома, земля, коммерческая.',
+      'Demo Realty — поиск и покупка недвижимости: квартиры, дома, земля, коммерческая.',
     alternates: { canonical: '/' },
   }
 }

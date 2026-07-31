@@ -164,6 +164,6 @@ export default async function ChatListPage() {
 }
 
 export const metadata: Metadata = {
-  title: 'Мои переписки — MegaDomic',
+  title: 'Мои переписки — Demo Realty',
   description: 'История общения с риэлторами в одном месте.',
 }

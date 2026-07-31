@@ -31,8 +31,8 @@ push → GH Actions
 На рабочей машине:
 
 ```bash
-ssh-keygen -t ed25519 -C "gh-actions@megadomic" -f ~/.ssh/megadomic_deploy -N ""
-# Создаст ~/.ssh/megadomic_deploy (приватный) + .pub (публичный)
+ssh-keygen -t ed25519 -C "gh-actions@demorealty" -f ~/.ssh/demorealty_deploy -N ""
+# Создаст ~/.ssh/demorealty_deploy (приватный) + .pub (публичный)
 ```
 
 На сервере:
@@ -40,7 +40,7 @@ ssh-keygen -t ed25519 -C "gh-actions@megadomic" -f ~/.ssh/megadomic_deploy -N ""
 ```bash
 # Добавить публичный ключ
 cat >> ~/.ssh/authorized_keys <<'EOF'
-<вставить содержимое megadomic_deploy.pub>
+<вставить содержимое demorealty_deploy.pub>
 EOF
 chmod 600 ~/.ssh/authorized_keys
 ```
@@ -48,7 +48,7 @@ chmod 600 ~/.ssh/authorized_keys
 Проверить с локалки что коннект работает с этим ключом:
 
 ```bash
-ssh -i ~/.ssh/megadomic_deploy root@<server-ip> "echo ok"
+ssh -i ~/.ssh/demorealty_deploy root@<server-ip> "echo ok"
 ```
 
 ### 2. GitHub Secrets (Settings → Secrets and variables → Actions → New secret)
@@ -57,12 +57,12 @@ ssh -i ~/.ssh/megadomic_deploy root@<server-ip> "echo ok"
 |---|---|
 | `SSH_HOST` | IP или домен сервера (`195.x.x.x`) |
 | `SSH_USER` | `root` |
-| `SSH_KEY` | содержимое `~/.ssh/megadomic_deploy` (полное, включая `-----BEGIN ...-----` и `-----END ...-----`) |
+| `SSH_KEY` | содержимое `~/.ssh/demorealty_deploy` (полное, включая `-----BEGIN ...-----` и `-----END ...-----`) |
 | `SSH_PORT` | (опц.) — если не `22` |
 | `PAYLOAD_SECRET` | строка ≥32 символа — должна совпадать с `.env` на сервере |
 | `CRON_SECRET` | то же что на сервере |
 | `PREVIEW_SECRET` | то же что на сервере |
-| `NEXT_PUBLIC_SERVER_URL` | `https://megadomic.ru` |
+| `NEXT_PUBLIC_SERVER_URL` | `https://example.com` |
 | `NEXT_PUBLIC_MAPBOX_TOKEN` | (опц.) `pk.eyJ1...` |
 | `NEXT_PUBLIC_MAPBOX_STYLE` | (опц.) дефолт `mapbox://styles/mapbox/streets-v12` |
 

@@ -82,7 +82,7 @@ const POSTS: SeoPostInput[] = [
         'дома на 2ГИС или Яндекс.Картах.',
 
       '# 7. Сохраняйте чат на сайте',
-      'Не уходите в WhatsApp/Telegram. На MegaDomic чат с собственником ' +
+      'Не уходите в WhatsApp/Telegram. На Demo Realty чат с собственником ' +
         'сохраняется в личном кабинете — это защищает обе стороны при ' +
         'спорной ситуации.',
       '@ /cabinet/login | Открыть личный кабинет',
@@ -159,7 +159,7 @@ const POSTS: SeoPostInput[] = [
         'нервов после сделки.',
 
       '# 8. Сравните цены за квадратный метр',
-      'У каждого объекта на MegaDomic есть история цен и аналитика по ' +
+      'У каждого объекта на Demo Realty есть история цен и аналитика по ' +
         'району. Если квартира на 20% дороже соседей с похожими ' +
         'параметрами — спросите, почему. Иногда ответ обоснованный, ' +
         'иногда — переоценка.',
@@ -305,7 +305,7 @@ const linkParagraph = (href: string, text: string) => ({
 async function getOrCreateEditor(payload: any, req: any): Promise<string | number> {
   const existing = await payload.find({
     collection: 'users',
-    where: { email: { equals: 'editor@megadomic.ru' } },
+    where: { email: { equals: 'editor@example.com' } },
     limit: 1,
     req,
   })
@@ -314,9 +314,9 @@ async function getOrCreateEditor(payload: any, req: any): Promise<string | numbe
   const created = await payload.create({
     collection: 'users',
     data: {
-      email: 'editor@megadomic.ru',
+      email: 'editor@example.com',
       password: 'change-me-' + Math.random().toString(36).slice(2, 10),
-      name: 'Редакция MegaDomic',
+      name: 'Редакция Demo Realty',
       role: 'admin',
     },
     req,

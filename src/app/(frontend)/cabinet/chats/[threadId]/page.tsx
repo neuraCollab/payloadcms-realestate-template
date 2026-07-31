@@ -139,5 +139,5 @@ export default async function ChatThreadPage({ params: paramsPromise }: Args) {
 }
 
 export const metadata: Metadata = {
-  title: 'Чат с риэлтором — MegaDomic',
+  title: 'Чат с риэлтором — Demo Realty',
 }

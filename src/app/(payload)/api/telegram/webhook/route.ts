@@ -26,7 +26,7 @@ import { getServerSideURL } from '@/utilities/getURL'
  */
 
 const COMMANDS_HELP =
-  '<b>Команды бота MegaDomic</b>\n\n' +
+  '<b>Команды бота Demo Realty</b>\n\n' +
   '/channels — все городские каналы\n' +
   '/channel <i>город</i> — ссылка на канал города (например <code>/channel moskva</code>)\n' +
   '/search <i>запрос</i> — поиск по объявлениям (например <code>/search 2 комн в москве до 15 млн</code>)\n' +
@@ -135,7 +135,7 @@ async function cmdStart(chatId: number): Promise<void> {
     chat_id: chatId,
     parse_mode: 'HTML',
     text:
-      '👋 <b>Привет!</b> Я бот MegaDomic — помогаю найти и опубликовать недвижимость.\n\n' +
+      '👋 <b>Привет!</b> Я бот Demo Realty — помогаю найти и опубликовать недвижимость.\n\n' +
       COMMANDS_HELP,
   })
 }
@@ -390,7 +390,7 @@ async function cmdNewStart(payload: any, chatId: number): Promise<void> {
       text:
         'Создавать объявления через бота могут только админы. ' +
         'Если у вас есть объект — отправьте заявку через сайт ' +
-        '(megadomic.ru) или ответьте «да» в чате риэлтора.',
+        '(example.com) или ответьте «да» в чате риэлтора.',
     })
     return
   }

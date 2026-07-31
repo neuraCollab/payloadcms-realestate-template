@@ -12,7 +12,7 @@ import {
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Новое объявление — выберите тип — MegaDomic',
+  title: 'Новое объявление — выберите тип — Demo Realty',
 }
 
 const TYPES = [

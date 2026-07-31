@@ -8,7 +8,7 @@ import { CompareClient } from './CompareClient'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Сравнение объектов — MegaDomic',
+  title: 'Сравнение объектов — Demo Realty',
   description:
     'Сравните до 4 объектов недвижимости одного типа бок о бок: ' +
     'цена, площадь, комнаты, этаж, локация и удобства.',

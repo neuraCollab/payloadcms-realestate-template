@@ -15,7 +15,7 @@ export default async function CabinetLayout({
 }
 
 export const metadata: Metadata = {
-  title: 'Кабинет — MegaDomic',
+  title: 'Кабинет — Demo Realty',
   // Личный кабинет — приватный контент за cookie-сессией. От индекса
   // закрываем полностью (и не следуем по ссылкам — внутри только
   // личные данные пользователя).

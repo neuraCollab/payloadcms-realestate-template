@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    /* --- MegaDomic palette (light) ---
+    /* --- Demo Realty palette (light) ---
        primary  = #2563EB (Tailwind blue-600)
        hover    = #1D4ED8 (blue-700) — via primary/90 alpha or container
        surface  = #F4F6FB (мягкий синевато-белый фон)
@@ -120,7 +120,7 @@
   .shadow-e2 { box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 2px 6px 2px rgba(0,0,0,.06); }
   .shadow-e3 { box-shadow: 0 4px 8px 3px rgba(0,0,0,.08), 0 1px 3px rgba(0,0,0,.10); }
 
-  /* MegaDomic — анимация иконок категорий: всплытие снизу + поворот
+  /* Demo Realty — анимация иконок категорий: всплытие снизу + поворот
      по горизонтальной оси. Запускается классом .is-revealed, который
      навешивается IntersectionObserver'ом из CategoryTiles. */
   @keyframes md-bounce-spin {

@@ -107,7 +107,7 @@ export default async function CabinetProfilePage() {
 }
 
 export const metadata: Metadata = {
-  title: 'Профиль — MegaDomic',
+  title: 'Профиль — Demo Realty',
   description:
     'Личные данные, контакты для связи риэлторов и настройки уведомлений.',
 }

@@ -1,7 +1,7 @@
 # Настройка Resend на сервере Beget (письма со своего домена)
 
 Как подключить отправку реальных писем (magic-link вход в кабинет,
-а в будущем — уведомления о новых матчах) с домена `megadomic.ru`,
+а в будущем — уведомления о новых матчах) с домена `example.com`,
 если сервер арендован у Beget.
 
 ## Почему Resend, а не SMTP-сервер на Beget
@@ -36,31 +36,31 @@ DNS-записи через панель Beget. Сервер останется 
 ## 2. Добавить и верифицировать домен в Resend
 
 1. Resend Dashboard → **Domains** → **Add Domain** → ввести
-   `megadomic.ru` (без `www`, без `https://`).
+   `example.com` (без `www`, без `https://`).
 2. Resend покажет 3 DNS-записи (имена могут немного отличаться,
    ориентируйтесь на то что покажет дашборд):
 
    | Тип | Имя (host) | Значение |
    |---|---|---|
-   | MX | `send.megadomic.ru` | `feedback-smtp.<region>.amazonses.com` (приоритет 10) |
-   | TXT (SPF) | `send.megadomic.ru` | `v=spf1 include:amazonses.com ~all` |
-   | TXT (DKIM) | `resend._domainkey.megadomic.ru` | длинная строка `p=MIGfMA0...` |
+   | MX | `send.example.com` | `feedback-smtp.<region>.amazonses.com` (приоритет 10) |
+   | TXT (SPF) | `send.example.com` | `v=spf1 include:amazonses.com ~all` |
+   | TXT (DKIM) | `resend._domainkey.example.com` | длинная строка `p=MIGfMA0...` |
 
    Опционально, но рекомендуется — DMARC:
 
    | Тип | Имя | Значение |
    |---|---|---|
-   | TXT | `_dmarc.megadomic.ru` | `v=DMARC1; p=none; rua=mailto:postmaster@megadomic.ru` |
+   | TXT | `_dmarc.example.com` | `v=DMARC1; p=none; rua=mailto:postmaster@example.com` |
 
 ## 3. Внести записи в DNS-панели Beget
 
-1. Зайти в **my.beget.com** → **Домены** → выбрать `megadomic.ru` →
+1. Зайти в **my.beget.com** → **Домены** → выбрать `example.com` →
    **DNS-записи** (или «Управление DNS»).
 2. Добавить каждую запись из шага 2 кнопкой **Добавить запись**:
    - Тип записи выбрать из выпадающего списка (`MX`, `TXT`).
    - В поле «Поддомен/имя» — указать **только** часть до домена
      (например `send`, `resend._domainkey`, `_dmarc`), Beget сам
-     подставит `.megadomic.ru`.
+     подставит `.example.com`.
    - Для MX дополнительно есть поле «Приоритет» — поставить `10`.
    - Значение TXT-записи вставлять **целиком в кавычках**, как показал
      Resend — не обрезать.
@@ -69,12 +69,12 @@ DNS-записи через панель Beget. Сервер останется 
 4. Вернуться в Resend → Domains → нажать **Verify DNS Records**. Статус
    должен стать «Verified» у всех трёх (MX/SPF/DKIM).
 
-> Если у домена `megadomic.ru` уже настроена корпоративная почта
-> (`@megadomic.ru` через другой MX) — не трогайте существующую
+> Если у домена `example.com` уже настроена корпоративная почта
+> (`@example.com` через другой MX) — не трогайте существующую
 > MX-запись почты, а используйте отдельный поддомен только для отправки,
-> например `mail.megadomic.ru`, и при добавлении домена в Resend
+> например `mail.example.com`, и при добавлении домена в Resend
 > укажите именно его. Тогда `EMAIL_FROM` в шаге 4 будет
-> `MegaDomic <no-reply@mail.megadomic.ru>`.
+> `Demo Realty <no-reply@mail.example.com>`.
 
 ## 4. Прописать переменные окружения
 
@@ -84,7 +84,7 @@ DNS-записи через панель Beget. Сервер останется 
 
 ```
 RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxx
-EMAIL_FROM=MegaDomic <no-reply@megadomic.ru>
+EMAIL_FROM=Demo Realty <no-reply@example.com>
 ```
 
 `EMAIL_FROM` обязательно должен быть в верифицированном домене —
@@ -110,10 +110,10 @@ Magic-link логин (`src/app/(payload)/api/auth/magic-link/route.ts`)
 
 ```ts
 // src/app/(payload)/api/auth/magic-link/route.ts
-const subject = 'Вход в личный кабинет MegaDomic'
+const subject = 'Вход в личный кабинет Demo Realty'
 const text =
   `Здравствуйте!\n\n` +
-  `Чтобы войти в кабинет MegaDomic, перейдите по ссылке:\n` +
+  `Чтобы войти в кабинет Demo Realty, перейдите по ссылке:\n` +
   `${verifyUrl}\n\n` +
   `Ссылка действительна 15 минут и работает один раз.`
 const html = `<p>...</p><a href="${verifyUrl}">Войти в кабинет</a>...`
@@ -131,7 +131,7 @@ fetch('https://api.resend.com/emails', {
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-    from: process.env.EMAIL_FROM, // "MegaDomic <no-reply@megadomic.ru>"
+    from: process.env.EMAIL_FROM, // "Demo Realty <no-reply@example.com>"
     to: ['user@example.com'],
     subject,
     text,
@@ -145,7 +145,7 @@ fetch('https://api.resend.com/emails', {
 1. На проде/staging открыть `/cabinet/login`, ввести свой email,
    нажать «Получить ссылку на email».
 2. Resend Dashboard → **Logs** → должна появиться запись со статусом
-   `Delivered` для адресата и темой «Вход в личный кабинет MegaDomic».
+   `Delivered` для адресата и темой «Вход в личный кабинет Demo Realty».
 3. Письмо должно дойти за 5–30 секунд. Если письмо в спаме у
    Mail.ru/Yandex — это обычно означает что DKIM/SPF ещё не
    подтверждены (см. шаг 3) либо домен слишком новый (репутация
@@ -175,8 +175,8 @@ Domains → должно быть `Verified` у всех записей.
 ставит разумный TTL, но если меняли руками — выставьте `300`–`3600`).
 Проверить распространение записи:
 ```bash
-dig TXT resend._domainkey.megadomic.ru +short
-dig MX send.megadomic.ru +short
+dig TXT resend._domainkey.example.com +short
+dig MX send.example.com +short
 ```
 Если пусто — запись либо не сохранилась в панели Beget, либо опечатка
 в имени поддомена.

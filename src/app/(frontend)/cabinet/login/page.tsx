@@ -22,9 +22,9 @@ export default function CabinetLoginPage() {
 }
 
 export const metadata: Metadata = {
-  title: 'Вход в кабинет — MegaDomic',
+  title: 'Вход в кабинет — Demo Realty',
   description:
-    'Войдите в личный кабинет MegaDomic, чтобы управлять избранным, ' +
+    'Войдите в личный кабинет Demo Realty, чтобы управлять избранным, ' +
     'сохранёнными поисками и перепиской с риэлторами.',
   // noindex наследуется из cabinet/layout.tsx — не дублируем.
 }

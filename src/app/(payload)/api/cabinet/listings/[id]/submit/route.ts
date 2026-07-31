@@ -99,7 +99,7 @@ export async function POST(
     // Email автору
     void sendEmail({
       to: email,
-      subject: 'Ваше объявление принято на модерацию — MegaDomic',
+      subject: 'Ваше объявление принято на модерацию — Demo Realty',
       text:
         `Спасибо! Объявление «${listing.title}» отправлено на проверку.\n` +
         `Обычно проверяем в течение 24 часов и пишем на этот же email.\n\n` +

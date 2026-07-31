@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const label = isListingCollection(collection)
     ? COLLECTION_LABELS[collection as ListingCollection]
     : 'Объявление'
-  return { title: `Новое: ${label} — MegaDomic` }
+  return { title: `Новое: ${label} — Demo Realty` }
 }
 
 export default async function NewListingByTypePage({ params }: Props) {

@@ -7,7 +7,7 @@ interface Props {
   priority?: 'auto' | 'high' | 'low'
 }
 
-// MegaDomic wordmark — light/dark варианты из /public.
+// Demo Realty wordmark — light/dark варианты из /public.
 // SVG имеет viewBox 520×120 → при h=44px ширина = ~190px, читается на
 // ноутбуке. На совсем узких экранах подрезаем до 38px.
 //
@@ -15,13 +15,13 @@ interface Props {
 export const Logo = ({ className, loading = 'eager', priority = 'high' }: Props) => {
   return (
     <span
-      aria-label="MegaDomic"
+      aria-label="Demo Realty"
       className={clsx('inline-flex items-center', className)}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/logo-light.svg"
-        alt="MegaDomic"
+        alt="Demo Realty"
         width={190}
         height={44}
         loading={loading}
