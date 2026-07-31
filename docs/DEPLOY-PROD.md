@@ -255,6 +255,7 @@ docker compose -f docker-compose.prod.yml exec app pnpm payload migrate
 | `realty_email` cookie не ставится | nginx не пробрасывает заголовки — добавить `proxy_set_header` |
 | `/admin` показывает «Database not ready» | `docker compose -f docker-compose.prod.yml logs postgres` |
 | Карта пустая | `NEXT_PUBLIC_MAPBOX_TOKEN` пустой ИЛИ нужно пересобрать после изменения |
+| Nginx отдает 502 Bad Gateway | Приложение Next.js (контейнер `app`) упало, еще не запустилось или слушает другой порт. <br>1. Проверьте логи: `docker compose -f docker-compose.prod.yml logs app --tail 50`<br>2. Проверьте статус контейнера: `docker compose -f docker-compose.prod.yml ps`<br>3. Убедитесь, что порт в `proxy_pass http://127.0.0.1:3000;` совпадает с портом приложения.<br>4. Перезапустите: `docker compose -f docker-compose.prod.yml restart app` |
 
 ---
 
