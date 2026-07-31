@@ -1,0 +1,642 @@
+
+> duka2@1.0.0 dev /app
+> cross-env NODE_OPTIONS=--no-deprecation next dev --turbopack
+
+   ▲ Next.js 15.4.7 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.0.2:3000
+
+ ✓ Starting...
+ ✓ Ready in 3.4s
+ ⚠ Webpack is configured while Turbopack is not, which may cause problems.
+ ⚠ See instructions if you need to configure Turbopack:
+  https://nextjs.org/docs/app/api-reference/next-config-js/turbopack
+
+ ○ Compiling / ...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+ ✓ Compiled / in 15.5s
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '3700746964'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '3700746964'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '3700746964'
+}
+ GET / 500 in 18903ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '3700746964'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '3700746964'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '3700746964'
+}
+ GET / 500 in 396ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '3700746964'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '3700746964'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '3700746964'
+}
+ GET / 500 in 247ms
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '3700746964'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '3700746964'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '3700746964'
+}
+ GET / 500 in 416ms
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/layout-router.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '1922841639'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/render-from-template-context.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '399236519'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/layout-router.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '13051998'
+}
+ ⨯ Error: Could not find the module "[project]/src/app/(frontend)/error.tsx#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3303847264'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/render-from-template-context.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '1123587486'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/metadata/metadata-boundary.js#OutletBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '2864434791'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/metadata/async-metadata.js#AsyncMetadataOutlet" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3006144617'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/metadata/metadata-boundary.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '755235945'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/metadata/metadata-boundary.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '4062303817'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/components/builtin/global-error.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '4035692711'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/script.js#" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '2806235356'
+}
+ ⨯ Error: Could not find the module "[project]/src/providers/Theme/index.tsx#ThemeProvider" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3045561660'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/layout-router.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '517059228'
+}
+ ⨯ Error: Could not find the module "[project]/src/app/(frontend)/error.tsx#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '1874569616'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/render-from-template-context.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '2840725724'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/app-dir/link.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '569852914'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/app-dir/link.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '569852914'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/app-dir/link.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '569852914'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/app-dir/link.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '569852914'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/app-dir/link.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3978803915'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/app-dir/link.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '551696188'
+}
+ ⨯ Error: Could not find the module "[project]/src/components/CookieConsent/index.tsx#CookieConsent" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '312878300'
+}
+ ⨯ Error: Could not find the module "[project]/src/components/CompareTray/index.tsx#CompareTray" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3985826780'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/script.js#" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '2806235356'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/script.js#" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '2806235356'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/script.js#" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '2806235356'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/metadata/metadata-boundary.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '2295715013'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/metadata/metadata-boundary.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '4175157029'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/components/builtin/global-error.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '2274057291'
+}
+[0m[7m Server [0m  Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/components/builtin/global-error.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>:1:18) {
+  environmentName: 'Server',
+  digest: '2274057291'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/components/builtin/global-error.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>:1:18) {
+  environmentName: 'Server',
+  digest: '2274057291'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/components/builtin/global-error.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>:1:18) {
+  environmentName: 'Server',
+  digest: '2274057291',
+  page: '/'
+}
+ ⨯ Error: Could not find the module "[project]/src/components/LoginNudge/index.tsx#LoginNudge" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '3795108504'
+}
+ ⨯ Error: Could not find the module "[project]/src/components/Home/Hero.tsx#Hero" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '2915543672'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/app-dir/link.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '1648996790'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/app-dir/link.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '1648996790'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/app-dir/link.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '1648996790'
+}
+ ⨯ Error: Could not find the module "[project]/src/blocks/house/RecentlyViewed/component.tsx#RecentlyViewed" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '252993432'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ○ Compiling /_error ...
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/app-dir/link.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '796490040'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '3700746964'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '3700746964'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '3700746964'
+}
+ ✓ Compiled /_error in 2.9s
+ GET / 500 in 13553ms
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/layout-router.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '1922841639'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/render-from-template-context.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '399236519'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/layout-router.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '13051998'
+}
+ ⨯ Error: Could not find the module "[project]/src/app/(frontend)/error.tsx#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3303847264'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/render-from-template-context.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '1123587486'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/metadata/metadata-boundary.js#OutletBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '2864434791'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/metadata/async-metadata.js#AsyncMetadataOutlet" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3006144617'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/metadata/metadata-boundary.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '755235945'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/metadata/metadata-boundary.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '4062303817'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/components/builtin/global-error.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '4035692711'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/script.js#" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '2806235356'
+}
+ ⨯ Error: Could not find the module "[project]/src/providers/Theme/index.tsx#ThemeProvider" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3045561660'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/layout-router.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '517059228'
+}
+ ⨯ Error: Could not find the module "[project]/src/app/(frontend)/error.tsx#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '1874569616'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/render-from-template-context.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '2840725724'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/app-dir/link.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '569852914'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/app-dir/link.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '569852914'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/app-dir/link.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '569852914'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/app-dir/link.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '569852914'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/app-dir/link.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3978803915'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/app-dir/link.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '551696188'
+}
+ ⨯ Error: Could not find the module "[project]/src/components/CookieConsent/index.tsx#CookieConsent" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '312878300'
+}
+ ⨯ Error: Could not find the module "[project]/src/components/CompareTray/index.tsx#CompareTray" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3985826780'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/script.js#" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '2806235356'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/script.js#" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '2806235356'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/script.js#" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '2806235356'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/metadata/metadata-boundary.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '2295715013'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/esm/client/components/metadata/metadata-boundary.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '4175157029'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/components/builtin/global-error.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '2274057291'
+}
+[0m[7m Server [0m  Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/components/builtin/global-error.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>:1:18) {
+  environmentName: 'Server',
+  digest: '2274057291'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/components/builtin/global-error.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>:1:18) {
+  environmentName: 'Server',
+  digest: '2274057291'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/components/builtin/global-error.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>:1:18) {
+  environmentName: 'Server',
+  digest: '2274057291',
+  page: '/'
+}
+ ⨯ Error: Could not find the module "[project]/src/components/LoginNudge/index.tsx#LoginNudge" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '3795108504'
+}
+ ⨯ Error: Could not find the module "[project]/src/components/Home/Hero.tsx#Hero" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '2915543672'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/app-dir/link.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '1648996790'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/app-dir/link.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '1648996790'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/app-dir/link.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '1648996790'
+}
+ ⨯ Error: Could not find the module "[project]/src/blocks/house/RecentlyViewed/component.tsx#RecentlyViewed" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '252993432'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Error: missing secret key. A secret key is needed to secure Payload.
+    at async getGlobal (src/utilities/getGlobals.ts:10:18)
+   8 |
+   9 | async function getGlobal(slug: Global, depth = 0) {
+> 10 |   const payload = await getPayload({ config: configPromise })
+     |                  ^
+  11 |
+  12 |   const global = await payload.findGlobal({
+  13 |     slug, {
+  payloadInitError: true,
+  digest: '111374127'
+}
+ ⨯ Error: Could not find the module "[project]/node_modules/.pnpm/next@15.4.7_@opentelemetry+api@1.9.0_@playwright+test@1.60.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.77.4/node_modules/next/dist/client/app-dir/link.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '796490040'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '3700746964'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '3700746964'
+}
+ ⨯ [Error: Error: missing secret key. A secret key is needed to secure Payload.] {
+  payloadInitError: true,
+  digest: '3700746964'
+}
+ GET / 500 in 13609ms
+ ELIFECYCLE  Command failed.
+[?25h

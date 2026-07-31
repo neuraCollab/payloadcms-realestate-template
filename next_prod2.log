@@ -1,0 +1,69 @@
+
+> duka2@1.0.0 dev:prod /app
+> cross-env NODE_OPTIONS=--no-deprecation rm -rf .next && pnpm build && pnpm start
+
+
+> duka2@1.0.0 build /app
+> cross-env NODE_OPTIONS="--no-deprecation --max-old-space-size=3072" next build
+
+   ▲ Next.js 15.4.7
+
+   Creating an optimized production build ...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+ ✓ Compiled successfully in 2.0min
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+   Generating static pages (0/50) ...
+   Generating static pages (12/50)
+   Generating static pages (24/50)
+   Generating static pages (37/50)
+[16:50:16] [31mERROR[39m: [36mError: cannot connect to Postgres. Details: [39m
+    err: {
+      "type": "AggregateError",
+      "message": "",
+      "stack":
+          AggregateError:
+              at /app/.next/server/chunks/2683.js:430:22598
+              at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+              at async gi (/app/.next/server/chunks/2683.js:91:44999)
+              at async Object.gj [as connect] (/app/.next/server/chunks/2683.js:91:45243)
+              at async d5.init (/app/.next/server/chunks/2683.js:137:11923)
+      "aggregateErrors": [
+        {
+          "type": "Error",
+          "message": "connect ECONNREFUSED ::1:5432",
+          "stack":
+              Error: connect ECONNREFUSED ::1:5432
+                  at createConnectionError (node:net:1678:14)
+                  at afterConnectMultiple (node:net:1708:16)
+                  at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)
+          "errno": -111,
+          "code": "ECONNREFUSED",
+          "syscall": "connect",
+          "address": "::1",
+          "port": 5432
+        },
+        {
+          "type": "Error",
+          "message": "connect ECONNREFUSED 127.0.0.1:5432",
+          "stack":
+              Error: connect ECONNREFUSED 127.0.0.1:5432
+                  at createConnectionError (node:net:1678:14)
+                  at afterConnectMultiple (node:net:1708:16)
+                  at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)
+          "errno": -111,
+          "code": "ECONNREFUSED",
+          "syscall": "connect",
+          "address": "127.0.0.1",
+          "port": 5432
+        }
+      ],
+      "code": "ECONNREFUSED"
+    }
+ ⨯ Next.js build worker exited with code: 1 and signal: null
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
