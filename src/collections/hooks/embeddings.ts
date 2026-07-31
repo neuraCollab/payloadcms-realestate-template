@@ -12,6 +12,7 @@ import { indexDoc, deindexDoc, type SupportedCollection } from '../../lib/embedd
 export const embedAfterChange =
   (collection: SupportedCollection): CollectionAfterChangeHook =>
   ({ doc, req, operation }) => {
+    if (process.env.NEXT_PUBLIC_ENABLE_AI !== 'true') return doc
     if (operation !== 'create' && operation !== 'update') return doc
     // Fire-and-forget. setImmediate отдаёт control обратно немедленно.
     setImmediate(() => {
@@ -23,6 +24,7 @@ export const embedAfterChange =
 export const embedAfterDelete =
   (collection: SupportedCollection): CollectionAfterDeleteHook =>
   ({ doc, req }) => {
+    if (process.env.NEXT_PUBLIC_ENABLE_AI !== 'true') return doc
     setImmediate(() => {
       void deindexDoc(req.payload, collection, doc.id)
     })

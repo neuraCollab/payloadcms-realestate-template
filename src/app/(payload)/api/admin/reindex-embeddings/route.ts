@@ -31,6 +31,13 @@ const ALL_COLLECTIONS: SupportedCollection[] = [
 const BATCH = 64
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
+  if (process.env.NEXT_PUBLIC_ENABLE_AI !== 'true') {
+    return NextResponse.json(
+      { error: 'AI features are disabled in this environment' },
+      { status: 501 }
+    )
+  }
+
   // ── Auth ──
   if (!(await authorize(req))) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

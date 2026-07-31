@@ -21,6 +21,21 @@ export const AiSearchBox: React.FC<{
   const [q, setQ] = React.useState('')
   const [submitting, setSubmitting] = React.useState(false)
 
+  // Open-Core: Hide AI search if disabled
+  const isAiEnabled = process.env.NEXT_PUBLIC_ENABLE_AI === 'true'
+
+  if (!isAiEnabled) {
+    return (
+      <div className="bg-card rounded-2xl shadow-e3 p-4 border border-border flex flex-col items-center justify-center text-center">
+        <Sparkles className="w-6 h-6 text-muted-foreground mb-2" />
+        <h3 className="text-body font-medium mb-1">AI-поиск недоступен</h3>
+        <p className="text-body-sm text-on-surface-variant max-w-sm">
+          Функциональность поиска по естественному языку доступна в Pro-версии платформы.
+        </p>
+      </div>
+    )
+  }
+
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
     const text = q.trim()

@@ -41,6 +41,13 @@ const PREFILTER_POOL = 200
 const DEFAULT_LIMIT = 20
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
+  if (process.env.NEXT_PUBLIC_ENABLE_AI !== 'true') {
+    return NextResponse.json(
+      { error: 'AI features are disabled in this environment' },
+      { status: 501 }
+    )
+  }
+
   const url = new URL(req.url)
   const q = (url.searchParams.get('q') ?? '').trim()
   if (!q) {
