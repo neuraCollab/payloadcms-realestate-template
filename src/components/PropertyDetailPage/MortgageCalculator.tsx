@@ -2,6 +2,8 @@
 import React from 'react'
 import { Calculator, Percent } from 'lucide-react'
 import { MortgageCTA } from '@/components/LeadForm/MortgageCTA'
+import { formatPrice } from '@/utilities/formatPrice'
+
 
 interface Props {
   price: number
@@ -18,8 +20,6 @@ interface Props {
   }
 }
 
-const formatPrice = (n: number) =>
-  Math.round(n).toLocaleString('ru-RU') + ' ₽'
 
 /**
  * Annuity payment formula:

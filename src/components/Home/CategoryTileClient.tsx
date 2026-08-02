@@ -2,6 +2,8 @@
 import React from 'react'
 import Link from 'next/link'
 import { ArrowUpRight, Building2, Home as HomeIcon, Trees, Briefcase } from 'lucide-react'
+import { formatPrice } from '@/utilities/formatPrice'
+
 
 export type TilePreview = {
   imageUrl: string
@@ -41,14 +43,6 @@ type Props = {
   preview: TilePreview
 }
 
-const formatPrice = (n: number | null) =>
-  n == null
-    ? null
-    : new Intl.NumberFormat('ru-RU', {
-        style: 'currency',
-        currency: 'RUB',
-        maximumFractionDigits: 0,
-      }).format(n)
 
 // IntersectionObserver навешивает класс .is-revealed → keyframe
 // md-bounce-spin (globals.css). prefers-reduced-motion отключает.

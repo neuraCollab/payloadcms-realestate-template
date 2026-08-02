@@ -5,19 +5,14 @@ import { formatDateTime } from 'src/utilities/formatDateTime'
 import type { Property } from '@/payload-types'
 
 import { Media } from '@/components/Media'
+import { formatPrice } from '@/utilities/formatPrice'
+
 
 export const PropertyHero: React.FC<{
   property: Property
 }> = ({ property }) => {
   const { title, address, price, type, bedrooms, bathrooms, area, images, status, createdAt } = property
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('ru-RU', {
-      style: 'currency',
-      currency: 'RUB',
-      maximumFractionDigits: 0,
-    }).format(price)
-  }
 
   const heroImage = images && images.length > 0 ? images[0]?.image : null
 

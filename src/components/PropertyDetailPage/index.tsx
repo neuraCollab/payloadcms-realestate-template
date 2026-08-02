@@ -20,6 +20,8 @@ import { TrackView } from './TrackView'
 import { FavoriteButton } from '@/components/FavoriteButton'
 import type { PropertyType } from '@/components/PropertyFilters/schemas'
 import { buildBreadcrumbJsonLd } from '@/utilities/seo'
+import { formatPrice } from '@/utilities/formatPrice'
+
 
 const COLLECTION_MAP: Record<PropertyType, string> = {
   flats: 'flats',
@@ -51,7 +53,6 @@ interface Props {
   previewMode?: boolean
 }
 
-const formatPrice = (n: number) => n.toLocaleString('ru-RU') + ' ₽'
 
 export const PropertyDetailPage: React.FC<Props> = async ({
   type,

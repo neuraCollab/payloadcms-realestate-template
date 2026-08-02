@@ -3,6 +3,8 @@
 import React from 'react'
 import { MapPin } from 'lucide-react'
 import { Property } from '@/payload-types'
+import { formatPrice } from '@/utilities/formatPrice'
+
 
 export type PropertyHeroBlockType = {
   blockType: 'property-hero'
@@ -10,13 +12,6 @@ export type PropertyHeroBlockType = {
 }
 
 export const PropertyHeroBlock: React.FC<PropertyHeroBlockType> = ({ property }) => {
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0,
-    }).format(price)
-  }
 
   const getImageUrl = (property: Property) => {
     if (!property.images?.[0]?.image || typeof property.images[0].image !== 'object') {

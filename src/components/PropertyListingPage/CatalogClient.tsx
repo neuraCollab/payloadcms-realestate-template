@@ -10,6 +10,8 @@ import { FavoriteButton } from '@/components/FavoriteButton'
 import { PropertyFiltersSheet } from '@/components/PropertyFilters/PropertyFiltersSheet'
 import type { PropertyType } from '@/components/PropertyFilters/schemas'
 import { cn } from '@/utilities/ui'
+import { formatPrice } from '@/utilities/formatPrice'
+
 
 type CardItem = {
   id: string
@@ -33,7 +35,6 @@ interface Props {
   mapBaseUrl: string
 }
 
-const formatPrice = (n: number) => n.toLocaleString('ru-RU') + ' ₽'
 
 /**
  * CatalogClient — клиентский каркас каталога с картой.

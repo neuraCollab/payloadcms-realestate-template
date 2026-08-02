@@ -8,6 +8,8 @@ import { PropertyCard } from '@/components/PropertyCard'
 import { POPULAR_FILTERS_FOR_CITY, parseFilterSlug } from '@/lib/cityUrls'
 import { buildBreadcrumbJsonLd } from '@/utilities/seo'
 import { getServerSideURL } from '@/utilities/getURL'
+import { formatPrice } from '@/utilities/formatPrice'
+
 
 interface Props {
   city: any
@@ -20,7 +22,6 @@ interface Counters {
   complexes: number
 }
 
-const formatPrice = (n: number) => n.toLocaleString('ru-RU') + ' ₽'
 
 export const CityLandingPage: React.FC<Props> = async ({ city }) => {
   const payload = await getPayload({ config })

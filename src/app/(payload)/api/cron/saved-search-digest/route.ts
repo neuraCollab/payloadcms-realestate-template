@@ -3,6 +3,8 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { sendEmail } from '@/lib/email'
 import { getServerSideURL } from '@/utilities/getURL'
+import { formatPrice } from '@/utilities/formatPrice'
+
 
 /**
  * POST /api/cron/saved-search-digest
@@ -44,7 +46,6 @@ const FILTER_FIELD_MAP: Record<string, string> = {
   rooms: 'rooms',
 }
 
-const formatPrice = (n: number) => n.toLocaleString('ru-RU') + ' ₽'
 
 export async function POST(req: NextRequest): Promise<Response> {
   const auth = req.headers.get('authorization')

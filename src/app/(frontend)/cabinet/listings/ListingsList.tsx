@@ -2,6 +2,8 @@
 import React from 'react'
 import Link from 'next/link'
 import { Eye, Edit, Trash2, Send } from 'lucide-react'
+import { formatPrice } from '@/utilities/formatPrice'
+
 
 interface Listing {
   id: number
@@ -31,8 +33,6 @@ const COLLECTION_LABEL: Record<string, string> = {
   lands: 'Участок',
 }
 
-const formatPrice = (n?: number) =>
-  typeof n === 'number' ? n.toLocaleString('ru-RU') + ' ₽' : '—'
 
 export const ListingsList: React.FC = () => {
   const [items, setItems] = React.useState<Listing[]>([])

@@ -7,6 +7,8 @@ import config from '@/payload.config'
 import { Button } from '@/components/ui/button'
 import { MessageButton } from './MessageButton'
 import { MaskedPhone } from '@/components/MaskedPhone'
+import { formatPrice } from '@/utilities/formatPrice'
+
 
 interface Props {
   realtor: any
@@ -14,7 +16,6 @@ interface Props {
   propertyTitle?: string
 }
 
-const formatPrice = (n: number) => n.toLocaleString('ru-RU') + ' ₽'
 
 // Server component. Fetches active flats from this realtor + recent approved reviews.
 export const RealtorCard: React.FC<Props> = async ({

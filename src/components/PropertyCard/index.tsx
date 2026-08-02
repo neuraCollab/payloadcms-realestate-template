@@ -5,6 +5,8 @@ import { cn } from '@/utilities/ui'
 import { FavoriteButton } from '@/components/FavoriteButton'
 import { CompareButton } from '@/components/CompareButton'
 import type { FavCollection } from '@/lib/favorites'
+import { formatPrice } from '@/utilities/formatPrice'
+
 
 export interface PropertyCardProps {
   href: string
@@ -29,7 +31,6 @@ export interface PropertyCardProps {
   priority?: boolean
 }
 
-const formatPrice = (n: number) => n.toLocaleString('ru-RU') + ' ₽'
 
 export const PropertyCard: React.FC<PropertyCardProps> = ({
   href,
