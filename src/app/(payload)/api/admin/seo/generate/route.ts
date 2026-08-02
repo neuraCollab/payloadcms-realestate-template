@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
+import { secureCompare } from '@/utilities/secureCompare'
 import { discoverCombos, generateOne } from '@/lib/seo/generate'
 import { shouldUseProvider } from '@/lib/llm'
 
@@ -29,7 +30,7 @@ const PARALLEL = 5
 export async function POST(req: NextRequest): Promise<Response> {
   const auth = req.headers.get('authorization')
   const expected = process.env.CRON_SECRET
-  if (!expected || auth !== `Bearer ${expected}`) {
+  if (!expected || !auth || !secureCompare(auth, `Bearer ${expected}`)) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
 

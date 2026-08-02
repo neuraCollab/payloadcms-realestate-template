@@ -9,6 +9,7 @@
 
 import { getPayload, createLocalReq, type PayloadRequest } from 'payload'
 import config from '@/payload.config'
+import { secureCompare } from '@/utilities/secureCompare'
 
 const DEFAULT_DAYS = 90
 
@@ -138,7 +139,8 @@ const authorize = async (
 
   // Cron secret bypass (allows Vercel/GitHub-Action style scheduling).
   const authHeader = req.headers.get('authorization')
-  if (process.env.CRON_SECRET && authHeader === `Bearer ${process.env.CRON_SECRET}`) {
+  const expected = process.env.CRON_SECRET
+  if (expected && authHeader && secureCompare(authHeader, `Bearer ${expected}`)) {
     return { payload, req: await createLocalReq({}, payload) }
   }
 

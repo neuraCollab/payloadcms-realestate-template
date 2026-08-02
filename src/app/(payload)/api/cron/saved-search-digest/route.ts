@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
+import { secureCompare } from '@/utilities/secureCompare'
 import { sendEmail } from '@/lib/email'
 import { getServerSideURL } from '@/utilities/getURL'
 import { formatPrice } from '@/utilities/formatPrice'
@@ -50,7 +51,7 @@ const FILTER_FIELD_MAP: Record<string, string> = {
 export async function POST(req: NextRequest): Promise<Response> {
   const auth = req.headers.get('authorization')
   const expected = process.env.CRON_SECRET
-  if (!expected || auth !== `Bearer ${expected}`) {
+  if (!expected || !auth || !secureCompare(auth, `Bearer ${expected}`)) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
 

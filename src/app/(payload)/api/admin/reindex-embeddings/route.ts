@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
+import { secureCompare } from '@/utilities/secureCompare'
 import {
   indexDoc,
   isConfigured,
@@ -103,7 +104,11 @@ async function authorize(req: NextRequest): Promise<boolean> {
   // 1. Bearer CRON_SECRET
   const auth = req.headers.get('authorization')
   const expected = process.env.CRON_SECRET
-  if (expected && auth === `Bearer ${expected}`) return true
+  if (expected && auth) {
+    if (secureCompare(auth, `Bearer ${expected}`)) {
+      return true
+    }
+  }
 
   // 2. Payload session с role=admin
   try {

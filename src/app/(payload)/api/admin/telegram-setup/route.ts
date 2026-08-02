@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { tg } from '@/lib/telegram/client'
 import { getServerSideURL } from '@/utilities/getURL'
+import { secureCompare } from '@/utilities/secureCompare'
 
 /**
  * POST /api/admin/telegram-setup
@@ -18,7 +19,7 @@ import { getServerSideURL } from '@/utilities/getURL'
 export async function POST(req: NextRequest): Promise<Response> {
   const auth = req.headers.get('authorization')
   const expected = process.env.CRON_SECRET
-  if (!expected || auth !== `Bearer ${expected}`) {
+  if (!expected || !auth || !secureCompare(auth, `Bearer ${expected}`)) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
 

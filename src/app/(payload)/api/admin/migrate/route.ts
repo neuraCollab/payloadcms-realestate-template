@@ -3,6 +3,7 @@ import { getPayload } from 'payload'
 import { sql } from '@payloadcms/db-postgres'
 import config from '@/payload.config'
 import { migrations } from '@/migrations'
+import { secureCompare } from '@/utilities/secureCompare'
 
 /**
  * Применяет pending Payload-миграции из `src/migrations/`.
@@ -119,7 +120,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 async function authorize(req: NextRequest): Promise<boolean> {
   const auth = req.headers.get('authorization')
   const expected = process.env.CRON_SECRET
-  if (expected && auth === `Bearer ${expected}`) return true
+  if (expected && auth && secureCompare(auth, `Bearer ${expected}`)) return true
   try {
     const payload = await getPayload({ config })
     const { user } = await payload.auth({ headers: req.headers })
