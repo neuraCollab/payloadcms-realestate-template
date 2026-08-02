@@ -1,0 +1,23 @@
+=== Аудит секретов и приватных данных ===
+
+--- 1. Email-адреса ---
+src/app/(frontend)/next/seed-seo-posts/route.ts:editor@megadomic.ru
+src/endpoints/seed-globals/index.ts:hello@realty.local
+src/endpoints/seed-pages/contact-page.ts:hello@realty.local
+src/endpoints/seed/contact-form.ts:\u003Cdemo@payloadcms.com\u003E
+src/endpoints/seed/index.ts:demo-author@example.com
+
+--- 2. Номера телефонов (+7 / 8) ---
+src/endpoints/seed-globals/index.ts:+7 (495) 123-45-67
+src/endpoints/seed-pages/contact-page.ts:+7 (495) 123-45-67
+
+--- 3. Банковские аккаунты (20 цифр) ---
+src/endpoints/seed-globals/index.ts:40702810000000000000
+
+--- 4. Пароли, Секреты и Токены (hardcoded) ---
+src/app/(frontend)/next/seed-seo-posts/route.ts:      password: 'change-me-' + Math.random().toString(36).slice(2, 10),
+src/endpoints/seed/index.ts:        password: 'password',
+
+--- 5. Реальные домены (исключая example.com, localhost) ---
+src/endpoints/seed/index.ts:https://raw.githubusercontent.com
+=======================================
