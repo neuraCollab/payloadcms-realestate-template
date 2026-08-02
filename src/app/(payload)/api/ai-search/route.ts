@@ -41,13 +41,6 @@ const PREFILTER_POOL = 200
 const DEFAULT_LIMIT = 20
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
-  if (process.env.NEXT_PUBLIC_ENABLE_AI !== 'true') {
-    return NextResponse.json(
-      { error: 'AI features are disabled in this environment' },
-      { status: 501 }
-    )
-  }
-
   const url = new URL(req.url)
   const q = (url.searchParams.get('q') ?? '').trim()
   if (!q) {
@@ -130,7 +123,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   if (q.length >= 3 && q.length <= 200) {
     setImmediate(async () => {
       try {
-        // @ts-expect-error drizzle exposed by postgres-adapter at runtime
         const drizzle = payload.db.drizzle
         await drizzle.execute(sql`
           INSERT INTO search_queries (query, query_lower, city, results_count)

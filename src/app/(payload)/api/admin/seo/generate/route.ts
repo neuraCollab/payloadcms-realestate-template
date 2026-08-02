@@ -27,13 +27,6 @@ import { shouldUseProvider } from '@/lib/llm'
 const PARALLEL = 5
 
 export async function POST(req: NextRequest): Promise<Response> {
-  if (process.env.NEXT_PUBLIC_ENABLE_AI !== 'true') {
-    return NextResponse.json(
-      { error: 'AI features are disabled in this environment' },
-      { status: 501 }
-    )
-  }
-
   const auth = req.headers.get('authorization')
   const expected = process.env.CRON_SECRET
   if (!expected || auth !== `Bearer ${expected}`) {
