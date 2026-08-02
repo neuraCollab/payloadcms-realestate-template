@@ -16,7 +16,7 @@ test.describe('/api/cabinet/session', () => {
     await ctx.dispose()
   })
 
-  test('accepts a valid email and sets cookie', async ({ baseURL }) => {
+  test('accepts a valid email but does not set cookie (auth bypass fix)', async ({ baseURL }) => {
     const ctx = await request.newContext({ baseURL })
     const res = await ctx.post('/api/cabinet/session', {
       data: { email: 'test@example.com' },
@@ -24,15 +24,12 @@ test.describe('/api/cabinet/session', () => {
     expect(res.status()).toBe(200)
     const cookies = await ctx.storageState()
     const realtyCookie = cookies.cookies.find((c) => c.name === 'realty_email')
-    expect(realtyCookie?.value).toBe(encodeURIComponent('test@example.com'))
+    expect(realtyCookie).toBeUndefined()
     await ctx.dispose()
   })
 
   test('DELETE clears the cookie', async ({ baseURL }) => {
     const ctx = await request.newContext({ baseURL })
-    await ctx.post('/api/cabinet/session', {
-      data: { email: 'test@example.com' },
-    })
     const res = await ctx.delete('/api/cabinet/session')
     expect(res.status()).toBe(200)
     await ctx.dispose()
