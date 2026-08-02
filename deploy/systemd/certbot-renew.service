@@ -1,0 +1,8 @@
+[Unit]
+Description=Certbot Renewal for Realty App
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/srv/realty/scripts/certbot-renew.sh

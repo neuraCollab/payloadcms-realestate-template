@@ -1,0 +1,10 @@
+[Unit]
+Description=Timer for Certbot Renewal for Realty App
+
+[Timer]
+OnCalendar=*-*-* 00,12:00:00
+RandomizedDelaySec=43200
+Persistent=true
+
+[Install]
+WantedBy=timers.target
