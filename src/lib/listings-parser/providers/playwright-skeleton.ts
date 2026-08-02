@@ -178,7 +178,7 @@ export const createPlaywrightProvider = (
         basePayload.priceType = 'total'
         basePayload.currency = 'RUB'
       } else if (collection === 'lands') {
-        basePayload.purpose = t.includes('ижс') ? 'ijs' : t.includes('снт') ? 'snt' : 'agricultural'
+        basePayload.purpose = t.includes('ижс') ? 'ижс' : t.includes('снт') ? 'снт' : 'agricultural'
       }
 
       return {
