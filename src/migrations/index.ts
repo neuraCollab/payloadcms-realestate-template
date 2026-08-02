@@ -12,6 +12,7 @@ import * as migration_20260607_lands_draft from './20260607_lands_draft';
 import * as migration_20260608_search_queries from './20260608_search_queries';
 import * as migration_20260608_search_queries_user from './20260608_search_queries_user';
 import * as migration_20260608_seo_landings from './20260608_seo_landings';
+import * as migration_20260609_hnsw_index from './20260609_hnsw_index';
 
 export const migrations = [
   {
@@ -83,5 +84,10 @@ export const migrations = [
     up: migration_20260608_seo_landings.up,
     down: migration_20260608_seo_landings.down,
     name: '20260608_seo_landings',
+  },
+  {
+    up: migration_20260609_hnsw_index.up,
+    down: migration_20260609_hnsw_index.down,
+    name: '20260609_hnsw_index',
   },
 ];
