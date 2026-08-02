@@ -171,6 +171,9 @@ importers:
       '@types/escape-html':
         specifier: ^1.0.2
         version: 1.0.4
+      '@types/jsdom':
+        specifier: ^28.0.3
+        version: 28.0.3
       '@types/node':
         specifier: 22.5.4
         version: 22.5.4
@@ -192,6 +195,9 @@ importers:
       eslint-config-next:
         specifier: 15.2.2
         version: 15.2.2(eslint@9.38.0(jiti@1.21.7))(typescript@5.7.3)
+      jsdom:
+        specifier: ^30.0.1
+        version: 30.0.1
       postcss:
         specifier: ^8.4.38
         version: 8.5.6
@@ -2315,6 +2321,9 @@ packages:
   '@types/hast@3.0.4':
     resolution: {integrity: sha512-WPs+bbQw5aCj+x6laNGWLH3wviHtoCv/P3+otBhbOhJgG8qtpdAMlTCxLtsTWA7LH1Oh/bFCHsBn0TPS5m30EQ==}
 
+  '@types/jsdom@28.0.3':
+    resolution: {integrity: sha512-/HQ2uFoetFTXuye8vzIcHw2z6Fwi7Hi/qcgC+RoS9NCyewiqxhVGqlG+ViGB6lkax481R6dmhf1I7lIGlzJStQ==}
+
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
@@ -2370,8 +2379,13 @@ packages:
   '@types/supercluster@7.1.3':
     resolution: {integrity: sha512-Z0pOY34GDFl3Q6hUFYf3HkTwKEE02e7QgtJppBt+beEAxnyOpJua+voGFvxINBHa06GwLFFym7gRPY2SiKIfIA==}
 
+<<<<<<< HEAD
   '@types/trusted-types@2.0.7':
     resolution: {integrity: sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==}
+=======
+  '@types/tough-cookie@4.0.5':
+    resolution: {integrity: sha512-/Ad8+nIOV7Rl++6f1BdKxFSMgmoqEoYbHRpPcx3JEfv8VRsQe9Z4mCXeJBzxs7mbHY/XOZZuXlRNfhpVPbs6ZA==}
+>>>>>>> origin/pr/17
 
   '@types/unist@2.0.11':
     resolution: {integrity: sha512-CmBKiL6NNo/OqgmMn95Fk9Whlp2mtvIv+KNpQKN2F4SjvrEesubTRWGYSg+BnWZOnlCaSTU1sMpsBOzgbYhnsA==}
@@ -5375,6 +5389,9 @@ packages:
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
 
+  undici-types@7.29.0:
+    resolution: {integrity: sha512-vamA8dGlzMwhpyYpQp9d8vka3o4D/yn5I7ez7Or+msDA4bZ8Uh+Zy91WvWf3I73gDAkFha9JcYRqm2li0Npfgg==}
+
   undici@7.10.0:
     resolution: {integrity: sha512-u5otvFBOBZvmdjWLVW+5DAc9Nkq8f24g0O9oY7qw2JVIF1VocIFoyz9JFkuVOS2j41AufeO0xnlweJ2RLT8nGw==}
     engines: {node: '>=20.18.1'}
@@ -8294,6 +8311,13 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
 
+  '@types/jsdom@28.0.3':
+    dependencies:
+      '@types/node': 22.5.4
+      '@types/tough-cookie': 4.0.5
+      parse5: 8.0.1
+      undici-types: 7.29.0
+
   '@types/json-schema@7.0.15': {}
 
   '@types/json5@0.0.29': {}
@@ -8347,8 +8371,12 @@ snapshots:
     dependencies:
       '@types/geojson': 7946.0.16
 
+<<<<<<< HEAD
   '@types/trusted-types@2.0.7':
     optional: true
+=======
+  '@types/tough-cookie@4.0.5': {}
+>>>>>>> origin/pr/17
 
   '@types/unist@2.0.11': {}
 
@@ -11799,6 +11827,8 @@ snapshots:
       which-boxed-primitive: 1.1.1
 
   undici-types@6.19.8: {}
+
+  undici-types@7.29.0: {}
 
   undici@7.10.0: {}
 
