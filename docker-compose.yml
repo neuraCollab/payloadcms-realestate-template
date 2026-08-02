@@ -65,6 +65,14 @@ services:
     depends_on:
       - postgres
 
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    restart: always
+    ports:
+      - "3001:3001"
+    volumes:
+      - uptime_kuma_data:/app/data
+
   app:
     build:
       context: .
@@ -98,3 +106,4 @@ volumes:
   app_node_modules:
   app_next:
   tei_models:
+  uptime_kuma_data:

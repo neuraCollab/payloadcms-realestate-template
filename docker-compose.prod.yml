@@ -95,6 +95,14 @@ services:
       app:
         condition: service_started
 
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    restart: always
+    ports:
+      - '127.0.0.1:3001:3001'
+    volumes:
+      - uptime_kuma_data:/app/data
+
   app:
     # Образ собирается через scripts/deploy.sh (docker build с --network=host
     # чтобы достучаться до postgres на этапе билда). compose up подхватывает
@@ -151,3 +159,4 @@ services:
 volumes:
   postgres_data:
   tei_models:
+  uptime_kuma_data:
