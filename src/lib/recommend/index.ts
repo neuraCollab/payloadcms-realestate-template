@@ -27,6 +27,7 @@ import {
   type SupportedCollection,
 } from '@/lib/embeddings'
 import { extractFiltersLLM, explainMatchLLM, shouldUseLLM } from '@/lib/llm'
+import { correctTypos } from '@/lib/speller'
 
 const ALL_COLLECTIONS: SupportedCollection[] = [
   'flats',
@@ -106,13 +107,16 @@ async function buildEnrichedQuery(
   prompt: string,
   ctx: UserContext,
 ): Promise<{ enrichedText: string; parsed: ParsedQuery & Record<string, any> }> {
+  // 0) Spell checking to normalize the prompt before LLM and heuristic parsing
+  const spellCheckedPrompt = await correctTypos(prompt)
+
   // 1) Heuristic parsing — быстрый, бесплатный, всегда работает.
-  const parsed = parsePrompt(prompt) as ParsedQuery & Record<string, any>
+  const parsed = parsePrompt(spellCheckedPrompt) as ParsedQuery & Record<string, any>
 
   // 2) LLM-extraction — если ключ задан, обогащаем фильтры. Не
   // блокируем при сетевой ошибке (extractFiltersLLM сама не throw'ит).
   if (shouldUseLLM()) {
-    const llmExtracted = await extractFiltersLLM(prompt)
+    const llmExtracted = await extractFiltersLLM(spellCheckedPrompt)
     if (llmExtracted) {
       // Heuristic > LLM (heuristic-парсер хороший, LLM добавляет
       // то что не распознали regex'ы).
@@ -128,12 +132,12 @@ async function buildEnrichedQuery(
   // мной», «что-то небольшое»), добавляем предыдущий запрос как
   // вектор-сосед. Это лёгкий способ «помнить предпочтения».
   const shortAndGeneric =
-    prompt.trim().length < 30 &&
-    !/\d/.test(prompt) &&
+    spellCheckedPrompt.trim().length < 30 &&
+    !/\d/.test(spellCheckedPrompt) &&
     ctx.recentQueries.length > 0
   const enrichedText = shortAndGeneric
-    ? `${prompt}. Контекст предыдущего поиска: ${ctx.recentQueries[0]}`
-    : prompt
+    ? `${spellCheckedPrompt}. Контекст предыдущего поиска: ${ctx.recentQueries[0]}`
+    : spellCheckedPrompt
 
   return { enrichedText, parsed }
 }
