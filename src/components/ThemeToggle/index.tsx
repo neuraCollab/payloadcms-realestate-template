@@ -1,12 +1,26 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Moon, Sun } from 'lucide-react'
 import { useTheme } from '@/providers/Theme'
 import { Button } from '@/components/ui/button'
 
 export const ThemeToggle: React.FC = () => {
   const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return (
+      <Button variant="ghost" size="icon" aria-label="Смена темы">
+        <Moon className="h-4 w-4 text-transparent" />
+      </Button>
+    )
+  }
+
   const isDark = theme === 'dark'
 
   return (

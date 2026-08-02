@@ -8,11 +8,12 @@ import Image from 'next/image'
 import { MaskedPhone } from '@/components/MaskedPhone'
 import { getServerSideURL } from '@/utilities/getURL'
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string }
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ slug: string }>
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   const payload = await getPayload({ config })
   const { slug } = params
   const users = await payload.find({
@@ -45,7 +46,8 @@ export async function generateMetadata({
   }
 }
 
-export default async function RealtorProfilePage({ params }: { params: { slug: string } }) {
+export default async function RealtorProfilePage(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const payload = await getPayload({ config })
   const { slug } = params
 

@@ -24,7 +24,7 @@ test('playwright-skeleton normalize()', async (t) => {
       },
     }
 
-    const normalized = provider.normalize(raw)
+    const normalized = await provider.normalize(raw)
 
     assert.equal(normalized.collection, 'flats')
     assert.equal(normalized.payload.price, 5450000)
