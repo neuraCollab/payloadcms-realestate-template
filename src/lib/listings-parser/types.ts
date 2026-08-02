@@ -40,7 +40,7 @@ export interface ListingsProvider {
   /** Returns up to `limit` raw listings. */
   fetch(limit: number): Promise<RawListing[]>
   /** Normalizes a raw listing into something Payload can persist. */
-  normalize(raw: RawListing): NormalizedListing
+  normalize(raw: RawListing): NormalizedListing | Promise<NormalizedListing>
 }
 
 export interface IngestResult {
