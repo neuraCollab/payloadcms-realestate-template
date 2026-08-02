@@ -258,7 +258,7 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
 
   return (
     <div className="pt-24 pb-24">
-      <PageClient />
+      <PageClient isAiSearch={aiMode} query={sp.q} />
       <div className="container space-y-6">
         <header className="flex items-start justify-between gap-3 flex-wrap">
           <div className="space-y-1 min-w-0">
