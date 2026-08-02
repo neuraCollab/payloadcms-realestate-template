@@ -1,10 +1,16 @@
 'use client'
 import React from 'react'
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ReferenceLine,
+  ResponsiveContainer,
+} from 'recharts'
 import type { MonthlyPoint } from '@/lib/marketAnalytics'
-
-// Hand-rolled SVG charts. No external chart lib — keeps bundle small and
-// gives us full control over styling. Layout is viewBox-based so it scales
-// to any container width.
 
 const MONTH_SHORT = [
   'янв', 'фев', 'мар', 'апр', 'май', 'июн',
@@ -35,143 +41,86 @@ interface TrendProps {
  * Skips months with count=0 in the line (gap), but keeps tick on X axis.
  */
 export const PriceTrendChart: React.FC<TrendProps> = ({ data, subjectPricePerSqm }) => {
-  // Layout
-  const W = 600
-  const H = 220
-  const padL = 48
-  const padR = 12
-  const padT = 12
-  const padB = 28
-  const innerW = W - padL - padR
-  const innerH = H - padT - padB
-
-  // Scale
   const values = data.map((d) => d.avgPricePerSqm).filter((v) => v > 0)
   const subjectVal =
     typeof subjectPricePerSqm === 'number' && subjectPricePerSqm > 0 ? subjectPricePerSqm : null
   const allVals = subjectVal !== null ? [...values, subjectVal] : values
+
   const minY = allVals.length ? Math.min(...allVals) * 0.9 : 0
   const maxY = allVals.length ? Math.max(...allVals) * 1.1 : 1
-  const ySpan = maxY - minY || 1
 
-  const xStep = data.length > 1 ? innerW / (data.length - 1) : innerW
-  const xAt = (i: number) => padL + i * xStep
-  const yAt = (v: number) => padT + innerH - ((v - minY) / ySpan) * innerH
-
-  // Build path skipping empty months
-  const pathSegments: string[] = []
-  let started = false
-  data.forEach((d, i) => {
-    if (d.avgPricePerSqm > 0) {
-      pathSegments.push(`${started ? 'L' : 'M'} ${xAt(i).toFixed(1)} ${yAt(d.avgPricePerSqm).toFixed(1)}`)
-      started = true
-    } else {
-      started = false
-    }
-  })
-
-  // Y ticks (3 lines)
-  const yTicks = [minY, minY + ySpan / 2, maxY]
+  const chartData = data.map((d) => ({
+    ...d,
+    formattedMonth: formatMonthLabel(d.month),
+    avgPricePerSqm: d.avgPricePerSqm > 0 ? d.avgPricePerSqm : null,
+  }))
 
   return (
-    <div className="w-full">
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label="График динамики цены за м²">
-        {/* Grid */}
-        {yTicks.map((tv, i) => (
-          <g key={i}>
-            <line
-              x1={padL}
-              x2={W - padR}
-              y1={yAt(tv)}
-              y2={yAt(tv)}
-              stroke="currentColor"
-              className="text-on-surface-variant/20"
-              strokeWidth={1}
-            />
-            <text
-              x={padL - 6}
-              y={yAt(tv)}
-              dy="0.32em"
-              textAnchor="end"
-              className="text-on-surface-variant"
-              fontSize="10"
-              fill="currentColor"
-            >
-              {formatThousands(Math.round(tv))}
-            </text>
-          </g>
-        ))}
-
-        {/* Subject reference line */}
-        {subjectVal !== null ? (
-          <>
-            <line
-              x1={padL}
-              x2={W - padR}
-              y1={yAt(subjectVal)}
-              y2={yAt(subjectVal)}
+    <div className="w-full h-[220px]" aria-label="График динамики цены за м²">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={chartData} margin={{ top: 12, right: 12, left: 0, bottom: 0 }}>
+          <CartesianGrid vertical={false} stroke="currentColor" className="text-on-surface-variant/20" strokeWidth={1} />
+          <XAxis
+            dataKey="formattedMonth"
+            axisLine={false}
+            tickLine={false}
+            tick={{ fontSize: 10, fill: 'currentColor' }}
+            className="text-on-surface-variant"
+            interval={1}
+            tickMargin={8}
+          />
+          <YAxis
+            domain={[minY, maxY]}
+            axisLine={false}
+            tickLine={false}
+            tick={{ fontSize: 10, fill: 'currentColor' }}
+            className="text-on-surface-variant"
+            tickFormatter={(value) => formatThousands(Math.round(value))}
+            width={48}
+          />
+          <Tooltip
+            content={({ active, payload, label }) => {
+              if (active && payload && payload.length) {
+                return (
+                  <div className="bg-card shadow-e2 rounded-md p-2 text-sm border border-outline-variant">
+                    <p className="text-on-surface font-medium">
+                      {(payload[0].value as number).toLocaleString('ru-RU')} ₽/м²
+                    </p>
+                    <p className="text-on-surface-variant text-xs">{label}</p>
+                  </div>
+                )
+              }
+              return null
+            }}
+          />
+          {subjectVal !== null ? (
+            <ReferenceLine
+              y={subjectVal}
               stroke="currentColor"
               className="text-amber-500"
-              strokeWidth={1.5}
               strokeDasharray="4 4"
+              strokeWidth={1.5}
+              label={{
+                position: 'insideTopRight',
+                value: `Этот объект: ${formatThousands(subjectVal)} ₽/м²`,
+                fill: 'currentColor',
+                className: 'text-amber-600 text-[10px]',
+                offset: -4,
+              }}
             />
-            <text
-              x={W - padR}
-              y={yAt(subjectVal) - 4}
-              textAnchor="end"
-              className="text-amber-600"
-              fontSize="10"
-              fill="currentColor"
-            >
-              Этот объект: {formatThousands(subjectVal)} ₽/м²
-            </text>
-          </>
-        ) : null}
-
-        {/* Line */}
-        {pathSegments.length > 0 ? (
-          <path
-            d={pathSegments.join(' ')}
-            fill="none"
+          ) : null}
+          <Line
+            type="linear"
+            dataKey="avgPricePerSqm"
             stroke="currentColor"
             className="text-primary"
             strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
+            dot={{ r: 3, fill: 'currentColor', className: 'text-primary', strokeWidth: 0 }}
+            activeDot={{ r: 5 }}
+            connectNulls
           />
-        ) : null}
-
-        {/* Points */}
-        {data.map((d, i) =>
-          d.avgPricePerSqm > 0 ? (
-            <circle
-              key={i}
-              cx={xAt(i)}
-              cy={yAt(d.avgPricePerSqm)}
-              r={3}
-              fill="currentColor"
-              className="text-primary"
-            />
-          ) : null,
-        )}
-
-        {/* X labels: every 2nd month to avoid crowding */}
-        {data.map((d, i) =>
-          i % 2 === data.length % 2 ? (
-            <text
-              key={i}
-              x={xAt(i)}
-              y={H - 8}
-              textAnchor="middle"
-              className="text-on-surface-variant"
-              fontSize="10"
-              fill="currentColor"
-            >
-              {formatMonthLabel(d.month)}
-            </text>
-          ) : null,
-        )}
-      </svg>
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   )
 }
