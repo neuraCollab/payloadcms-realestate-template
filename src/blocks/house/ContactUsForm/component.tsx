@@ -3,6 +3,7 @@
 import React from 'react'
 import { Form } from '@/payload-types'
 import { ConsentCheckbox } from '@/components/ConsentCheckbox'
+import { trackEvent } from '@/lib/analytics'
 
 export type ContactUsFormBlockType = {
   blockType: 'contact-us-form'
@@ -54,6 +55,7 @@ export const ContactUsFormBlock: React.FC<ContactUsFormBlockType> = ({ label, ti
           message: '',
         })
         setSubmitted(true)
+        trackEvent('lead_form_submit', { formId: form.id })
       } else {
         throw new Error('Не удалось отправить форму. Попробуйте позже.')
       }

@@ -2,6 +2,7 @@
 import React, { useOptimistic, startTransition } from 'react'
 import { Heart } from 'lucide-react'
 import { isFavorite, toggleFavorite, type FavCollection } from '@/lib/favorites'
+import { trackEvent } from '@/lib/analytics'
 import { cn } from '@/utilities/ui'
 
 interface Props {
@@ -41,6 +42,10 @@ export const FavoriteButton: React.FC<Props> = ({
     })
     const next = toggleFavorite({ collection, id })
     setFav(next)
+
+    if (next) {
+      trackEvent('favorite_added', { collection, id: String(id) })
+    }
   }
 
   if (!mounted) {
