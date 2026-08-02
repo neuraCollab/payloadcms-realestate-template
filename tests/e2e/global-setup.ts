@@ -3,17 +3,19 @@ import type { FullConfig } from '@playwright/test'
 async function globalSetup(config: FullConfig) {
   const baseURL = config.projects[0]?.use.baseURL || process.env.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1:3000'
 
-  // 1. Verify dev server is running
   try {
-    const response = await fetch(baseURL)
-    if (!response.ok) {
-      throw new Error(`Server returned ${response.status}`)
+    // Simple health check to see if the server is up
+    const res = await fetch(baseURL)
+    if (!res.ok && res.status !== 404 && res.status !== 500) {
+      // If it doesn't throw, it's alive.
     }
   } catch (error) {
-    throw new Error('Dev server not running. Run `pnpm dev` first.')
+    console.error(`\n❌ Dev server not running. Run \`pnpm dev\` first.\n`)
+    process.exit(1)
   }
 
-  // 2. Automate seed data
+  console.log(`\n🌱 Seeding data to ${baseURL}...`)
+
   const endpoints = [
     '/next/seed-cities',
     '/next/seed-globals',
@@ -22,20 +24,23 @@ async function globalSetup(config: FullConfig) {
     '/next/parse-listings?per=20',
   ]
 
-  console.log('Seeding data...')
-
   for (const endpoint of endpoints) {
     try {
-      const response = await fetch(`${baseURL}${endpoint}`, { method: 'POST' })
-      if (!response.ok) {
-        console.error(`Failed to seed ${endpoint}: ${response.statusText}`)
-      } else {
-        console.log(`Successfully seeded ${endpoint}`)
+      console.log(`   POST ${endpoint}`)
+      const res = await fetch(`${baseURL}${endpoint}`, { method: 'POST' })
+      if (!res.ok) {
+        console.error(`   ❌ Failed to seed ${endpoint}: ${res.status} ${res.statusText}`)
+        const text = await res.text()
+        console.error(`      ${text}`)
+        process.exit(1)
       }
     } catch (error) {
-      console.error(`Error seeding ${endpoint}:`, error)
+      console.error(`   ❌ Failed to fetch ${endpoint}`, error)
+      process.exit(1)
     }
   }
+
+  console.log('✅ Seeding complete!\n')
 }
 
 export default globalSetup
