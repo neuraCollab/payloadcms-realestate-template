@@ -17,7 +17,7 @@ export const TelegramChannels: CollectionConfig = {
   admin: {
     useAsTitle: 'cityName',
     group: 'Интеграции',
-    defaultColumns: ['cityName', 'citySlug', 'channelId', 'channelUsername', 'isActive'],
+    defaultColumns: ['cityName', 'citySlug', 'channelId', 'channelUsername', 'status'],
   },
   access: {
     read: () => true,
@@ -64,10 +64,15 @@ export const TelegramChannels: CollectionConfig = {
       },
     },
     {
-      name: 'isActive',
-      type: 'checkbox',
-      defaultValue: true,
-      label: 'Активный',
+      name: 'status',
+      type: 'select',
+      defaultValue: 'active',
+      label: 'Статус',
+      options: [
+        { label: 'Активный', value: 'active' },
+        { label: 'Неактивный', value: 'inactive' },
+      ],
+      required: true,
     },
     {
       name: 'postedCount',
