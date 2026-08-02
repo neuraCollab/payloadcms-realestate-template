@@ -1,4 +1,5 @@
 import type { Payload, PayloadRequest } from 'payload'
+import { sql } from '@payloadcms/db-postgres'
 
 interface Args {
   payload: Payload
@@ -80,18 +81,18 @@ export const seedGlobals = async ({ payload, req }: Args) => {
   ] as const) {
     // Ensure the global row exists; create it if missing.
     await drizzle.execute(
-      `INSERT INTO ${globalSlug} (id) VALUES (1) ON CONFLICT (id) DO NOTHING`,
+      sql`INSERT INTO ${sql.raw(globalSlug)} (id) VALUES (1) ON CONFLICT (id) DO NOTHING`,
     )
     // Wipe existing nav items, repopulate.
-    await drizzle.execute(`DELETE FROM ${globalSlug}_nav_items WHERE _parent_id = 1`)
+    await drizzle.execute(sql`DELETE FROM ${sql.raw(`${globalSlug}_nav_items`)} WHERE _parent_id = 1`)
     for (let i = 0; i < items.length; i++) {
       const it = items[i]
       const itemId = `seed_${globalSlug}_${i}_${Date.now()}`
       await drizzle.execute(
-        `INSERT INTO ${globalSlug}_nav_items
+        sql`INSERT INTO ${sql.raw(`${globalSlug}_nav_items`)}
            (id, _order, _parent_id, link_type, link_new_tab, link_url, link_label)
          VALUES
-           ('${itemId}', ${i + 1}, 1, 'custom', false, '${it.url}', '${it.label.replace(/'/g, "''")}')`,
+           (${itemId}, ${i + 1}, 1, 'custom', false, ${it.url}, ${it.label})`,
       )
     }
   }
