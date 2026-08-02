@@ -217,11 +217,10 @@ function descriptionHtml(input: any): string {
 
   let htmlContent = trimmed
   // tiptap-вывод начинается с <p> / <h2> и т.п.
-  if (!trimmed.startsWith('<')) {
-    htmlContent = `<p>${escapeHtml(trimmed)}</p>`
+  if (trimmed.startsWith('<')) {
+    return DOMPurify.sanitize(trimmed)
   }
-
-  return DOMPurify.sanitize(htmlContent)
+  return `<p>${escapeHtml(trimmed)}</p>`
 }
 
 function escapeHtml(s: string): string {
