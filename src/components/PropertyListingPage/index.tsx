@@ -204,7 +204,11 @@ export const PropertyListingPage: React.FC<Props> = async ({
     sort,
     limit: PAGE_SIZE,
     page,
-    depth: 2,
+    // depth 1 is enough: cards/map items below only ever read
+    // images[0].image.url (one relation hop) plus scalar fields —
+    // nothing here reads a relation nested inside another relation,
+    // so depth 2 was populating data this page never uses.
+    depth: 1,
   })
 
   // Карточки для списка и метки для карты — строим один раз на сервере.
