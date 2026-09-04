@@ -238,6 +238,8 @@ export const PropertyDetailPage: React.FC<Props> = async ({
               realtor={data.realtor}
               excludePropertyId={data.id}
               propertyTitle={data.title}
+              propertyCollection={type}
+              propertyId={data.id}
             />
           ) : null}
 
