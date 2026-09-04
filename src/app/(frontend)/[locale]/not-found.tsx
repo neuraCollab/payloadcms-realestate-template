@@ -1,5 +1,5 @@
 import { Link } from '@/i18n/navigation'
-import { Home, Search, Map as MapIcon, Phone } from 'lucide-react'
+import { Home, Search, MapPin as MapIcon, Phone } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 const QUICK_LINKS = [

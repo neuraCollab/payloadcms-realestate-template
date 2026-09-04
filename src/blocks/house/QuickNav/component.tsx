@@ -9,7 +9,7 @@ import {
   Users,
   Newspaper,
   Mail,
-  Map as MapIcon,
+  MapPin as MapIcon,
   Star,
   Info,
   Phone,

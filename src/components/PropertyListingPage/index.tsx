@@ -8,7 +8,7 @@ import { SortSelect, type SortOption } from '@/components/SortSelect'
 import { SaveSearchButton } from '@/components/SavedSearch/SaveSearchButton'
 import { CatalogClient } from './CatalogClient'
 import { FILTER_SCHEMAS, type PropertyType } from '@/components/PropertyFilters/schemas'
-import type { CatalogMapItem } from '@/components/CatalogMap'
+import type { CatalogMapItem } from '@/components/CatalogMapView'
 import { buildBreadcrumbJsonLd, buildItemListJsonLd } from '@/utilities/seo'
 import { pluralizeRu } from '@/utilities/pluralizeRu'
 
