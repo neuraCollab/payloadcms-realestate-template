@@ -12,6 +12,7 @@ import {
   isListingCollection,
   type ListingCollection,
 } from '@/lib/cabinet/listingValidator'
+import { getLocale } from 'next-intl/server'
 
 export const dynamic = 'force-dynamic'
 
@@ -43,7 +44,8 @@ export default async function PreviewListingPage({ params, searchParams }: Props
   const email = c.get('realty_email')?.value
     ? decodeURIComponent(c.get('realty_email')!.value).toLowerCase()
     : null
-  if (!email) redirect('/cabinet/login')
+  const locale = await getLocale()
+  if (!email) redirect({ href: '/cabinet/login', locale })
 
   const payload = await getPayload({ config })
   let doc: any = null

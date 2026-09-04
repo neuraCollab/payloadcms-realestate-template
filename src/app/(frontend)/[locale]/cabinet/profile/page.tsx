@@ -5,6 +5,7 @@ import { cookies } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { User as UserIcon, Mail, Calendar, MessageSquare } from 'lucide-react'
+import { getLocale } from 'next-intl/server'
 
 // SSG skipped — DB unreachable at build-time inside docker compose.
 export const dynamic = 'force-dynamic'
@@ -21,7 +22,8 @@ const formatDate = (iso?: string) => {
 export default async function CabinetProfilePage() {
   const cookieStore = await cookies()
   const email = cookieStore.get('realty_email')?.value
-  if (!email) redirect('/cabinet/login')
+  const locale = await getLocale()
+  if (!email) redirect({ href: '/cabinet/login', locale })
 
   const payload = await getPayload({ config })
 
