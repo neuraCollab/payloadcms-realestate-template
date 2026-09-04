@@ -2,7 +2,7 @@
 'use client'
 
 import React from 'react'
-import { Map as MapIcon } from 'lucide-react'
+import { MapPin as MapIcon } from 'lucide-react'
 import type { Map as MapboxMap, Marker, Popup } from 'mapbox-gl'
 import { MyLocationButton } from '@/components/MyLocationButton'
 import { formatPrice } from '@/utilities/formatPrice'

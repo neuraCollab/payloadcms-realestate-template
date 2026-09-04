@@ -1,7 +1,7 @@
 'use client'
 import React, { useMemo } from 'react'
 import type { Page } from '@/payload-types'
-import { PropertyMap, type PropertyMapItem } from '@/components/PropertyMap.tsx'
+import { PropertyMap, type PropertyMapItem } from '@/components/PropertyMap'
 
 type MapBlockProps = Extract<Page['layout'][0], { blockType: 'map' }>
 

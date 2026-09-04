@@ -2,7 +2,7 @@ import React from 'react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { MapNearbyClient } from './MapNearbyClient'
-import type { PropertyMapItem } from '@/components/PropertyMap.tsx'
+import type { PropertyMapItem } from '@/components/PropertyMap'
 
 // SSR-обёртка: собирает до 30 активных квартир с координатами и
 // отдаёт их в клиентский остров, который показывает карту и кнопку
