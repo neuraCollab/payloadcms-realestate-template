@@ -149,6 +149,8 @@ const Item: React.FC<{ row: Row }> = ({ row }) => (
 )
 
 export const PropertySpecs: React.FC<Props> = ({ data, type }) => {
+  const [expanded, setExpanded] = React.useState(false)
+
   const rows = buildRows(data, type)
   if (rows.length === 0) return null
 
@@ -156,8 +158,6 @@ export const PropertySpecs: React.FC<Props> = ({ data, type }) => {
   const primary = rows.slice(0, primaryCount)
   const rest = rows.slice(primaryCount)
   const hasRest = rest.length > 0
-
-  const [expanded, setExpanded] = React.useState(false)
 
   return (
     <section className="bg-card rounded-md shadow-e1 p-6">

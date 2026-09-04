@@ -1,5 +1,6 @@
 'use client'
 import React from 'react'
+import Link from 'next/link'
 import { Bell, Check } from 'lucide-react'
 import { trackEvent } from '@/lib/analytics'
 
@@ -98,7 +99,7 @@ export const SaveSearchButton: React.FC<Props> = ({ collection, filters }) => {
     return (
       <div className="inline-flex h-10 px-4 items-center gap-2 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-900 text-body-sm">
         <Check className="w-4 h-4" />
-        Подписка оформлена · <a href="/cabinet/saved-searches" className="underline">мои подписки</a>
+        Подписка оформлена · <Link href="/cabinet/saved-searches" className="underline">мои подписки</Link>
       </div>
     )
   }

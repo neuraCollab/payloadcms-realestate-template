@@ -59,9 +59,46 @@ everything every time" checklist:
 - `NODE_OPTIONS=--no-deprecation npx tsc --noEmit -p tsconfig.json` —
   the build skips type errors (`ignoreBuildErrors` in
   `next.config.js`, to save RAM on a small VPS), so this is the only
-  thing that actually catches them. Two pre-existing, unrelated
-  errors are known (`playwright.config.ts`, `src/endpoints/seed/index.ts`)
-  — don't let the count grow beyond that baseline.
+  thing that actually catches them. **Baseline is ~130 pre-existing
+  errors**, spread across ~40 files (mostly `strictNullChecks`-style
+  "possibly undefined" in `src/lib/csv.ts`, `marketAnalytics.ts`,
+  `rateLimit.ts`, several seed scripts, and a handful of genuine
+  collection/type drift like `PostHero`/`formatAuthors` referencing
+  `Post` fields — `heroImage`, `populatedAuthors`, `publishedAt` —
+  that don't exist on the generated `Post` type). None of it was
+  introduced by this cleanup pass; an earlier version of this doc
+  claimed a baseline of "two errors," which was never actually
+  verified against a full run — don't trust a stale count, re-run
+  the command yourself. Fixing the backlog is a real, separate
+  chunk of work — don't let the count grow when you touch a file
+  that's already on the list, but don't feel obligated to zero it
+  out either.
+- `npx eslint .` (not `pnpm lint` / `next lint` — Next.js 16 removed
+  the `next lint` subcommand, so that script now hard-fails; use
+  `eslint.config.mjs`'s flat config directly). Was fully broken before
+  this cleanup pass too: the config went through `FlatCompat.extends(
+  'next/core-web-vitals', ...)`, but `eslint-config-next` already
+  ships native ESLint 9 flat configs, so wrapping it a second time
+  through the legacy-config compat shim produced a circular
+  plugin-object reference and crashed every run with "Converting
+  circular structure to JSON" — meaning lint had been silently
+  giving zero signal. Fixed by importing `eslint-config-next/core-web-vitals`
+  and `eslint-config-next/typescript` directly. It now runs clean
+  except two categories left as known/accepted: ~19
+  `react-hooks/set-state-in-effect` warnings-as-errors on
+  hydrate-from-`localStorage`/cookie-on-mount effects (the standard
+  SSR-safe pattern; the three that back shared stores — favorites,
+  compare, recently-viewed — were converted to
+  `useSyncExternalStore` since that's the correct primitive for an
+  external store and also removes a post-mount re-render, but the
+  ~19 remaining are one-off "read a cookie / fetch once on mount"
+  effects in individual components, not stores, so they don't map
+  onto the same fix), and 2 `react-hooks/refs` findings on
+  `src/components/Card/index.tsx` passing `ref={card.ref}` down to
+  JSX (a ref object from a custom hook, not a `.current` read — looks
+  like a rule false positive on the "returns `{ ref }` from a custom
+  hook" shape, left as-is rather than reworking a working,
+  single-use hook on a guess).
 - If you touched a **collection's fields**: run `pnpm payload
   migrate:create` and commit the generated migration. Never hand-edit
   a merged migration file — write a new one. See "Schema drift" below

@@ -81,22 +81,35 @@ export const clearCompare = () => write([])
 export { MAX_ITEMS as COMPARE_MAX_ITEMS }
 
 // ─── React hook ───────────────────────────────────────────────────
+// Backed by useSyncExternalStore (see favorites.ts for the rationale).
 
 import * as React from 'react'
 
-export const useCompare = (): CompareRef[] => {
-  const [items, setItems] = React.useState<CompareRef[]>([])
+let snapshot: CompareRef[] = []
+let hasSnapshot = false
 
-  React.useEffect(() => {
-    setItems(read())
-    const refresh = () => setItems(read())
-    window.addEventListener('storage', refresh)
-    window.addEventListener('realty:compare-changed', refresh)
-    return () => {
-      window.removeEventListener('storage', refresh)
-      window.removeEventListener('realty:compare-changed', refresh)
-    }
-  }, [])
-
-  return items
+const getSnapshot = (): CompareRef[] => {
+  if (!hasSnapshot) {
+    snapshot = read()
+    hasSnapshot = true
+  }
+  return snapshot
 }
+
+const getServerSnapshot = (): CompareRef[] => []
+
+const subscribe = (onStoreChange: () => void) => {
+  const refresh = () => {
+    hasSnapshot = false
+    onStoreChange()
+  }
+  window.addEventListener('storage', refresh)
+  window.addEventListener('realty:compare-changed', refresh)
+  return () => {
+    window.removeEventListener('storage', refresh)
+    window.removeEventListener('realty:compare-changed', refresh)
+  }
+}
+
+export const useCompare = (): CompareRef[] =>
+  React.useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)

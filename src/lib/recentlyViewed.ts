@@ -55,17 +55,32 @@ export const trackView = (ref: Omit<RecentRef, 'viewedAt'>) => {
 
 export const clearRecentlyViewed = () => write([])
 
-export const useRecentlyViewed = (): RecentRef[] => {
-  const [items, setItems] = React.useState<RecentRef[]>([])
-  React.useEffect(() => {
-    setItems(read())
-    const refresh = () => setItems(read())
-    window.addEventListener('storage', refresh)
-    window.addEventListener('realty:recent-changed', refresh)
-    return () => {
-      window.removeEventListener('storage', refresh)
-      window.removeEventListener('realty:recent-changed', refresh)
-    }
-  }, [])
-  return items
+// Backed by useSyncExternalStore (see favorites.ts for the rationale).
+let snapshot: RecentRef[] = []
+let hasSnapshot = false
+
+const getSnapshot = (): RecentRef[] => {
+  if (!hasSnapshot) {
+    snapshot = read()
+    hasSnapshot = true
+  }
+  return snapshot
 }
+
+const getServerSnapshot = (): RecentRef[] => []
+
+const subscribe = (onStoreChange: () => void) => {
+  const refresh = () => {
+    hasSnapshot = false
+    onStoreChange()
+  }
+  window.addEventListener('storage', refresh)
+  window.addEventListener('realty:recent-changed', refresh)
+  return () => {
+    window.removeEventListener('storage', refresh)
+    window.removeEventListener('realty:recent-changed', refresh)
+  }
+}
+
+export const useRecentlyViewed = (): RecentRef[] =>
+  React.useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)

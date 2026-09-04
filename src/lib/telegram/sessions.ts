@@ -13,9 +13,7 @@ export interface Session {
   draft: Record<string, any>
 }
 
-const drizzleOf = (payload: Payload): any =>
-  // @ts-expect-error drizzle exposed at runtime by postgres-adapter
-  payload.db.drizzle
+const drizzleOf = (payload: Payload): any => payload.db.drizzle
 
 export async function getSession(
   payload: Payload,

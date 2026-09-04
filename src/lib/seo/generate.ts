@@ -261,7 +261,6 @@ export async function upsertLanding(
     model: string
   },
 ): Promise<void> {
-  // @ts-expect-error drizzle exposed by postgres-adapter
   const drizzle = payload.db.drizzle
 
   await drizzle.execute(sql`

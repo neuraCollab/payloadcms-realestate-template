@@ -1,5 +1,6 @@
 'use client'
 import React from 'react'
+import Link from 'next/link'
 import { X, Sparkles } from 'lucide-react'
 import { OAuthButtons } from '@/components/OAuthButtons'
 
@@ -83,12 +84,12 @@ export const LoginNudge: React.FC<Props> = ({ providers = [] }) => {
                 <OAuthButtons next="/" providers={providers} />
               </div>
             ) : null}
-            <a
+            <Link
               href="/cabinet/login"
               className="block mt-2 text-label text-on-surface-variant hover:text-on-surface"
             >
               Или по email →
-            </a>
+            </Link>
           </div>
           <button
             type="button"

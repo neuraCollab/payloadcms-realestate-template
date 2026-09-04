@@ -228,7 +228,7 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
   // Keyword-блок выполняется ТОЛЬКО если AI-режим не активен или
   // не отдал ничего. Иначе мы зря дёргаем БД и натыкаемся на
   // несовместимые поля (RC не имеет title и т.п.) → 500.
-  let keywordHits: SearchHit[] = []
+  const keywordHits: SearchHit[] = []
   let totalDocs = 0
   if (!aiHits) {
     const results = await Promise.all(
