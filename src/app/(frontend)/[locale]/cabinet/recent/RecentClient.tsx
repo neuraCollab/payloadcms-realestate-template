@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { Clock, Trash2 } from 'lucide-react'
 import {
   listRecentlyViewed,

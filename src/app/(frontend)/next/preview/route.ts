@@ -2,7 +2,7 @@ import type { CollectionSlug, PayloadRequest } from 'payload'
 import { getPayload } from 'payload'
 
 import { draftMode } from 'next/headers'
-import { redirect } from 'next/navigation'
+import { redirect } from '@/i18n/navigation'
 
 import configPromise from '@payload-config'
 

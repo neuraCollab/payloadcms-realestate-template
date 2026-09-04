@@ -3,7 +3,7 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
 
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { PropertyCard } from '@/components/PropertyCard'
 import { pluralizeRu } from '@/utilities/pluralizeRu'
 import { SearchFilters } from '@/components/SearchFilters'

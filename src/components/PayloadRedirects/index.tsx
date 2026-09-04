@@ -3,7 +3,8 @@ import type { Page, Post } from '@/payload-types'
 
 import { getCachedDocument } from '@/utilities/getDocument'
 import { getCachedRedirects } from '@/utilities/getRedirects'
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
+import { redirect } from '@/i18n/navigation'
 
 interface Props {
   disableNotFound?: boolean

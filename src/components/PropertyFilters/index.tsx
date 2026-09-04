@@ -1,6 +1,7 @@
 'use client'
 import React from 'react'
-import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import { useRouter, usePathname } from '@/i18n/navigation'
+import { useSearchParams } from 'next/navigation'
 import { ChevronDown, ChevronUp, RotateCcw, Loader2 } from 'lucide-react'
 import { FILTER_SCHEMAS, type FilterField, type PropertyType } from './schemas'
 import { Button } from '@/components/ui/button'

@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react'
-import Link from 'next/link'
-import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { Link, useRouter, usePathname } from '@/i18n/navigation'
+import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import { Crosshair, List, Map as MapIcon } from 'lucide-react'
 import { CatalogMap, type CatalogMapItem, MOSCOW_CENTER } from '@/components/CatalogMap'

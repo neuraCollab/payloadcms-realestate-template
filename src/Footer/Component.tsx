@@ -1,5 +1,5 @@
 import { getCachedGlobal } from '@/utilities/getGlobals'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import React from 'react'
 import { Phone, Mail, MapPin, Building2 } from 'lucide-react'
 

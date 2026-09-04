@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { Heart, Trash2 } from 'lucide-react'
 import { listFavorites, clearFavorites, type FavoriteRef } from '@/lib/favorites'
 import { PropertyCard } from '@/components/PropertyCard'

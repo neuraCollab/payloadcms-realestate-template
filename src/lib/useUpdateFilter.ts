@@ -1,7 +1,8 @@
 // src/lib/useUpdateFilter.ts
 'use client'
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter } from '@/i18n/navigation'
+import { useSearchParams } from 'next/navigation'
 import { useCallback } from 'react'
 
 /**

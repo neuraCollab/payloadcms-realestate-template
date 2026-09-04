@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import React from 'react'
 import { Plus, Home as HomeIcon } from 'lucide-react'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { ListingsList } from './ListingsList'
 
 export const dynamic = 'force-dynamic'

@@ -1,6 +1,7 @@
 'use client'
 import React from 'react'
-import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { useRouter, usePathname } from '@/i18n/navigation'
+import { useSearchParams } from 'next/navigation'
 import { Search as SearchIcon, X } from 'lucide-react'
 
 interface Props {

@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { AlertTriangle, RotateCcw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 

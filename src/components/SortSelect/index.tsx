@@ -1,6 +1,7 @@
 'use client'
 import React from 'react'
-import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import { useRouter, usePathname } from '@/i18n/navigation'
+import { useSearchParams } from 'next/navigation'
 import { ArrowUpDown } from 'lucide-react'
 
 export interface SortOption {
