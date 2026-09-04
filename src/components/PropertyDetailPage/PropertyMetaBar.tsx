@@ -1,6 +1,6 @@
 import React from 'react'
 import { MapPin, Calendar, Sparkles, TrendingDown, Star } from 'lucide-react'
-import { PropertyMap } from '@/components/PropertyMap.tsx'
+import { PropertyMap } from '@/components/PropertyMap'
 import { formatMapItems } from '@/lib/mapItems'
 
 interface Props {

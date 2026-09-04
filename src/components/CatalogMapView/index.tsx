@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Map as MapIcon, ChevronLeft, Crosshair } from 'lucide-react'
+import { MapPin as MapIcon, ChevronLeft, Crosshair } from 'lucide-react'
 import { MyLocationButton } from '@/components/MyLocationButton'
 import type { Map as MapboxMap, GeoJSONSource, MapMouseEvent } from 'mapbox-gl'
 import { formatPrice } from '@/utilities/formatPrice'

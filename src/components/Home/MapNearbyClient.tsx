@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { Crosshair, Loader2 } from 'lucide-react'
-import { PropertyMap, type PropertyMapItem } from '@/components/PropertyMap.tsx'
+import { PropertyMap, type PropertyMapItem } from '@/components/PropertyMap'
 
 type State =
   | { kind: 'idle' }
