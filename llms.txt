@@ -1,10 +1,16 @@
 # MegaDomic
 
-> Russian real estate listings platform built on Next.js 15 (App Router) + Payload CMS v3 + PostgreSQL with pgvector. Multi-city catalog with AI-powered search, listing recommendations, SEO landing pages, and Telegram channel publishing.
+> Russian real estate listings platform built on Next.js 16 (App Router) + Payload CMS v3 + PostgreSQL with pgvector. Multi-city catalog with AI-powered search, listing recommendations, SEO landing pages, and Telegram channel publishing.
+
+For AI-agent-specific working conventions and hard-won gotchas (schema
+drift, GraphQL type-name collisions, Russian pluralization, etc.), see
+[CLAUDE.md](CLAUDE.md) — read that before making changes, this file is
+orientation, not a rulebook. For a file-by-file breakdown, see
+[PROJECT_MAP.md](PROJECT_MAP.md).
 
 ## Stack
 
-- **Frontend**: Next.js 15 App Router, React 19, TypeScript, Tailwind, shadcn/ui
+- **Frontend**: Next.js 16 App Router, React 19, TypeScript, Tailwind, shadcn/ui
 - **CMS / Backend**: Payload CMS v3 (Drizzle adapter for postgres)
 - **DB**: PostgreSQL 17 + pgvector extension (vector embeddings for AI search)
 - **AI**: Anthropic Claude Haiku 4.5 (recommendations, personalization), OpenAI gpt-4o-mini (bulk SEO copy), HuggingFace text-embeddings-inference (multilingual-e5-small, 384-dim)
@@ -19,47 +25,51 @@
 
 ## Domain model
 
-The platform sells 4 property categories, each its own Payload collection:
+The platform sells 5 property categories, each its own Payload collection (no shared generic base — an earlier `properties` scaffold attempting that was dead code and has been removed):
 - `flats` — apartments (rooms, area, floor, building type, etc.)
-- `houses` — private houses (land area, communications, ...)
-- `lands` — land plots (purpose, communications)
 - `commercial` — commercial real estate (office, warehouse, ...)
+- `lands` — land plots (purpose, communications)
+- `residential-complexes` — housing developments (ЖК)
+- `houses` — private houses (land area, communications, ...). Has a working UGC submission + moderation flow but **no public catalog route** — submitted houses currently have nowhere to be browsed on the site. Known gap, not yet resolved.
 
-Each listing has `status` (`draft`/`pending_review`/`active`/`archived`), `transactionType` (`sale`/`rent`), location, price, images, amenities, realtor or owner. Listings can be agent-uploaded or user-submitted via cabinet form (UGC). Embeddings are precomputed in `*_embeddings` tables and used for both AI semantic search and similar-listing recommendations.
+Each listing has `status` (draft/active/archived, exact values vary slightly per collection), `transactionType` (`sale`/`rent`/`daily`), location, price, images, amenities, realtor or owner. Listings can be agent-uploaded (admin) or user-submitted via the cabinet form (UGC, `/cabinet/listings/new`). Embeddings are precomputed in `property_embeddings` (one generic polymorphic table keyed by `collection` + doc id, not per-collection tables — the "property" in its name predates and is unrelated to the removed `properties` collection) and used for both AI semantic search and similar-listing recommendations.
+
+Realtors are `users` with `role: 'realtor'` — not a separate collection. (There is a separate `agents`/`testimonials` pair of collections wired into the CMS page-builder, but currently unpopulated; don't confuse them with the real realtor-driven pages.)
 
 ## Project layout
 
-- [src/collections/](src/collections/): Payload collections — domain schema lives here. Modify a collection's fields → run `pnpm payload migrate:create` to generate SQL.
-- [src/globals/](src/globals/): singleton documents (Header, Footer, LegalInfo).
+- [src/collections/](src/collections/): Payload collections — domain schema lives here. Modify a collection's fields → run `pnpm payload migrate:create` to generate SQL, then verify the generated migration actually matches (see CLAUDE.md — this has silently drifted before).
+- [src/globals/](src/globals/), [src/Header/](src/Header/), [src/Footer/](src/Footer/): singleton documents (LegalInfo, HomeSeo, Header nav, Footer nav).
 - [src/app/(frontend)/](src/app/(frontend)/): public-facing Next.js routes. Layered SEO content overlays catalog routes.
-- [src/app/(payload)/](src/app/(payload)/): Payload admin (`/admin`) + REST endpoints (`/api/...`).
-- [src/lib/](src/lib/): cross-cutting helpers — `llm.ts` (Anthropic + OpenAI), `embeddings/`, `recommendations/`, `seo/`, `auth/`, `telegram/`.
-- [src/migrations/](src/migrations/): Drizzle SQL migrations, **auto-generated** — don't edit by hand.
+- [src/app/(payload)/](src/app/(payload)/): Payload admin (`/admin`) + REST/GraphQL + this app's own custom endpoints, all under `/api/...`.
+- [src/lib/](src/lib/): cross-cutting helpers — `llm.ts` (Anthropic + OpenAI), `embeddings/`, `recommend/`, `seo/`, `auth/`, `telegram/`, `cabinet/` (UGC listing validation), `listings-parser/` (feed import + a deliberately-disabled scraper skeleton).
+- [src/blocks/](src/blocks/): Payload page-builder Blocks. Every Block needs `interfaceName` in its config or it can break the entire GraphQL schema — see CLAUDE.md.
+- [src/migrations/](src/migrations/): Drizzle SQL migrations, generated by `payload migrate:create` and then hand-tunable — **not automatically kept in sync with collection config**, verify drift per CLAUDE.md.
 - [scripts/](scripts/): operational shell — `deploy.sh` (manual prod deploy), `dc.sh` (compose wrapper with env), `snapshot.ps1` (backup), `infisical-import-env.sh` (one-shot .env migration).
-- [docs/](docs/): technical docs (deploy, CI/CD, seeds).
-- [obsidian/недвижка/](obsidian/недвижка/): Russian-language team notes — onboarding, Infisical setup, content checklists.
+- [docs/](docs/): technical docs (deploy, CI/CD, seeds, analytics).
+- [tests/](tests/): `unit/` (Node test runner, `pnpm test:unit`), `e2e/` (Playwright, `pnpm test:e2e`).
 
 ## Key architectural notes
 
 - **All env is in Infisical (EU region)**. Server reads via `infisical export` (see `scripts/deploy.sh`). GitHub Actions reads via `INFISICAL_TOKEN` secret. Local dev runs `infisical run --env=dev -- pnpm dev`.
-- **Migrations apply on app boot** (Payload startup hook). No separate migration step needed in normal deploys.
+- **Migrations do NOT apply automatically anywhere** — not on app boot, not in the Dockerfile, not in `deploy.sh` or the GHA workflow. `push: false` is set specifically to prevent implicit schema sync (see the comment above it in `src/payload.config.ts`). After any schema change reaches a deploy target, `pnpm payload migrate` has to be run there by hand. (The same comment references `scripts/migrate.sh` — that file doesn't exist; don't go looking for it.)
 - **Build needs DB access**. Both prod (`deploy.sh` uses `--network=host`) and GHA (postgres service container) provide a Postgres for `next build`'s `generateStaticParams`. Build args inject runtime secrets into Next.js bundle.
 - **SEO landings are LLM-generated** in bulk (`/api/admin/seo/generate`) — 8 cities × 12 filters ≈ 96 pages × $0.0005 = $0.05/run via gpt-4o-mini. Stored in `seo_landings` table, layered onto `[slug]/[filterSlug]` routes.
-- **Recommendations are pgvector ANN search** (ivfflat index) — see `src/lib/recommendations/`.
+- **Recommendations are pgvector ANN search** (ivfflat index) — see `src/lib/recommend/`.
 - **AI search rewrites natural-language queries** ("дёшево около метро" → structured filter) via Claude Haiku — `src/lib/embeddings/queryParser.ts`.
 - **Telegram bot publishes per-city** — channel bindings stored in `telegram_channels` table; webhook `/api/admin/telegram-setup` registers bot.
 
 ## Auth model
 
-- Users authenticate via magic-link email (Resend) **or** OAuth (Google/Yandex/Mail.ru) — see `src/app/(payload)/api/auth/`.
-- Cabinet (`/cabinet/*`) is gated for any authenticated user. Listing submission, saved searches, favorites, mortgage applications live there.
-- Admin (`/admin`) is Payload-native, gated by `roles: ['admin' | 'moderator']`.
-- AI features (semantic search, recommendations) are intentionally auth-gated — disclosed in privacy policy under "Рекомендательные технологии" per 152-ФЗ / 149-ФЗ.
+- Two separate, unrelated auth systems coexist:
+  - **Cabinet** (`/cabinet/*`, `users` collection is *not* involved) — magic-link email (Resend) or OAuth (Google/Yandex/Mail.ru), see `src/app/(payload)/api/auth/`. Session is a lightweight `realty_email` cookie, not a Payload JWT.
+  - **Admin** (`/admin`, `users` collection, Payload-native JWT) — `role` is either `admin` or `realtor` (no `moderator`). Access is gated by `src/access/authenticated.ts`, which only checks "is any user logged in" — it does **not** check `role`, so a `realtor` account currently gets the same full CMS admin access as `admin`. Worth confirming that's intentional before relying on `role` for any actual authorization decision.
+- AI features (semantic search, recommendations) are intentionally auth-gated (cabinet auth) — disclosed in privacy policy under "Рекомендательные технологии" per 152-ФЗ / 149-ФЗ.
 
 ## Legal / compliance
 
 Russian-market app — falls under 152-ФЗ (PII) + 149-ФЗ (recommender systems disclosure). Implementation:
-- `src/globals/LegalInfo.ts` — company info shown in footer, /privacy, /terms, JSON-LD.
+- `src/globals/LegalInfo/config.ts` — company info shown in footer, /privacy, /terms, JSON-LD.
 - `ConsentCheckbox` component required on all data-collection forms.
 - /privacy explicitly discloses recommender system use; /terms covers AI search.
 
@@ -72,7 +82,8 @@ Russian-market app — falls under 152-ФЗ (PII) + 149-ФЗ (recommender system
 
 ## Files an AI agent should read first
 
-- [CLAUDE.md](CLAUDE.md) — user-private behavioral guidelines for AI assistance.
+- [CLAUDE.md](CLAUDE.md) — working conventions, gotchas, how to verify a change before calling it done.
+- [PROJECT_MAP.md](PROJECT_MAP.md) — every collection/route/lib module with a one-line purpose.
 - [SETUP.md](SETUP.md) — getting a working copy on a new machine.
 - [docker-compose.prod.yml](docker-compose.prod.yml) — what runs in production.
 - [src/payload.config.ts](src/payload.config.ts) — Payload collection registry + plugins.
@@ -81,7 +92,7 @@ Russian-market app — falls under 152-ФЗ (PII) + 149-ФЗ (recommender system
 
 ## Conventions
 
-- TypeScript strict mode, ESLint blocking in dev (skipped in prod build for memory).
+- TypeScript strict mode, but `next.config.js` sets `typescript: { ignoreBuildErrors: true }` (RAM constraints on the deploy VPS) — `next build` will **not** catch type errors. Run `tsc --noEmit` yourself; see CLAUDE.md for the current error baseline. ESLint is not similarly disabled, so it does still run (and can block) during `next build`.
 - Import alias `@/` → `src/`.
 - Server components by default; `'use client'` only when needed (forms, maps, interactive panels).
 - API routes return JSON only. Errors as `{ error: 'code', message: 'human' }` with appropriate HTTP status.
