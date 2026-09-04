@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Agent } from '@/payload-types'
-import { Linkedin, Twitter, Facebook, Instagram } from 'lucide-react'
+import { Linkedin, Twitter, Facebook, Instagram } from '@/components/icons/BrandIcons'
 
 export type AgentsBlockType = {
   blockType: 'agents'

@@ -1,6 +1,7 @@
 'use client'
 import React from 'react'
-import { Phone, Send, MessageCircle, Instagram } from 'lucide-react'
+import { Phone, Send, MessageCircle } from 'lucide-react'
+import { Instagram } from '@/components/icons/BrandIcons'
 import { trackEvent } from '@/lib/analytics'
 
 type Channel = 'callback' | 'telegram' | 'whatsapp' | 'instagram'
