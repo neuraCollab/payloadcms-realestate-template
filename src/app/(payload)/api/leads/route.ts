@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { rateLimitOk, HONEYPOT_FIELD, looksLikeBot } from '@/lib/rateLimit'
+import { notifyLeadWebhook, type LeadWebhookPayload } from '@/lib/leadWebhook'
 
 /**
  * POST /api/leads
@@ -91,6 +92,24 @@ export async function POST(req: NextRequest): Promise<Response> {
       } as any,
       overrideAccess: true,
     })
+
+    // Fire-and-forget — never delay the visitor's response on a slow
+    // or unconfigured external bot webhook.
+    void notifyLeadWebhook({
+      id: doc.id,
+      phone: doc.phone,
+      name: doc.name ?? undefined,
+      channel: channel as LeadWebhookPayload['channel'],
+      contactHandle: doc.contactHandle ?? undefined,
+      message: doc.message ?? undefined,
+      propertyCollection: doc.propertyCollection ?? undefined,
+      propertyId: doc.propertyId ?? undefined,
+      propertyTitle: doc.propertyTitle ?? undefined,
+      realtorId: typeof doc.realtor === 'number' ? doc.realtor : undefined,
+      pageUrl: doc.pageUrl ?? undefined,
+      createdAt: doc.createdAt,
+    })
+
     return NextResponse.json({ ok: true, id: doc.id })
   } catch (err: any) {
     console.error('[leads] create failed', err?.message ?? err)
