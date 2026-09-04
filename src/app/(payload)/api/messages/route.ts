@@ -126,7 +126,12 @@ export async function POST(req: Request) {
     await payload.create({
       collection: 'messages',
       data: {
-        realtor: realtorId,
+        // Relationship fields with filterOptions reject a string id here
+        // ("invalid relationships") even when it resolves to a real,
+        // role-matching user — Payload's filterOptions validation query
+        // needs the numeric id. realtorId arrives as a string from
+        // multipart form data.
+        realtor: Number(realtorId),
         subject,
         name,
         email,

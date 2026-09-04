@@ -20,7 +20,7 @@ describe('Houses Collection Hooks', () => {
 
       const { Houses } = await import('../../src/collections/Houses/index')
 
-      const beforeChangeHook = Houses.hooks?.beforeChange?.[0] as Function
+      const beforeChangeHook = Houses.hooks?.beforeChange?.[0] as (args: any) => any
       assert.ok(beforeChangeHook, 'beforeChange hook should be defined')
 
       // We pass an object (cast to any) as address. This will cause `geocodeAddress` to throw

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as Checkbox from '@radix-ui/react-checkbox'
 import * as Select from '@radix-ui/react-select'
-import { CheckIcon } from '@radix-ui/react-icons'
+import { Check as CheckIcon } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 import { RangeFilter } from './RangeFilter'
@@ -136,7 +136,7 @@ export const UniversalFilterFormBlock = ({ label, collection, fields }: Props) =
               className="w-5 h-5 flex items-center justify-center bg-card border border-border rounded"
             >
               <Checkbox.Indicator>
-                <CheckIcon className="text-primary" />
+                <CheckIcon className="w-4 h-4 text-primary" />
               </Checkbox.Indicator>
             </Checkbox.Root>
             <label htmlFor={id}>{label}</label>
@@ -203,7 +203,7 @@ export const UniversalFilterFormBlock = ({ label, collection, fields }: Props) =
                     className="w-5 h-5 flex items-center justify-center bg-card border border-border rounded"
                   >
                     <Checkbox.Indicator>
-                      <CheckIcon className="text-primary" />
+                      <CheckIcon className="w-4 h-4 text-primary" />
                     </Checkbox.Indicator>
                   </Checkbox.Root>
                   <span>{opt.label}</span>

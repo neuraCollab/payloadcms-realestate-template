@@ -8,6 +8,7 @@ import {
   type RecentRef,
 } from '@/lib/recentlyViewed'
 import { PropertyCard } from '@/components/PropertyCard'
+import { pluralizeRu } from '@/utilities/pluralizeRu'
 
 interface FetchedDoc {
   ref: RecentRef
@@ -77,7 +78,7 @@ export const RecentClient: React.FC = () => {
           </h1>
           <p className="text-body-sm text-on-surface-variant">
             {items.length}{' '}
-            {items.length === 1 ? 'объект' : 'объектов'}
+            {pluralizeRu(items.length, ['объект', 'объекта', 'объектов'])}
           </p>
         </div>
         {items.length > 0 ? (

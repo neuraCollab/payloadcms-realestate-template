@@ -57,22 +57,38 @@ export const clearFavorites = () => write([])
 /**
  * React hook to subscribe to favorites changes. Re-renders consumer on
  * cross-tab `storage` events and same-tab `realty:favorites-changed` events.
+ *
+ * Backed by useSyncExternalStore rather than useState+useEffect so the
+ * store snapshot is available on first client render (no post-mount
+ * "flash of empty list") and stays tear-safe under concurrent rendering.
  */
 import * as React from 'react'
 
-export const useFavorites = (): FavoriteRef[] => {
-  const [favs, setFavs] = React.useState<FavoriteRef[]>([])
+let snapshot: FavoriteRef[] = []
+let hasSnapshot = false
 
-  React.useEffect(() => {
-    setFavs(read())
-    const refresh = () => setFavs(read())
-    window.addEventListener('storage', refresh)
-    window.addEventListener('realty:favorites-changed', refresh)
-    return () => {
-      window.removeEventListener('storage', refresh)
-      window.removeEventListener('realty:favorites-changed', refresh)
-    }
-  }, [])
-
-  return favs
+const getSnapshot = (): FavoriteRef[] => {
+  if (!hasSnapshot) {
+    snapshot = read()
+    hasSnapshot = true
+  }
+  return snapshot
 }
+
+const getServerSnapshot = (): FavoriteRef[] => []
+
+const subscribe = (onStoreChange: () => void) => {
+  const refresh = () => {
+    hasSnapshot = false
+    onStoreChange()
+  }
+  window.addEventListener('storage', refresh)
+  window.addEventListener('realty:favorites-changed', refresh)
+  return () => {
+    window.removeEventListener('storage', refresh)
+    window.removeEventListener('realty:favorites-changed', refresh)
+  }
+}
+
+export const useFavorites = (): FavoriteRef[] =>
+  React.useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)

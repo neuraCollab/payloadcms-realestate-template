@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Heart, Trash2 } from 'lucide-react'
 import { listFavorites, clearFavorites, type FavoriteRef } from '@/lib/favorites'
 import { PropertyCard } from '@/components/PropertyCard'
+import { pluralizeRu } from '@/utilities/pluralizeRu'
 
 interface FetchedDoc {
   ref: FavoriteRef
@@ -80,7 +81,7 @@ export const FavoritesClient: React.FC = () => {
           </h1>
           <p className="text-body-sm text-on-surface-variant">
             {items.length}{' '}
-            {items.length === 1 ? 'объект' : 'объектов'}
+            {pluralizeRu(items.length, ['объект', 'объекта', 'объектов'])}
           </p>
         </div>
         {items.length > 0 ? (

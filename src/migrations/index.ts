@@ -13,6 +13,10 @@ import * as migration_20260608_search_queries from './20260608_search_queries';
 import * as migration_20260608_search_queries_user from './20260608_search_queries_user';
 import * as migration_20260608_seo_landings from './20260608_seo_landings';
 import * as migration_20260609_hnsw_index from './20260609_hnsw_index';
+import * as migration_20260610_telegram_channels_status from './20260610_telegram_channels_status';
+import * as migration_20260611_seo_landings_faq from './20260611_seo_landings_faq';
+import * as migration_20260612_payload_kv from './20260612_payload_kv';
+import * as migration_20260613_drop_properties from './20260613_drop_properties';
 
 export const migrations = [
   {
@@ -89,5 +93,25 @@ export const migrations = [
     up: migration_20260609_hnsw_index.up,
     down: migration_20260609_hnsw_index.down,
     name: '20260609_hnsw_index',
+  },
+  {
+    up: migration_20260610_telegram_channels_status.up,
+    down: migration_20260610_telegram_channels_status.down,
+    name: '20260610_telegram_channels_status',
+  },
+  {
+    up: migration_20260611_seo_landings_faq.up,
+    down: migration_20260611_seo_landings_faq.down,
+    name: '20260611_seo_landings_faq',
+  },
+  {
+    up: migration_20260612_payload_kv.up,
+    down: migration_20260612_payload_kv.down,
+    name: '20260612_payload_kv',
+  },
+  {
+    up: migration_20260613_drop_properties.up,
+    down: migration_20260613_drop_properties.down,
+    name: '20260613_drop_properties',
   },
 ];

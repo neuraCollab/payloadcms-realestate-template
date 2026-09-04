@@ -25,6 +25,17 @@ const nextConfig = {
         }
       }),
     ],
+    // Payload media is served same-origin at /api/media/file/*, with a
+    // `?<updatedAt>` cache-busting query string appended by ImageMedia.
+    // Next 16 requires local image URLs that carry a search string to be
+    // explicitly allow-listed, otherwise next/image throws
+    // "using a query string which is not configured in images.localPatterns".
+    // Any local (relative-src) image is allowed, same as before Next
+    // required an explicit allow-list — this app also serves next/image
+    // from /public (e.g. /placeholder.jpg) besides /api/media/file/**,
+    // and the latter carries a per-image `?<updatedAt>` cache-busting
+    // query string next/image would otherwise reject.
+    localPatterns: [{ pathname: '/**' }],
     // AVIF → WebP → JPEG fallback. AVIF меньше JPEG в 2-3 раза
     // при сопоставимом качестве, WebP в 1.5-2. Поддерживают почти
     // все живые браузеры. Next сам выбирает по Accept заголовку.

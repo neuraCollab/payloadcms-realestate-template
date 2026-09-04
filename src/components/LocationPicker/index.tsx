@@ -51,6 +51,42 @@ export const LocationPicker: React.FC<Props> = ({
   const [ready, setReady] = React.useState(false)
   const [reverseLoading, setReverseLoading] = React.useState(false)
 
+  const handleSelect = async (lat: number, lng: number) => {
+    onChange({ lat, lng })
+    if (!TOKEN) return
+    setReverseLoading(true)
+    try {
+      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${TOKEN}&language=ru&types=address,place,locality,district`
+      const res = await fetch(url)
+      const data = await res.json()
+      const feature = data.features?.[0]
+      if (feature) {
+        // Mapbox даёт context: [{ id: 'place.XX', text: '...' }]
+        const ctx: Array<{ id: string; text: string }> = feature.context ?? []
+        const find = (prefix: string) =>
+          ctx.find((c) => c.id?.startsWith(prefix))?.text
+        onChange(
+          { lat, lng },
+          {
+            formattedAddress: feature.place_name,
+            // place_name обычно «улица, дом, район, город, область»
+            // pull discrete fields из context.
+            city: find('place') ?? find('locality') ?? find('region'),
+            district: find('district') ?? find('neighborhood'),
+            street:
+              feature.place_type?.[0] === 'address'
+                ? `${feature.text}${feature.address ? `, ${feature.address}` : ''}`
+                : undefined,
+          },
+        )
+      }
+    } catch (err) {
+      console.error('[LocationPicker] reverse geocode', err)
+    } finally {
+      setReverseLoading(false)
+    }
+  }
+
   // Лениво загружаем mapbox-gl только когда токен есть.
   React.useEffect(() => {
     if (!TOKEN || !containerRef.current) return
@@ -118,42 +154,6 @@ export const LocationPicker: React.FC<Props> = ({
       markerRef.current.setLngLat([value.lng, value.lat])
     }
   }, [value])
-
-  const handleSelect = async (lat: number, lng: number) => {
-    onChange({ lat, lng })
-    if (!TOKEN) return
-    setReverseLoading(true)
-    try {
-      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${TOKEN}&language=ru&types=address,place,locality,district`
-      const res = await fetch(url)
-      const data = await res.json()
-      const feature = data.features?.[0]
-      if (feature) {
-        // Mapbox даёт context: [{ id: 'place.XX', text: '...' }]
-        const ctx: Array<{ id: string; text: string }> = feature.context ?? []
-        const find = (prefix: string) =>
-          ctx.find((c) => c.id?.startsWith(prefix))?.text
-        onChange(
-          { lat, lng },
-          {
-            formattedAddress: feature.place_name,
-            // place_name обычно «улица, дом, район, город, область»
-            // pull discrete fields из context.
-            city: find('place') ?? find('locality') ?? find('region'),
-            district: find('district') ?? find('neighborhood'),
-            street:
-              feature.place_type?.[0] === 'address'
-                ? `${feature.text}${feature.address ? `, ${feature.address}` : ''}`
-                : undefined,
-          },
-        )
-      }
-    } catch (err) {
-      console.error('[LocationPicker] reverse geocode', err)
-    } finally {
-      setReverseLoading(false)
-    }
-  }
 
   const flyToMe = (coords: { lat: number; lng: number }) => {
     if (!mapRef.current) return

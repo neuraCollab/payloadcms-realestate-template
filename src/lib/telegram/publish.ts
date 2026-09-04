@@ -46,7 +46,7 @@ export async function publishListingToCity(
     where: {
       and: [
         { cityName: { equals: city } },
-        { isActive: { equals: true } },
+        { status: { equals: 'active' } },
       ],
     },
     limit: 1,

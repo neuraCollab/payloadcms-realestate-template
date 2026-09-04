@@ -10,6 +10,9 @@ export const ResidentialComplex: CollectionConfig = {
     useAsTitle: 'name',
     group: 'Недвижимость',
   },
+  access: {
+    read: () => true,
+  },
   hooks: {
     afterChange: [
       embedAfterChange('residential-complexes'),

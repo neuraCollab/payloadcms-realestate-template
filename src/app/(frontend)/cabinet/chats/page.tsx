@@ -6,6 +6,7 @@ import { cookies } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { MessageSquare, User as UserIcon, ChevronRight } from 'lucide-react'
+import { pluralizeRu } from '@/utilities/pluralizeRu'
 
 // SSG skipped — DB unreachable at build-time inside docker compose.
 export const dynamic = 'force-dynamic'
@@ -106,7 +107,7 @@ export default async function ChatListPage() {
           <h1 className="text-headline text-on-surface">Мои переписки</h1>
           <p className="text-body-sm text-on-surface-variant">
             {email} · {threads.length}{' '}
-            {threads.length === 1 ? 'беседа' : 'беседы'}
+            {pluralizeRu(threads.length, ['беседа', 'беседы', 'бесед'])}
           </p>
         </div>
       </header>
@@ -150,7 +151,7 @@ export default async function ChatListPage() {
                   </div>
                   <div className="text-label text-on-surface-variant mt-0.5">
                     {t.totalMessages}{' '}
-                    {t.totalMessages === 1 ? 'сообщение' : 'сообщений'}
+                    {pluralizeRu(t.totalMessages, ['сообщение', 'сообщения', 'сообщений'])}
                   </div>
                 </div>
                 <ChevronRight className="w-4 h-4 text-on-surface-variant shrink-0" />

@@ -1,7 +1,16 @@
 import type { Block } from 'payload'
 
+/**
+ * Static "office location" map for a page. Originally also supported
+ * a curated/auto-loaded list of listing markers, but that half pointed
+ * at the (now-removed) `properties` demo collection and a `/properties`
+ * route that never existed as a real page — it was dead on arrival.
+ * Only the single-marker office mode ever worked, so that's all this
+ * block does now.
+ */
 export const MapBlock: Block = {
   slug: 'map',
+  interfaceName: 'MapBlock',
   labels: {
     singular: 'Map Block',
     plural: 'Map Blocks',
@@ -30,37 +39,11 @@ export const MapBlock: Block = {
       ],
     },
     {
-      name: 'properties',
-      type: 'relationship',
-      relationTo: 'properties',
-      hasMany: true,
-      label: 'Объекты для отображения',
-      admin: {
-        description: 'Если пусто — можно будет загрузить последние объекты автоматически на фронте',
-      },
-    },
-    {
-      name: 'autoLoad',
-      type: 'checkbox',
-      label: 'Автозагрузка объектов (последние N)',
-      defaultValue: true,
-    },
-    {
-      name: 'limit',
-      type: 'number',
-      label: 'Лимит автозагрузки',
-      defaultValue: 20,
-      min: 1,
-      max: 200,
-      admin: { condition: (_, siblingData) => Boolean(siblingData?.autoLoad) },
-    },
-    {
       name: 'officeMarker',
       type: 'group',
       label: 'Маркер офиса',
       admin: {
-        description:
-          'Если указан label, в центре карты будет показан одиночный маркер с этим подписью (объекты в этом режиме игнорируются).',
+        description: 'Если указан label, в центре карты будет показан одиночный маркер с этой подписью.',
       },
       fields: [
         { name: 'label', type: 'text', label: 'Подпись' },

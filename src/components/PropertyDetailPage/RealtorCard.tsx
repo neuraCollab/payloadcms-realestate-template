@@ -14,6 +14,8 @@ interface Props {
   realtor: any
   excludePropertyId?: string | number
   propertyTitle?: string
+  propertyCollection?: string
+  propertyId?: string | number
 }
 
 
@@ -22,6 +24,8 @@ export const RealtorCard: React.FC<Props> = async ({
   realtor,
   excludePropertyId,
   propertyTitle,
+  propertyCollection,
+  propertyId,
 }) => {
   const payload = await getPayload({ config })
 
@@ -112,7 +116,7 @@ export const RealtorCard: React.FC<Props> = async ({
           variant="button"
           className="w-full"
           collection={propertyCollection}
-          propertyId={String(propertyId)}
+          propertyId={propertyId !== undefined ? String(propertyId) : undefined}
         />
       ) : null}
 
@@ -129,7 +133,7 @@ export const RealtorCard: React.FC<Props> = async ({
           realtorName={realtor.name ?? 'Риэлтор'}
           propertyTitle={propertyTitle}
           propertyCollection={propertyCollection}
-          propertyId={String(propertyId)}
+          propertyId={propertyId !== undefined ? String(propertyId) : undefined}
         />
       </div>
 

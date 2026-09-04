@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { X } from 'lucide-react'
 import { useCompare, toggleCompare, clearCompare } from '@/lib/compare'
 import { formatPrice } from '@/utilities/formatPrice'
+import { pluralizeRu } from '@/utilities/pluralizeRu'
 
 
 
@@ -131,7 +132,8 @@ export const CompareClient: React.FC = () => {
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-3">
         <p className="text-body-sm text-on-surface-variant">
-          В сравнении: {loaded.length} объект{loaded.length === 1 ? '' : loaded.length < 5 ? 'а' : 'ов'}
+          В сравнении: {loaded.length}{' '}
+          {pluralizeRu(loaded.length, ['объект', 'объекта', 'объектов'])}
         </p>
         <button
           type="button"

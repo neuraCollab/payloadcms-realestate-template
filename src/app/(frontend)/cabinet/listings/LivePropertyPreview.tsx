@@ -215,7 +215,6 @@ function descriptionHtml(input: any): string {
   const trimmed = input.trim()
   if (!trimmed) return ''
 
-  let htmlContent = trimmed
   // tiptap-вывод начинается с <p> / <h2> и т.п.
   if (trimmed.startsWith('<')) {
     return DOMPurify.sanitize(trimmed)

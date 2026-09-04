@@ -2,6 +2,7 @@ import type { Block } from 'payload'
 
 export const QuickNavBlock: Block = {
   slug: 'quick-nav',
+  interfaceName: 'QuickNavBlock',
   labels: {
     singular: 'Быстрая навигация',
     plural: 'Быстрая навигация',

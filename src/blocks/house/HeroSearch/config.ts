@@ -2,6 +2,7 @@ import type { Block } from 'payload'
 
 export const HeroSearchBlock: Block = {
   slug: 'hero-search',
+  interfaceName: 'HeroSearchBlock',
   labels: {
     singular: 'Hero с поиском',
     plural: 'Hero с поиском',

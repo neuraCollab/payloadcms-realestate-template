@@ -2,6 +2,10 @@ import type { Block } from 'payload'
 
 export const AgentsBlock: Block = {
   slug: 'agents',
+  // Without this, Payload derives the GraphQL type name from the slug
+  // ("Agents"), which collides with the Agents collection's own
+  // generated type of the same name and breaks the GraphQL schema.
+  interfaceName: 'AgentsBlock',
   labels: {
     singular: 'Agents Block',
     plural: 'Agents Blocks',

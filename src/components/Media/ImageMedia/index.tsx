@@ -9,7 +9,6 @@ import React from 'react'
 import type { Props as MediaProps } from '../types'
 
 import { cssVariables } from '@/cssVariables'
-import { getClientSideURL } from '@/utilities/getURL'
 
 const { breakpoints } = cssVariables
 
@@ -43,7 +42,12 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
 
     const cacheTag = resource.updatedAt
 
-    src = `${getClientSideURL()}${url}?${cacheTag}`
+    // Media is always served same-origin by this app's own `/api/media`
+    // route, so keep the URL relative. An absolute URL here makes
+    // next/image treat it as a remote fetch, which trips Next's SSRF
+    // guard ("resolved to private ip") whenever the site is reached via
+    // localhost or an internal hostname — including local dev.
+    src = `${url}?${cacheTag}`
   }
 
   const loading = loadingFromProps || (!priority ? 'lazy' : undefined)

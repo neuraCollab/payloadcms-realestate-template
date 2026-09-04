@@ -2,16 +2,17 @@ import Script from 'next/script'
 import React from 'react'
 
 /**
- * Подгружает Yandex Metrika + Google Analytics 4. Оба id зашиты как
- * production-defaults; env-переменные при наличии переопределяют их
- * (для dev/staging счётчиков).
+ * Подгружает Yandex Metrika + Google Analytics 4 — только если
+ * владелец сайта явно указал свои счётчики через env. Это шаблон,
+ * который разворачивают на разных доменах; зашитый сюда id отправлял
+ * бы аналитику посетителей чужого сайта в аккаунт автора шаблона.
  *
  * Размещается один раз в root layout. next/script
  * strategy='afterInteractive' — счётчики не блокируют FCP/LCP.
  *
  * Env (опционально):
- *   NEXT_PUBLIC_YANDEX_METRIKA_ID — переопределить YM-id
- *   NEXT_PUBLIC_GA4_ID            — переопределить GA4-id
+ *   NEXT_PUBLIC_YANDEX_METRIKA_ID — свой YM-id
+ *   NEXT_PUBLIC_GA4_ID            — свой GA4-id
  *
  * Согласие на cookie: CookieConsent — soft-баннер (показывается, но
  * не блокирует). Если 152-ФЗ / GDPR-инспектор потребует hard-block,
@@ -19,13 +20,9 @@ import React from 'react'
  * localStorage `realty_cookie_consent_v1 === 'accepted'`.
  */
 
-// Прод-defaults. ENV при наличии переопределяет.
-const DEFAULT_YM_ID = '109710917'
-const DEFAULT_GA4_ID = 'G-L7KQ9W2PJ8'
-
 export const Analytics: React.FC = () => {
-  const ymId = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID || DEFAULT_YM_ID
-  const ga4Id = process.env.NEXT_PUBLIC_GA4_ID || DEFAULT_GA4_ID
+  const ymId = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID
+  const ga4Id = process.env.NEXT_PUBLIC_GA4_ID
 
   if (!ymId && !ga4Id) return null
 

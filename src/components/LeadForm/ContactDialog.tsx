@@ -1,6 +1,8 @@
 'use client'
 import React from 'react'
-import { Phone, Send, MessageCircle, Instagram } from 'lucide-react'
+import Link from 'next/link'
+import { Phone, Send, MessageCircle } from 'lucide-react'
+import { Instagram } from '@/components/icons/BrandIcons'
 import { trackEvent } from '@/lib/analytics'
 
 type Channel = 'callback' | 'telegram' | 'whatsapp' | 'instagram'
@@ -309,9 +311,9 @@ export const ContactDialog: React.FC<Props> = ({
             <p className="text-label text-on-surface-variant text-center">
               Отправляя форму, вы соглашаетесь с обработкой персональных
               данных согласно{' '}
-              <a href="/privacy" className="text-primary hover:underline">
+              <Link href="/privacy" className="text-primary hover:underline">
                 политике
-              </a>
+              </Link>
               .
             </p>
           </form>

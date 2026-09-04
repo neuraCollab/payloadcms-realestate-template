@@ -143,7 +143,7 @@ async function cmdStart(chatId: number): Promise<void> {
 async function cmdChannels(payload: any, chatId: number): Promise<void> {
   const res = await payload.find({
     collection: 'telegram-channels',
-    where: { isActive: { equals: true } },
+    where: { status: { equals: 'active' } },
     sort: 'cityName',
     limit: 50,
     depth: 0,
@@ -182,7 +182,7 @@ async function cmdChannel(payload: any, chatId: number, slugOrName: string): Pro
   const res = await payload.find({
     collection: 'telegram-channels',
     where: {
-      and: [{ isActive: { equals: true } }],
+      and: [{ status: { equals: 'active' } }],
     },
     limit: 50,
     depth: 0,
@@ -266,7 +266,7 @@ async function cmdRegisterChannel(
         citySlug: slug,
         channelId,
         channelUsername: username,
-        isActive: true,
+        status: 'active',
       } as any,
       overrideAccess: true,
     })

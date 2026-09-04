@@ -5,6 +5,7 @@ import { secureCompare } from '@/utilities/secureCompare'
 import { sendEmail } from '@/lib/email'
 import { getServerSideURL } from '@/utilities/getURL'
 import { formatPrice } from '@/utilities/formatPrice'
+import { pluralizeRu } from '@/utilities/pluralizeRu'
 
 
 /**
@@ -179,7 +180,7 @@ export async function POST(req: NextRequest): Promise<Response> {
         `${baseUrl}/cabinet/saved-searches\n`
       const html =
         `<h2 style="margin:0 0 8px">Новые объекты по поиску «${escapeHtml(s.name)}»</h2>` +
-        `<p style="color:#555">${matches.totalDocs} ${matches.totalDocs === 1 ? 'новый объект' : 'новых'}.</p>` +
+        `<p style="color:#555">${matches.totalDocs} ${pluralizeRu(matches.totalDocs, ['новый объект', 'новых объекта', 'новых объектов'])}.</p>` +
         `<table style="border-collapse:collapse;width:100%;max-width:600px">${htmlItems}</table>` +
         `<p style="margin-top:24px"><a href="${baseUrl}/${collection}" style="color:#1d4ed8">Открыть все результаты</a></p>` +
         `<hr/>` +

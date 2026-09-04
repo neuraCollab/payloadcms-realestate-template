@@ -2,6 +2,7 @@ import { Block } from 'payload'
 
 export const HeroBlock: Block = {
   slug: 'hero',
+  interfaceName: 'HeroBlock',
   imageURL: 'https://cdn-icons-png.flaticon.com/512/888/888879.png',
   fields: [
     {

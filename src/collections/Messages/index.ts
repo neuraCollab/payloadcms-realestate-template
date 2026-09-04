@@ -4,6 +4,16 @@ import { messageNotifyAfterChange } from '../hooks/messageNotify'
 
 export const Messages: CollectionConfig = {
   slug: 'messages',
+  // @payloadcms/plugin-form-builder registers its own built-in "message"
+  // field-type block (slug: 'message', no interfaceName), which Payload
+  // also names "Message" by default — the same name this collection's
+  // singular type gets from its slug. That collision breaks the whole
+  // GraphQL schema ("Schema must contain uniquely named types..."). We
+  // can't rename the plugin's block, so rename our own type instead.
+  graphQL: {
+    singularName: 'ChatMessage',
+    pluralName: 'ChatMessages',
+  },
   admin: {
     useAsTitle: 'subject',
     group: 'Недвижимость',

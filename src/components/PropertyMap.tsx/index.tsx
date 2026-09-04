@@ -21,7 +21,8 @@ export interface PropertyMapItem {
 interface PropertyMapProps {
   title?: string
   items: PropertyMapItem[]
-  baseUrl: string
+  /** Only needed if any item has a real `slug` to link to. */
+  baseUrl?: string
   center?: {
     lat?: number
     lng?: number
@@ -111,12 +112,16 @@ export const PropertyMap: React.FC<PropertyMapProps> = ({
               <div style="font-weight:600;margin-bottom:2px">${escapeHtml(item.title)}</div>
               ${item.price !== undefined ? `<div style="font-size:13px;opacity:.85">${formatPrice(item.price)} ₽</div>` : ''}
               ${item.address ? `<div style="font-size:12px;opacity:.7;margin-top:2px">${escapeHtml(item.address)}</div>` : ''}
-              <a href="${baseUrl}/${item.slug}"
-                 style="display:inline-block;margin-top:8px;padding:4px 10px;
-                        background:#3b82f6;color:#fff;border-radius:9999px;
-                        text-decoration:none;font-size:12px;font-weight:500">
-                Подробнее
-              </a>
+              ${
+                item.slug
+                  ? `<a href="${baseUrl}/${item.slug}"
+                       style="display:inline-block;margin-top:8px;padding:4px 10px;
+                              background:#3b82f6;color:#fff;border-radius:9999px;
+                              text-decoration:none;font-size:12px;font-weight:500">
+                      Подробнее
+                    </a>`
+                  : ''
+              }
             </div>
           `
           const popup = new mod.default.Popup({ offset: 24, closeButton: true }).setHTML(popupHtml)

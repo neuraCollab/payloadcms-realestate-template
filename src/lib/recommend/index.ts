@@ -74,7 +74,6 @@ async function getUserContext(
   payload: Payload,
   email: string,
 ): Promise<UserContext> {
-  // @ts-expect-error drizzle exposed by postgres-adapter at runtime
   const drizzle = payload.db.drizzle
   let recentQueries: string[] = []
   try {

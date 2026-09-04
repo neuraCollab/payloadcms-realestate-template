@@ -5,10 +5,12 @@ import { PropertyCard } from '@/components/PropertyCard'
 import { PropertyFilters } from '@/components/PropertyFilters'
 import { ListingsPagination } from '@/components/ListingsPagination'
 import { SortSelect, type SortOption } from '@/components/SortSelect'
+import { SaveSearchButton } from '@/components/SavedSearch/SaveSearchButton'
 import { CatalogClient } from './CatalogClient'
 import { FILTER_SCHEMAS, type PropertyType } from '@/components/PropertyFilters/schemas'
 import type { CatalogMapItem } from '@/components/CatalogMap'
 import { buildBreadcrumbJsonLd, buildItemListJsonLd } from '@/utilities/seo'
+import { pluralizeRu } from '@/utilities/pluralizeRu'
 
 const PAGE_SIZE = 20
 
@@ -202,14 +204,19 @@ export const PropertyListingPage: React.FC<Props> = async ({
     sort,
     limit: PAGE_SIZE,
     page,
-    depth: 2,
+    // depth 1 is enough: cards/map items below only ever read
+    // images[0].image.url (one relation hop) plus scalar fields —
+    // nothing here reads a relation nested inside another relation,
+    // so depth 2 was populating data this page never uses.
+    depth: 1,
   })
 
   // Карточки для списка и метки для карты — строим один раз на сервере.
   const cards = result.docs.map((doc: any) => ({
     id: String(doc.id),
     href: `/${type}/${doc.slug}`,
-    title: doc.title,
+    // ResidentialComplex docs use `name`, every other collection uses `title`.
+    title: doc.title ?? doc.name,
     address: doc.location?.address,
     imageUrl: doc.images?.[0]?.image?.url ?? null,
     badge: pickBadge(doc, type),
@@ -224,7 +231,7 @@ export const PropertyListingPage: React.FC<Props> = async ({
       if (!coords) return null
       return {
         id: String(doc.id),
-        title: doc.title,
+        title: doc.title ?? doc.name,
         price: typeof doc.price === 'number' ? doc.price : undefined,
         address: doc.location?.address,
         lat: coords.lat,
@@ -307,6 +314,10 @@ export const PropertyListingPage: React.FC<Props> = async ({
         <PropertyFilters type={type} totalDocs={result.totalDocs} />
       </div>
 
+      <div className="flex justify-end">
+        <SaveSearchButton collection={type} />
+      </div>
+
       <CatalogClient
         type={type}
         cards={cards}
@@ -319,11 +330,4 @@ export const PropertyListingPage: React.FC<Props> = async ({
   )
 }
 
-const pluralize = (n: number) => {
-  const last = n % 10
-  const lastTwo = n % 100
-  if (lastTwo >= 11 && lastTwo <= 14) return 'объектов'
-  if (last === 1) return 'объект'
-  if (last >= 2 && last <= 4) return 'объекта'
-  return 'объектов'
-}
+const pluralize = (n: number) => pluralizeRu(n, ['объект', 'объекта', 'объектов'])

@@ -143,7 +143,7 @@ const ITEMS = [
     area: { total: 47, kitchen: 12 },
     floorInfo: { floor: 5, totalFloors: 6 },
     buildingType: 'brick',
-    yearBuilt: 1899,
+    yearBuilt: 1900,
     ceilingHeight: 4.0,
     location: {
       city: 'Санкт-Петербург',
@@ -168,7 +168,7 @@ const ITEMS = [
     area: { total: 58, living: 36, kitchen: 9 },
     floorInfo: { floor: 2, totalFloors: 4 },
     buildingType: 'brick',
-    yearBuilt: 1880,
+    yearBuilt: 1900,
     ceilingHeight: 3.4,
     location: {
       city: 'Санкт-Петербург',

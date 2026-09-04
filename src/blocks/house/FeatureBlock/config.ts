@@ -8,6 +8,7 @@ type Feature = {
 
 export const FeatureBlock: Block = {
   slug: 'feature',
+  interfaceName: 'FeatureBlock',
   labels: {
     singular: 'Feature Block',
     plural: 'Feature Blocks',

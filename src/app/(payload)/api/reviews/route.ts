@@ -28,7 +28,11 @@ export async function POST(req: Request) {
     await payload.create({
       collection: 'reviews',
       data: {
-        realtor: realtorId,
+        // filterOptions on this relationship field rejects a string id
+        // with "invalid relationships" even when it resolves to a real,
+        // role-matching user — needs the numeric id (see the identical
+        // fix in the leads and messages API routes).
+        realtor: Number(realtorId),
         authorName,
         authorEmail,
         rating,

@@ -9,6 +9,12 @@ type FilterConditionData = {
 
 export const PropertiesBlock: Block = {
   slug: 'properties',
+  // Without this, Payload derives the GraphQL type name from the slug
+  // ("Properties"), which collides with the Properties collection's own
+  // generated type of the same name and breaks the entire GraphQL schema
+  // ("Schema must contain uniquely named types..."). Every other block
+  // in this codebase sets interfaceName for the same reason.
+  interfaceName: 'PropertiesBlock',
   labels: {
     singular: 'Properties Block',
     plural: 'Properties Blocks',

@@ -8,6 +8,7 @@ import { Star, Search as SearchIcon, User as UserIcon } from 'lucide-react'
 import { AgentsSearch } from './AgentsSearch'
 import { MaskedPhone } from '@/components/MaskedPhone'
 import { buildBreadcrumbJsonLd } from '@/utilities/seo'
+import { pluralizeRu } from '@/utilities/pluralizeRu'
 
 // ISR: страница рендерится при первом запросе, потом 10 мин отдаётся
 // из кеша (на каждый уникальный URL — комбинация ?q=&city=). Агенты
@@ -146,15 +147,23 @@ const AgentRow: React.FC<{ stats: RealtorWithStats }> = ({ stats }) => {
             <span>Нет отзывов</span>
           )}
           <span>·</span>
-          <span>{activeListingsCount} активных</span>
+          <span>
+            {activeListingsCount}{' '}
+            {pluralizeRu(activeListingsCount, [
+              'активный объект',
+              'активных объекта',
+              'активных объектов',
+            ])}
+          </span>
         </div>
       </div>
       {doc.phone ? (
-        <div
-          onClick={(e) => e.stopPropagation()}
-          onMouseDown={(e) => e.stopPropagation()}
-          className="hidden sm:block"
-        >
+        // No stopPropagation wrapper needed: MaskedPhone's own button
+        // already calls preventDefault/stopPropagation on click, which
+        // is enough to stop the click bubbling into this row's <Link>.
+        // (A wrapper with onClick/onMouseDown here can't work anyway —
+        // this is a Server Component, which can't attach DOM handlers.)
+        <div className="hidden sm:block">
           <MaskedPhone phone={doc.phone} variant="inline" />
         </div>
       ) : null}
