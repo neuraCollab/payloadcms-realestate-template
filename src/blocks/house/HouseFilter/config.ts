@@ -2,6 +2,7 @@ import { Block } from 'payload'
 
 export const HouseFilter: Block = {
   slug: 'house-filter',
+  interfaceName: 'HouseFilterBlock',
   labels: {
     singular: 'Группа фильтров',
     plural: 'Группы фильтров',

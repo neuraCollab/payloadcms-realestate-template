@@ -2,6 +2,7 @@ import type { Block } from 'payload'
 
 export const ContactUsFormBlock: Block = {
   slug: 'contact-us-form',
+  interfaceName: 'ContactUsFormBlock',
   labels: {
     singular: 'Contact Us Form Block',
     plural: 'Contact Us Form Blocks',

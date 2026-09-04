@@ -2,6 +2,7 @@ import type { Block } from 'payload'
 
 export const VisionBlock: Block = {
   slug: 'vision',
+  interfaceName: 'VisionBlock',
   labels: {
     singular: 'Vision Block',
     plural: 'Vision Blocks',

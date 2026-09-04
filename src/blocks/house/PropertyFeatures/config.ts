@@ -2,6 +2,7 @@ import type { Block } from 'payload'
 
 export const PropertyFeaturesBlock: Block = {
   slug: 'property-features',
+  interfaceName: 'PropertyFeaturesBlock',
   labels: {
     singular: 'Property Features Block',
     plural: 'Property Features Blocks',

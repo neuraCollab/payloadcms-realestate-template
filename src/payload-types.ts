@@ -236,283 +236,27 @@ export interface Page {
     | ArchiveBlock
     | FormBlock
     | NavbarBlock
-    | {
-        /**
-         * Опциональный текст для бейджа (например, "Real Estate")
-         */
-        badgeText?: string | null;
-        headline: string;
-        highlight?: string | null;
-        subheadline?: string | null;
-        image: number | Media;
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'hero';
-      }
-    | {
-        title: string;
-        subtitle?: string | null;
-        buttonText?: string | null;
-        buttonLink?: string | null;
-        items?:
-          | {
-              icon: string;
-              title: string;
-              description: string;
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'vision';
-      }
+    | HeroBlock
+    | VisionBlock
     | PropertiesBlock
-    | {
-        blockType: 'feature';
-        label: string;
-        title: string;
-        features: {
-          icon:
-            | 'user-check'
-            | 'settings'
-            | 'trending-up'
-            | 'refresh-cw'
-            | 'users'
-            | 'shield-check'
-            | 'home'
-            | 'key'
-            | 'map-pin'
-            | 'phone'
-            | 'mail'
-            | 'calendar'
-            | 'heart'
-            | 'star'
-            | 'check-circle'
-            | 'award';
-          title: string;
-          description: string;
-          id?: string | null;
-        }[];
-        id?: string | null;
-        blockName?: string | null;
-      }
-    | {
-        blockType: 'how-it-works';
-        label: string;
-        title: string;
-        steps: {
-          /**
-           * Введите номер иконки от 1 до 6
-           */
-          icon: string;
-          title: string;
-          description: string;
-          id?: string | null;
-        }[];
-        id?: string | null;
-        blockName?: string | null;
-      }
-    | {
-        blockType: 'blog';
-        title: string;
-        subtitle?: string | null;
-        /**
-         * Выберите посты для отображения в блоке
-         */
-        posts?: (number | Post)[] | null;
-        /**
-         * Например: /posts
-         */
-        showAllLink?: string | null;
-        /**
-         * Минимум 3, максимум 12 постов
-         */
-        itemsPerPage: number;
-        id?: string | null;
-        blockName?: string | null;
-      }
-    | {
-        blockType: 'about-hero';
-        label: string;
-        title: string;
-        images: {
-          image: number | Media;
-          id?: string | null;
-        }[];
-        id?: string | null;
-        blockName?: string | null;
-      }
-    | {
-        blockType: 'vision-mission';
-        title: string;
-        description: string;
-        buttonText?: string | null;
-        buttonLink?: string | null;
-        stats: {
-          value: string;
-          label: string;
-          id?: string | null;
-        }[];
-        id?: string | null;
-        blockName?: string | null;
-      }
-    | {
-        blockType: 'amenities';
-        label: string;
-        title: string;
-        image: number | Media;
-        amenities: {
-          icon: 'wifi' | 'shield' | 'gym' | 'clean';
-          title: string;
-          id?: string | null;
-        }[];
-        id?: string | null;
-        blockName?: string | null;
-      }
+    | FeatureBlock
+    | HowItWorksBlock
+    | BlogBlock
+    | AboutHeroBlock
+    | VisionMissionBlock
+    | AmenitiesBlock
     | AgentsBlock
     | TestimonialsBlock
-    | {
-        blockType: 'call-to-action-new';
-        label: string;
-        title: string;
-        buttonText: string;
-        buttonLink: string;
-        id?: string | null;
-        blockName?: string | null;
-      }
-    | {
-        blockType: 'contact-hero';
-        label: string;
-        title: string;
-        image: number | Media;
-        email: string;
-        phone: string;
-        location: string;
-        id?: string | null;
-        blockName?: string | null;
-      }
-    | {
-        blockType: 'contact-us-form';
-        label: string;
-        title: string;
-        form: number | Form;
-        id?: string | null;
-        blockName?: string | null;
-      }
-    | {
-        blockType: 'faq';
-        label: string;
-        title: string;
-        items: {
-          question: string;
-          answer: string;
-          id?: string | null;
-        }[];
-        id?: string | null;
-        blockName?: string | null;
-      }
-    | {
-        blockType: 'property-features';
-        property: number | Property;
-        id?: string | null;
-        blockName?: string | null;
-      }
-    | {
-        filters: {
-          label: string;
-          collection: string;
-          fields: {
-            name: string;
-            label?: string | null;
-            type: 'text' | 'number' | 'checkbox' | 'select' | 'multi-select' | 'range';
-            options?:
-              | {
-                  value: string;
-                  label?: string | null;
-                  id?: string | null;
-                }[]
-              | null;
-            min?: number | null;
-            max?: number | null;
-            step?: number | null;
-            id?: string | null;
-          }[];
-          id?: string | null;
-        }[];
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'house-filter';
-      }
-    | {
-        blockType: 'map';
-        title?: string | null;
-        center?: {
-          lat?: number | null;
-          lng?: number | null;
-          zoom?: number | null;
-        };
-        /**
-         * Если пусто — можно будет загрузить последние объекты автоматически на фронте
-         */
-        properties?: (number | Property)[] | null;
-        autoLoad?: boolean | null;
-        limit?: number | null;
-        /**
-         * Если указан label, в центре карты будет показан одиночный маркер с этим подписью (объекты в этом режиме игнорируются).
-         */
-        officeMarker?: {
-          label?: string | null;
-          address?: string | null;
-        };
-        id?: string | null;
-        blockName?: string | null;
-      }
-    | {
-        blockType: 'quick-nav';
-        label?: string | null;
-        title: string;
-        subtitle?: string | null;
-        items?:
-          | {
-              icon:
-                | 'home'
-                | 'briefcase'
-                | 'trees'
-                | 'building'
-                | 'search'
-                | 'users'
-                | 'newspaper'
-                | 'mail'
-                | 'map'
-                | 'star'
-                | 'info'
-                | 'phone';
-              title: string;
-              description?: string | null;
-              href: string;
-              accent?: ('primary' | 'emerald' | 'amber' | 'rose' | 'sky' | 'violet') | null;
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-        blockName?: string | null;
-      }
-    | {
-        blockType: 'hero-search';
-        badge?: string | null;
-        headline: string;
-        subheadline?: string | null;
-        image?: (number | null) | Media;
-        id?: string | null;
-        blockName?: string | null;
-      }
-    | {
-        blockType: 'recently-viewed';
-        title?: string | null;
-        limit?: number | null;
-        id?: string | null;
-        blockName?: string | null;
-      }
+    | CallToActionNewBlock
+    | ContactHeroBlock
+    | ContactUsFormBlock
+    | FAQBlock
+    | PropertyFeaturesBlock
+    | HouseFilterBlock
+    | MapBlock
+    | QuickNavBlock
+    | HeroSearchBlock
+    | RecentlyViewedBlock
   )[];
   meta?: {
     title?: string | null;
@@ -1066,6 +810,44 @@ export interface NavbarBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeroBlock".
+ */
+export interface HeroBlock {
+  /**
+   * Опциональный текст для бейджа (например, "Real Estate")
+   */
+  badgeText?: string | null;
+  headline: string;
+  highlight?: string | null;
+  subheadline?: string | null;
+  image: number | Media;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'hero';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VisionBlock".
+ */
+export interface VisionBlock {
+  title: string;
+  subtitle?: string | null;
+  buttonText?: string | null;
+  buttonLink?: string | null;
+  items?:
+    | {
+        icon: string;
+        title: string;
+        description: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'vision';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "PropertiesBlock".
  */
 export interface PropertiesBlock {
@@ -1384,6 +1166,132 @@ export interface Land {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeatureBlock".
+ */
+export interface FeatureBlock {
+  blockType: 'feature';
+  label: string;
+  title: string;
+  features: {
+    icon:
+      | 'user-check'
+      | 'settings'
+      | 'trending-up'
+      | 'refresh-cw'
+      | 'users'
+      | 'shield-check'
+      | 'home'
+      | 'key'
+      | 'map-pin'
+      | 'phone'
+      | 'mail'
+      | 'calendar'
+      | 'heart'
+      | 'star'
+      | 'check-circle'
+      | 'award';
+    title: string;
+    description: string;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HowItWorksBlock".
+ */
+export interface HowItWorksBlock {
+  blockType: 'how-it-works';
+  label: string;
+  title: string;
+  steps: {
+    /**
+     * Введите номер иконки от 1 до 6
+     */
+    icon: string;
+    title: string;
+    description: string;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlogBlock".
+ */
+export interface BlogBlock {
+  blockType: 'blog';
+  title: string;
+  subtitle?: string | null;
+  /**
+   * Выберите посты для отображения в блоке
+   */
+  posts?: (number | Post)[] | null;
+  /**
+   * Например: /posts
+   */
+  showAllLink?: string | null;
+  /**
+   * Минимум 3, максимум 12 постов
+   */
+  itemsPerPage: number;
+  id?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AboutHeroBlock".
+ */
+export interface AboutHeroBlock {
+  blockType: 'about-hero';
+  label: string;
+  title: string;
+  images: {
+    image: number | Media;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VisionMissionBlock".
+ */
+export interface VisionMissionBlock {
+  blockType: 'vision-mission';
+  title: string;
+  description: string;
+  buttonText?: string | null;
+  buttonLink?: string | null;
+  stats: {
+    value: string;
+    label: string;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AmenitiesBlock".
+ */
+export interface AmenitiesBlock {
+  blockType: 'amenities';
+  label: string;
+  title: string;
+  image: number | Media;
+  amenities: {
+    icon: 'wifi' | 'shield' | 'gym' | 'clean';
+    title: string;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "AgentsBlock".
  */
 export interface AgentsBlock {
@@ -1444,6 +1352,72 @@ export interface Testimonial {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CallToActionNewBlock".
+ */
+export interface CallToActionNewBlock {
+  blockType: 'call-to-action-new';
+  label: string;
+  title: string;
+  buttonText: string;
+  buttonLink: string;
+  id?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContactHeroBlock".
+ */
+export interface ContactHeroBlock {
+  blockType: 'contact-hero';
+  label: string;
+  title: string;
+  image: number | Media;
+  email: string;
+  phone: string;
+  location: string;
+  id?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContactUsFormBlock".
+ */
+export interface ContactUsFormBlock {
+  blockType: 'contact-us-form';
+  label: string;
+  title: string;
+  form: number | Form;
+  id?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FAQBlock".
+ */
+export interface FAQBlock {
+  blockType: 'faq';
+  label: string;
+  title: string;
+  items: {
+    question: string;
+    answer: string;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PropertyFeaturesBlock".
+ */
+export interface PropertyFeaturesBlock {
+  blockType: 'property-features';
+  property: number | Property;
+  id?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "properties".
  */
 export interface Property {
@@ -1492,6 +1466,122 @@ export interface Property {
   status?: ('active' | 'sold' | 'draft') | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HouseFilterBlock".
+ */
+export interface HouseFilterBlock {
+  filters: {
+    label: string;
+    collection: string;
+    fields: {
+      name: string;
+      label?: string | null;
+      type: 'text' | 'number' | 'checkbox' | 'select' | 'multi-select' | 'range';
+      options?:
+        | {
+            value: string;
+            label?: string | null;
+            id?: string | null;
+          }[]
+        | null;
+      min?: number | null;
+      max?: number | null;
+      step?: number | null;
+      id?: string | null;
+    }[];
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'house-filter';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MapBlock".
+ */
+export interface MapBlock {
+  blockType: 'map';
+  title?: string | null;
+  center?: {
+    lat?: number | null;
+    lng?: number | null;
+    zoom?: number | null;
+  };
+  /**
+   * Если пусто — можно будет загрузить последние объекты автоматически на фронте
+   */
+  properties?: (number | Property)[] | null;
+  autoLoad?: boolean | null;
+  limit?: number | null;
+  /**
+   * Если указан label, в центре карты будет показан одиночный маркер с этим подписью (объекты в этом режиме игнорируются).
+   */
+  officeMarker?: {
+    label?: string | null;
+    address?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "QuickNavBlock".
+ */
+export interface QuickNavBlock {
+  blockType: 'quick-nav';
+  label?: string | null;
+  title: string;
+  subtitle?: string | null;
+  items?:
+    | {
+        icon:
+          | 'home'
+          | 'briefcase'
+          | 'trees'
+          | 'building'
+          | 'search'
+          | 'users'
+          | 'newspaper'
+          | 'mail'
+          | 'map'
+          | 'star'
+          | 'info'
+          | 'phone';
+        title: string;
+        description?: string | null;
+        href: string;
+        accent?: ('primary' | 'emerald' | 'amber' | 'rose' | 'sky' | 'violet') | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeroSearchBlock".
+ */
+export interface HeroSearchBlock {
+  blockType: 'hero-search';
+  badge?: string | null;
+  headline: string;
+  subheadline?: string | null;
+  image?: (number | null) | Media;
+  id?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RecentlyViewedBlock".
+ */
+export interface RecentlyViewedBlock {
+  blockType: 'recently-viewed';
+  title?: string | null;
+  limit?: number | null;
+  id?: string | null;
+  blockName?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2159,287 +2249,27 @@ export interface PagesSelect<T extends boolean = true> {
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
         navbar?: T | NavbarBlockSelect<T>;
-        hero?:
-          | T
-          | {
-              badgeText?: T;
-              headline?: T;
-              highlight?: T;
-              subheadline?: T;
-              image?: T;
-              id?: T;
-              blockName?: T;
-            };
-        vision?:
-          | T
-          | {
-              title?: T;
-              subtitle?: T;
-              buttonText?: T;
-              buttonLink?: T;
-              items?:
-                | T
-                | {
-                    icon?: T;
-                    title?: T;
-                    description?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
+        hero?: T | HeroBlockSelect<T>;
+        vision?: T | VisionBlockSelect<T>;
         properties?: T | PropertiesBlockSelect<T>;
-        feature?:
-          | T
-          | {
-              blockType?: T;
-              label?: T;
-              title?: T;
-              features?:
-                | T
-                | {
-                    icon?: T;
-                    title?: T;
-                    description?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        'how-it-works'?:
-          | T
-          | {
-              blockType?: T;
-              label?: T;
-              title?: T;
-              steps?:
-                | T
-                | {
-                    icon?: T;
-                    title?: T;
-                    description?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        blog?:
-          | T
-          | {
-              blockType?: T;
-              title?: T;
-              subtitle?: T;
-              posts?: T;
-              showAllLink?: T;
-              itemsPerPage?: T;
-              id?: T;
-              blockName?: T;
-            };
-        'about-hero'?:
-          | T
-          | {
-              blockType?: T;
-              label?: T;
-              title?: T;
-              images?:
-                | T
-                | {
-                    image?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        'vision-mission'?:
-          | T
-          | {
-              blockType?: T;
-              title?: T;
-              description?: T;
-              buttonText?: T;
-              buttonLink?: T;
-              stats?:
-                | T
-                | {
-                    value?: T;
-                    label?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        amenities?:
-          | T
-          | {
-              blockType?: T;
-              label?: T;
-              title?: T;
-              image?: T;
-              amenities?:
-                | T
-                | {
-                    icon?: T;
-                    title?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
+        feature?: T | FeatureBlockSelect<T>;
+        'how-it-works'?: T | HowItWorksBlockSelect<T>;
+        blog?: T | BlogBlockSelect<T>;
+        'about-hero'?: T | AboutHeroBlockSelect<T>;
+        'vision-mission'?: T | VisionMissionBlockSelect<T>;
+        amenities?: T | AmenitiesBlockSelect<T>;
         agents?: T | AgentsBlockSelect<T>;
         testimonials?: T | TestimonialsBlockSelect<T>;
-        'call-to-action-new'?:
-          | T
-          | {
-              blockType?: T;
-              label?: T;
-              title?: T;
-              buttonText?: T;
-              buttonLink?: T;
-              id?: T;
-              blockName?: T;
-            };
-        'contact-hero'?:
-          | T
-          | {
-              blockType?: T;
-              label?: T;
-              title?: T;
-              image?: T;
-              email?: T;
-              phone?: T;
-              location?: T;
-              id?: T;
-              blockName?: T;
-            };
-        'contact-us-form'?:
-          | T
-          | {
-              blockType?: T;
-              label?: T;
-              title?: T;
-              form?: T;
-              id?: T;
-              blockName?: T;
-            };
-        faq?:
-          | T
-          | {
-              blockType?: T;
-              label?: T;
-              title?: T;
-              items?:
-                | T
-                | {
-                    question?: T;
-                    answer?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        'property-features'?:
-          | T
-          | {
-              blockType?: T;
-              property?: T;
-              id?: T;
-              blockName?: T;
-            };
-        'house-filter'?:
-          | T
-          | {
-              filters?:
-                | T
-                | {
-                    label?: T;
-                    collection?: T;
-                    fields?:
-                      | T
-                      | {
-                          name?: T;
-                          label?: T;
-                          type?: T;
-                          options?:
-                            | T
-                            | {
-                                value?: T;
-                                label?: T;
-                                id?: T;
-                              };
-                          min?: T;
-                          max?: T;
-                          step?: T;
-                          id?: T;
-                        };
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        map?:
-          | T
-          | {
-              blockType?: T;
-              title?: T;
-              center?:
-                | T
-                | {
-                    lat?: T;
-                    lng?: T;
-                    zoom?: T;
-                  };
-              properties?: T;
-              autoLoad?: T;
-              limit?: T;
-              officeMarker?:
-                | T
-                | {
-                    label?: T;
-                    address?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        'quick-nav'?:
-          | T
-          | {
-              blockType?: T;
-              label?: T;
-              title?: T;
-              subtitle?: T;
-              items?:
-                | T
-                | {
-                    icon?: T;
-                    title?: T;
-                    description?: T;
-                    href?: T;
-                    accent?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        'hero-search'?:
-          | T
-          | {
-              blockType?: T;
-              badge?: T;
-              headline?: T;
-              subheadline?: T;
-              image?: T;
-              id?: T;
-              blockName?: T;
-            };
-        'recently-viewed'?:
-          | T
-          | {
-              blockType?: T;
-              title?: T;
-              limit?: T;
-              id?: T;
-              blockName?: T;
-            };
+        'call-to-action-new'?: T | CallToActionNewBlockSelect<T>;
+        'contact-hero'?: T | ContactHeroBlockSelect<T>;
+        'contact-us-form'?: T | ContactUsFormBlockSelect<T>;
+        faq?: T | FAQBlockSelect<T>;
+        'property-features'?: T | PropertyFeaturesBlockSelect<T>;
+        'house-filter'?: T | HouseFilterBlockSelect<T>;
+        map?: T | MapBlockSelect<T>;
+        'quick-nav'?: T | QuickNavBlockSelect<T>;
+        'hero-search'?: T | HeroSearchBlockSelect<T>;
+        'recently-viewed'?: T | RecentlyViewedBlockSelect<T>;
       };
   meta?:
     | T
@@ -2564,6 +2394,39 @@ export interface NavbarBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeroBlock_select".
+ */
+export interface HeroBlockSelect<T extends boolean = true> {
+  badgeText?: T;
+  headline?: T;
+  highlight?: T;
+  subheadline?: T;
+  image?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VisionBlock_select".
+ */
+export interface VisionBlockSelect<T extends boolean = true> {
+  title?: T;
+  subtitle?: T;
+  buttonText?: T;
+  buttonLink?: T;
+  items?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "PropertiesBlock_select".
  */
 export interface PropertiesBlockSelect<T extends boolean = true> {
@@ -2582,6 +2445,114 @@ export interface PropertiesBlockSelect<T extends boolean = true> {
         bedrooms?: T;
         bathrooms?: T;
         area?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeatureBlock_select".
+ */
+export interface FeatureBlockSelect<T extends boolean = true> {
+  blockType?: T;
+  label?: T;
+  title?: T;
+  features?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HowItWorksBlock_select".
+ */
+export interface HowItWorksBlockSelect<T extends boolean = true> {
+  blockType?: T;
+  label?: T;
+  title?: T;
+  steps?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlogBlock_select".
+ */
+export interface BlogBlockSelect<T extends boolean = true> {
+  blockType?: T;
+  title?: T;
+  subtitle?: T;
+  posts?: T;
+  showAllLink?: T;
+  itemsPerPage?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AboutHeroBlock_select".
+ */
+export interface AboutHeroBlockSelect<T extends boolean = true> {
+  blockType?: T;
+  label?: T;
+  title?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VisionMissionBlock_select".
+ */
+export interface VisionMissionBlockSelect<T extends boolean = true> {
+  blockType?: T;
+  title?: T;
+  description?: T;
+  buttonText?: T;
+  buttonLink?: T;
+  stats?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AmenitiesBlock_select".
+ */
+export interface AmenitiesBlockSelect<T extends boolean = true> {
+  blockType?: T;
+  label?: T;
+  title?: T;
+  image?: T;
+  amenities?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        id?: T;
       };
   id?: T;
   blockName?: T;
@@ -2607,6 +2578,179 @@ export interface TestimonialsBlockSelect<T extends boolean = true> {
   label?: T;
   title?: T;
   testimonials?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CallToActionNewBlock_select".
+ */
+export interface CallToActionNewBlockSelect<T extends boolean = true> {
+  blockType?: T;
+  label?: T;
+  title?: T;
+  buttonText?: T;
+  buttonLink?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContactHeroBlock_select".
+ */
+export interface ContactHeroBlockSelect<T extends boolean = true> {
+  blockType?: T;
+  label?: T;
+  title?: T;
+  image?: T;
+  email?: T;
+  phone?: T;
+  location?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContactUsFormBlock_select".
+ */
+export interface ContactUsFormBlockSelect<T extends boolean = true> {
+  blockType?: T;
+  label?: T;
+  title?: T;
+  form?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FAQBlock_select".
+ */
+export interface FAQBlockSelect<T extends boolean = true> {
+  blockType?: T;
+  label?: T;
+  title?: T;
+  items?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PropertyFeaturesBlock_select".
+ */
+export interface PropertyFeaturesBlockSelect<T extends boolean = true> {
+  blockType?: T;
+  property?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HouseFilterBlock_select".
+ */
+export interface HouseFilterBlockSelect<T extends boolean = true> {
+  filters?:
+    | T
+    | {
+        label?: T;
+        collection?: T;
+        fields?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              type?: T;
+              options?:
+                | T
+                | {
+                    value?: T;
+                    label?: T;
+                    id?: T;
+                  };
+              min?: T;
+              max?: T;
+              step?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MapBlock_select".
+ */
+export interface MapBlockSelect<T extends boolean = true> {
+  blockType?: T;
+  title?: T;
+  center?:
+    | T
+    | {
+        lat?: T;
+        lng?: T;
+        zoom?: T;
+      };
+  properties?: T;
+  autoLoad?: T;
+  limit?: T;
+  officeMarker?:
+    | T
+    | {
+        label?: T;
+        address?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "QuickNavBlock_select".
+ */
+export interface QuickNavBlockSelect<T extends boolean = true> {
+  blockType?: T;
+  label?: T;
+  title?: T;
+  subtitle?: T;
+  items?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        description?: T;
+        href?: T;
+        accent?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeroSearchBlock_select".
+ */
+export interface HeroSearchBlockSelect<T extends boolean = true> {
+  blockType?: T;
+  badge?: T;
+  headline?: T;
+  subheadline?: T;
+  image?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RecentlyViewedBlock_select".
+ */
+export interface RecentlyViewedBlockSelect<T extends boolean = true> {
+  blockType?: T;
+  title?: T;
+  limit?: T;
   id?: T;
   blockName?: T;
 }

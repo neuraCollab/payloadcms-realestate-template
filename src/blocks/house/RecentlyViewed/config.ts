@@ -2,6 +2,7 @@ import type { Block } from 'payload'
 
 export const RecentlyViewedBlock: Block = {
   slug: 'recently-viewed',
+  interfaceName: 'RecentlyViewedBlock',
   labels: {
     singular: 'Недавно просмотренные',
     plural: 'Недавно просмотренные',

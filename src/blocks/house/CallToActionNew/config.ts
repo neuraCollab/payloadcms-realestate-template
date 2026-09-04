@@ -2,6 +2,7 @@ import type { Block } from 'payload'
 
 export const CallToActionNewBlock: Block = {
   slug: 'call-to-action-new',
+  interfaceName: 'CallToActionNewBlock',
   labels: {
     singular: 'Call to Action Block',
     plural: 'Call to Action Blocks',

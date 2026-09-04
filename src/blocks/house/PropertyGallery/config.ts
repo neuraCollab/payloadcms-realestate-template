@@ -2,6 +2,7 @@ import type { Block } from 'payload'
 
 export const PropertyGalleryBlock: Block = {
   slug: 'property-gallery',
+  interfaceName: 'PropertyGalleryBlock',
   labels: {
     singular: 'Property Gallery Block',
     plural: 'Property Gallery Blocks',
