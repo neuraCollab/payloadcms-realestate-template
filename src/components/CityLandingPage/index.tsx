@@ -5,6 +5,7 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { Building2, Home, MapPin, Trees, Briefcase, ArrowRight } from 'lucide-react'
 import { PropertyCard } from '@/components/PropertyCard'
+import { pluralizeRu } from '@/utilities/pluralizeRu'
 import { POPULAR_FILTERS_FOR_CITY, parseFilterSlug } from '@/lib/cityUrls'
 import { buildBreadcrumbJsonLd } from '@/utilities/seo'
 import { getServerSideURL } from '@/utilities/getURL'
@@ -230,7 +231,7 @@ export const CityLandingPage: React.FC<Props> = async ({ city }) => {
               <h1 className="text-display mt-1">Недвижимость в городе {city.name}</h1>
               <p className="text-body-sm mt-2 opacity-90">
                 {totalListings.toLocaleString('ru-RU')}{' '}
-                {totalListings === 1 ? 'объект' : 'объектов'} в базе
+                {pluralizeRu(totalListings, ['объект', 'объекта', 'объектов'])} в базе
                 {city.population
                   ? ` · население ${city.population.toLocaleString('ru-RU')} чел.`
                   : ''}
@@ -266,7 +267,7 @@ export const CityLandingPage: React.FC<Props> = async ({ city }) => {
                 </div>
                 <div className="text-body-sm text-on-surface-variant mt-0.5">
                   {c.count.toLocaleString('ru-RU')}{' '}
-                  {c.count === 1 ? 'объявление' : 'объявлений'}
+                  {pluralizeRu(c.count, ['объявление', 'объявления', 'объявлений'])}
                 </div>
               </Link>
             ))}

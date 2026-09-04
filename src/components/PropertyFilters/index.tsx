@@ -4,6 +4,7 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { ChevronDown, ChevronUp, RotateCcw, Loader2 } from 'lucide-react'
 import { FILTER_SCHEMAS, type FilterField, type PropertyType } from './schemas'
 import { Button } from '@/components/ui/button'
+import { pluralizeRu } from '@/utilities/pluralizeRu'
 
 interface Props {
   type: PropertyType
@@ -364,11 +365,4 @@ export const PropertyFilters: React.FC<Props> = ({
   )
 }
 
-const pluralize = (n: number) => {
-  const last = n % 10
-  const lastTwo = n % 100
-  if (lastTwo >= 11 && lastTwo <= 14) return 'объектов'
-  if (last === 1) return 'объект'
-  if (last >= 2 && last <= 4) return 'объекта'
-  return 'объектов'
-}
+const pluralize = (n: number) => pluralizeRu(n, ['объект', 'объекта', 'объектов'])

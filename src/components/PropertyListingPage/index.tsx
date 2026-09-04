@@ -10,6 +10,7 @@ import { CatalogClient } from './CatalogClient'
 import { FILTER_SCHEMAS, type PropertyType } from '@/components/PropertyFilters/schemas'
 import type { CatalogMapItem } from '@/components/CatalogMap'
 import { buildBreadcrumbJsonLd, buildItemListJsonLd } from '@/utilities/seo'
+import { pluralizeRu } from '@/utilities/pluralizeRu'
 
 const PAGE_SIZE = 20
 
@@ -325,11 +326,4 @@ export const PropertyListingPage: React.FC<Props> = async ({
   )
 }
 
-const pluralize = (n: number) => {
-  const last = n % 10
-  const lastTwo = n % 100
-  if (lastTwo >= 11 && lastTwo <= 14) return 'объектов'
-  if (last === 1) return 'объект'
-  if (last >= 2 && last <= 4) return 'объекта'
-  return 'объектов'
-}
+const pluralize = (n: number) => pluralizeRu(n, ['объект', 'объекта', 'объектов'])

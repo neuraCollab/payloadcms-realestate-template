@@ -6,18 +6,10 @@ import { cookies } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { MessageSquare, User as UserIcon, ChevronRight } from 'lucide-react'
+import { pluralizeRu } from '@/utilities/pluralizeRu'
 
 // SSG skipped — DB unreachable at build-time inside docker compose.
 export const dynamic = 'force-dynamic'
-
-const pluralizeBeseda = (n: number) => {
-  const last = n % 10
-  const lastTwo = n % 100
-  if (lastTwo >= 11 && lastTwo <= 14) return 'бесед'
-  if (last === 1) return 'беседа'
-  if (last >= 2 && last <= 4) return 'беседы'
-  return 'бесед'
-}
 
 interface ThreadSummary {
   threadId: string
@@ -114,7 +106,8 @@ export default async function ChatListPage() {
         <div>
           <h1 className="text-headline text-on-surface">Мои переписки</h1>
           <p className="text-body-sm text-on-surface-variant">
-            {email} · {threads.length} {pluralizeBeseda(threads.length)}
+            {email} · {threads.length}{' '}
+            {pluralizeRu(threads.length, ['беседа', 'беседы', 'бесед'])}
           </p>
         </div>
       </header>
@@ -158,7 +151,7 @@ export default async function ChatListPage() {
                   </div>
                   <div className="text-label text-on-surface-variant mt-0.5">
                     {t.totalMessages}{' '}
-                    {t.totalMessages === 1 ? 'сообщение' : 'сообщений'}
+                    {pluralizeRu(t.totalMessages, ['сообщение', 'сообщения', 'сообщений'])}
                   </div>
                 </div>
                 <ChevronRight className="w-4 h-4 text-on-surface-variant shrink-0" />

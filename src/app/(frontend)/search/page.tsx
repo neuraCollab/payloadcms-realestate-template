@@ -5,6 +5,7 @@ import React from 'react'
 
 import Link from 'next/link'
 import { PropertyCard } from '@/components/PropertyCard'
+import { pluralizeRu } from '@/utilities/pluralizeRu'
 import { SearchFilters } from '@/components/SearchFilters'
 import { AiHelperButton } from '@/components/AiHelperButton'
 import PageClient from './page.client'
@@ -268,7 +269,7 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
             <p className="text-body-sm text-on-surface-variant">
               {aiMode && aiHits
                 ? `Релевантных: ${displayTotal}`
-                : `Найдено: ${displayTotal} ${displayTotal === 1 ? 'объект' : 'объектов'}`}
+                : `Найдено: ${displayTotal} ${pluralizeRu(displayTotal, ['объект', 'объекта', 'объектов'])}`}
               {sp.q ? ` по запросу «${sp.q}»` : ''}
             </p>
           </div>
