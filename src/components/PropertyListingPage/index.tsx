@@ -5,6 +5,7 @@ import { PropertyCard } from '@/components/PropertyCard'
 import { PropertyFilters } from '@/components/PropertyFilters'
 import { ListingsPagination } from '@/components/ListingsPagination'
 import { SortSelect, type SortOption } from '@/components/SortSelect'
+import { SaveSearchButton } from '@/components/SavedSearch/SaveSearchButton'
 import { CatalogClient } from './CatalogClient'
 import { FILTER_SCHEMAS, type PropertyType } from '@/components/PropertyFilters/schemas'
 import type { CatalogMapItem } from '@/components/CatalogMap'
@@ -306,6 +307,10 @@ export const PropertyListingPage: React.FC<Props> = async ({
           через PropertyFiltersSheet, который рендерит CatalogClient. */}
       <div className="hidden lg:block">
         <PropertyFilters type={type} totalDocs={result.totalDocs} />
+      </div>
+
+      <div className="flex justify-end">
+        <SaveSearchButton collection={type} />
       </div>
 
       <CatalogClient
