@@ -72,7 +72,6 @@ export interface Config {
     media: Media;
     categories: Category;
     users: User;
-    properties: Property;
     agents: Agent;
     testimonials: Testimonial;
     flats: Flat;
@@ -104,7 +103,6 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
-    properties: PropertiesSelect<false> | PropertiesSelect<true>;
     agents: AgentsSelect<false> | AgentsSelect<true>;
     testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     flats: FlatsSelect<false> | FlatsSelect<true>;
@@ -251,7 +249,6 @@ export interface Page {
     | ContactHeroBlock
     | ContactUsFormBlock
     | FAQBlock
-    | PropertyFeaturesBlock
     | HouseFilterBlock
     | MapBlock
     | QuickNavBlock
@@ -1408,67 +1405,6 @@ export interface FAQBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PropertyFeaturesBlock".
- */
-export interface PropertyFeaturesBlock {
-  blockType: 'property-features';
-  property: number | Property;
-  id?: string | null;
-  blockName?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "properties".
- */
-export interface Property {
-  id: number;
-  title: string;
-  slug: string;
-  address: string;
-  /**
-   * Можно указать вручную или они будут рассчитаны по адресу
-   */
-  coordinates?: {
-    lat?: number | null;
-    lng?: number | null;
-    address?: string | null;
-  };
-  price: number;
-  type: 'sale' | 'rent';
-  bedrooms: number;
-  bathrooms: number;
-  area: number;
-  images: {
-    image: number | Media;
-    id?: string | null;
-  }[];
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  features?:
-    | {
-        feature: string;
-        id?: string | null;
-      }[]
-    | null;
-  status?: ('active' | 'sold' | 'draft') | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "HouseFilterBlock".
  */
 export interface HouseFilterBlock {
@@ -1510,13 +1446,7 @@ export interface MapBlock {
     zoom?: number | null;
   };
   /**
-   * Если пусто — можно будет загрузить последние объекты автоматически на фронте
-   */
-  properties?: (number | Property)[] | null;
-  autoLoad?: boolean | null;
-  limit?: number | null;
-  /**
-   * Если указан label, в центре карты будет показан одиночный маркер с этим подписью (объекты в этом режиме игнорируются).
+   * Если указан label, в центре карты будет показан одиночный маркер с этой подписью.
    */
   officeMarker?: {
     label?: string | null;
@@ -2095,10 +2025,6 @@ export interface PayloadLockedDocument {
         value: number | User;
       } | null)
     | ({
-        relationTo: 'properties';
-        value: number | Property;
-      } | null)
-    | ({
         relationTo: 'agents';
         value: number | Agent;
       } | null)
@@ -2264,7 +2190,6 @@ export interface PagesSelect<T extends boolean = true> {
         'contact-hero'?: T | ContactHeroBlockSelect<T>;
         'contact-us-form'?: T | ContactUsFormBlockSelect<T>;
         faq?: T | FAQBlockSelect<T>;
-        'property-features'?: T | PropertyFeaturesBlockSelect<T>;
         'house-filter'?: T | HouseFilterBlockSelect<T>;
         map?: T | MapBlockSelect<T>;
         'quick-nav'?: T | QuickNavBlockSelect<T>;
@@ -2641,16 +2566,6 @@ export interface FAQBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PropertyFeaturesBlock_select".
- */
-export interface PropertyFeaturesBlockSelect<T extends boolean = true> {
-  blockType?: T;
-  property?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "HouseFilterBlock_select".
  */
 export interface HouseFilterBlockSelect<T extends boolean = true> {
@@ -2696,9 +2611,6 @@ export interface MapBlockSelect<T extends boolean = true> {
         lng?: T;
         zoom?: T;
       };
-  properties?: T;
-  autoLoad?: T;
-  limit?: T;
   officeMarker?:
     | T
     | {
@@ -2919,43 +2831,6 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "properties_select".
- */
-export interface PropertiesSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  address?: T;
-  coordinates?:
-    | T
-    | {
-        lat?: T;
-        lng?: T;
-        address?: T;
-      };
-  price?: T;
-  type?: T;
-  bedrooms?: T;
-  bathrooms?: T;
-  area?: T;
-  images?:
-    | T
-    | {
-        image?: T;
-        id?: T;
-      };
-  description?: T;
-  features?:
-    | T
-    | {
-        feature?: T;
-        id?: T;
-      };
-  status?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

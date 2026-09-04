@@ -16,7 +16,6 @@ import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
-import { Properties } from './collections/Properties'
 import { Agents } from './collections/Agents'
 import { Testimonials } from './collections/Testimonials'
 import { Flats } from './collections/Flat'
@@ -92,7 +91,6 @@ export default buildConfig({
     Media,
     Categories,
     Users,
-    Properties,
     Agents,
     Testimonials,
     Flats,

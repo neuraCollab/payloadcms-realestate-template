@@ -16,6 +16,7 @@ import * as migration_20260609_hnsw_index from './20260609_hnsw_index';
 import * as migration_20260610_telegram_channels_status from './20260610_telegram_channels_status';
 import * as migration_20260611_seo_landings_faq from './20260611_seo_landings_faq';
 import * as migration_20260612_payload_kv from './20260612_payload_kv';
+import * as migration_20260613_drop_properties from './20260613_drop_properties';
 
 export const migrations = [
   {
@@ -107,5 +108,10 @@ export const migrations = [
     up: migration_20260612_payload_kv.up,
     down: migration_20260612_payload_kv.down,
     name: '20260612_payload_kv',
+  },
+  {
+    up: migration_20260613_drop_properties.up,
+    down: migration_20260613_drop_properties.down,
+    name: '20260613_drop_properties',
   },
 ];

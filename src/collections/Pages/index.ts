@@ -36,7 +36,6 @@ import { CallToActionNewBlock } from '../../blocks/house/CallToActionNew/config'
 import { ContactHeroBlock } from '../../blocks/house/ContactHero/config'
 import { ContactUsFormBlock } from '../../blocks/house/ContactUsForm/config'
 import { FAQBlock } from '../../blocks/base/FAQ/config'
-import { PropertyFeaturesBlock } from '@/blocks/house/PropertyFeatures/config'
 import { HouseFilter } from '@/blocks/house/HouseFilter/config'
 import { MapBlock } from '@/blocks/house/MapBlock/config'
 import { QuickNavBlock } from '@/blocks/house/QuickNav/config'
@@ -119,7 +118,6 @@ export const Pages: CollectionConfig<'pages'> = {
                 ContactHeroBlock,
                 ContactUsFormBlock,
                 FAQBlock,
-                PropertyFeaturesBlock,
                 HouseFilter,
                 MapBlock,
                 QuickNavBlock,
