@@ -10,6 +10,9 @@ export const Lands: CollectionConfig = {
     useAsTitle: 'title',
     group: 'Недвижимость',
   },
+  access: {
+    read: () => true,
+  },
   hooks: {
     afterChange: [
       embedAfterChange('lands'),
