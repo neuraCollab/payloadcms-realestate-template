@@ -13,6 +13,7 @@ import * as migration_20260608_search_queries from './20260608_search_queries';
 import * as migration_20260608_search_queries_user from './20260608_search_queries_user';
 import * as migration_20260608_seo_landings from './20260608_seo_landings';
 import * as migration_20260609_hnsw_index from './20260609_hnsw_index';
+import * as migration_20260610_telegram_channels_status from './20260610_telegram_channels_status';
 
 export const migrations = [
   {
@@ -89,5 +90,10 @@ export const migrations = [
     up: migration_20260609_hnsw_index.up,
     down: migration_20260609_hnsw_index.down,
     name: '20260609_hnsw_index',
+  },
+  {
+    up: migration_20260610_telegram_channels_status.up,
+    down: migration_20260610_telegram_channels_status.down,
+    name: '20260610_telegram_channels_status',
   },
 ];
