@@ -12,8 +12,12 @@ import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { CookieConsent } from '@/components/CookieConsent'
 import { Analytics } from '@/components/Analytics'
 import { CompareTray } from '@/components/CompareTray'
+import { NextIntlClientProvider, hasLocale } from 'next-intl'
+import { setRequestLocale } from 'next-intl/server'
+import { notFound } from 'next/navigation'
+import { routing } from '@/i18n/routing'
 
-import './globals.css'
+import '../globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
 
 // Inter ограничен 4-мя весами (400/500/600/700) — это всё что
@@ -33,9 +37,21 @@ const inter = Inter({
   adjustFontFallback: true,
 })
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  if (!hasLocale(routing.locales, locale)) {
+    notFound()
+  }
+  setRequestLocale(locale)
+
   return (
-    <html className={cn(inter.variable)} lang="ru" suppressHydrationWarning>
+    <html className={cn(inter.variable)} lang={locale} suppressHydrationWarning>
       <head>
         <InitTheme />
         {/* Demo Realty icon set — см. /public/site.webmanifest */}
@@ -49,17 +65,23 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <meta name="apple-mobile-web-app-title" content="Demo Realty" />
       </head>
       <body>
-        <Providers>
-          <Header />
-          {children}
-          <Footer />
-          <CookieConsent />
-          <CompareTray />
-        </Providers>
-        <Analytics />
+        <NextIntlClientProvider>
+          <Providers>
+            <Header />
+            {children}
+            <Footer />
+            <CookieConsent />
+            <CompareTray />
+          </Providers>
+          <Analytics />
+        </NextIntlClientProvider>
       </body>
     </html>
   )
+}
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }))
 }
 
 export const metadata: Metadata = {
