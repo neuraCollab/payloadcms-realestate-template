@@ -1,7 +1,8 @@
-@import '~@payloadcms/ui/scss';
-
+// Baseline unit matches @payloadcms/ui's vars.scss ($baseline-px: 20px).
+// Not importing that file directly: pnpm's nested node_modules layout
+// breaks its own internal `@import './vars'` under Next's sass-loader.
 .dashboard .before-dashboard {
-  margin-bottom: base(1.5);
+  margin-bottom: 30px;
 
   &__banner {
     & h4 {
@@ -11,7 +12,7 @@
 
   &__instructions {
     list-style: decimal;
-    margin-bottom: base(0.5);
+    margin-bottom: 10px;
 
     & li {
       width: 100%;
