@@ -209,7 +209,8 @@ export const PropertyListingPage: React.FC<Props> = async ({
   const cards = result.docs.map((doc: any) => ({
     id: String(doc.id),
     href: `/${type}/${doc.slug}`,
-    title: doc.title,
+    // ResidentialComplex docs use `name`, every other collection uses `title`.
+    title: doc.title ?? doc.name,
     address: doc.location?.address,
     imageUrl: doc.images?.[0]?.image?.url ?? null,
     badge: pickBadge(doc, type),
@@ -224,7 +225,7 @@ export const PropertyListingPage: React.FC<Props> = async ({
       if (!coords) return null
       return {
         id: String(doc.id),
-        title: doc.title,
+        title: doc.title ?? doc.name,
         price: typeof doc.price === 'number' ? doc.price : undefined,
         address: doc.location?.address,
         lat: coords.lat,
