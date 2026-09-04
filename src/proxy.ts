@@ -32,7 +32,9 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   const unprefixed = stripLocalePrefix(pathname)
 
-  if (unprefixed.startsWith('/cabinet') && !publicCabinetPaths.includes(unprefixed)) {
+  const isCabinetRoute = unprefixed === '/cabinet' || unprefixed.startsWith('/cabinet/')
+
+  if (isCabinetRoute && !publicCabinetPaths.includes(unprefixed)) {
     const email = request.cookies.get('realty_email')?.value
 
     if (!email) {
