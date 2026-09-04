@@ -40,7 +40,7 @@ Realtors are `users` with `role: 'realtor'` — not a separate collection. (Ther
 
 - [src/collections/](src/collections/): Payload collections — domain schema lives here. Modify a collection's fields → run `pnpm payload migrate:create` to generate SQL, then verify the generated migration actually matches (see CLAUDE.md — this has silently drifted before).
 - [src/globals/](src/globals/), [src/Header/](src/Header/), [src/Footer/](src/Footer/): singleton documents (LegalInfo, HomeSeo, Header nav, Footer nav).
-- [src/app/(frontend)/](src/app/(frontend)/): public-facing Next.js routes. Layered SEO content overlays catalog routes.
+- [src/app/(frontend)/[locale]/](src/app/(frontend)/[locale]/): public-facing Next.js routes, under the next-intl `[locale]` segment (`ru` default/unprefixed, `kz` at `/kz/...`). Layered SEO content overlays catalog routes.
 - [src/app/(payload)/](src/app/(payload)/): Payload admin (`/admin`) + REST/GraphQL + this app's own custom endpoints, all under `/api/...`.
 - [src/lib/](src/lib/): cross-cutting helpers — `llm.ts` (Anthropic + OpenAI), `embeddings/`, `recommend/`, `seo/`, `auth/`, `telegram/`, `cabinet/` (UGC listing validation), `listings-parser/` (feed import + a deliberately-disabled scraper skeleton).
 - [src/blocks/](src/blocks/): Payload page-builder Blocks. Every Block needs `interfaceName` in its config or it can break the entire GraphQL schema — see CLAUDE.md.
@@ -98,7 +98,7 @@ Russian-market app — falls under 152-ФЗ (PII) + 149-ФЗ (recommender system
 - API routes return JSON only. Errors as `{ error: 'code', message: 'human' }` with appropriate HTTP status.
 - Bearer `CRON_SECRET` auth for all `/api/admin/*` and `/next/seed-*` endpoints.
 - Migrations are append-only — never edit a merged migration file; create a new one.
-- All user-facing strings are Russian. No i18n layer (single locale).
+- All user-facing strings are Russian; string extraction/translation hasn't happened yet. next-intl routing is wired up (`src/i18n/routing.ts`, locales `ru` default/`kz`) — use `@/i18n/navigation` (not `next/link`/`next/navigation`) for locale-aware links.
 - Currency: RUB everywhere; sometimes USD/EUR stored alongside for legacy listings.
 
 ## What's NOT here

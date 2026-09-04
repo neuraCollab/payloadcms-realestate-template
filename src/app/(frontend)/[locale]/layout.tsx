@@ -15,7 +15,7 @@ import { CompareTray } from '@/components/CompareTray'
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
-import { routing } from '@/i18n/routing'
+import { LOCALE_TO_BCP47, routing } from '@/i18n/routing'
 
 import '../globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
@@ -51,7 +51,7 @@ export default async function RootLayout({
   setRequestLocale(locale)
 
   return (
-    <html className={cn(inter.variable)} lang={locale} suppressHydrationWarning>
+    <html className={cn(inter.variable)} lang={LOCALE_TO_BCP47[locale]} suppressHydrationWarning>
       <head>
         <InitTheme />
         {/* Demo Realty icon set — см. /public/site.webmanifest */}

@@ -49,7 +49,10 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   // Skip: /admin, /api/*, /next/* (seed/preview/operational routes),
-  // Next.js internals, any file with an extension (static assets,
-  // robots.txt), and the three *-sitemap.xml routes.
-  matcher: ['/((?!admin|api|next|_next|.*\\..*|.*-sitemap\\.xml).*)'],
+  // Next.js internals, and any file with an extension (static assets,
+  // robots.txt, the *-sitemap.xml routes — all excluded by the dot rule).
+  // The (?:...)(?:/|$) exclusions are anchored to a path-segment boundary
+  // so they only exclude those literal segments, not any path that merely
+  // starts with the same characters (e.g. "/apidocs", "/administration").
+  matcher: ['/((?!(?:admin|api|next|_next)(?:/|$)|.*\\..*).*)'],
 }

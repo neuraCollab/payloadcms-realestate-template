@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { Link, usePathname } from '@/i18n/navigation'
+import { Link, usePathname, useRouter } from '@/i18n/navigation'
 import {
   User,
   MessageSquare,
@@ -37,6 +37,7 @@ interface NavItem {
  */
 export const CabinetShell: React.FC<Props> = ({ email, children }) => {
   const pathname = usePathname()
+  const router = useRouter()
   const favs = useFavorites()
   const recent = useRecentlyViewed()
 
@@ -65,7 +66,8 @@ export const CabinetShell: React.FC<Props> = ({ email, children }) => {
 
   const logout = async () => {
     await fetch('/api/cabinet/session', { method: 'DELETE' })
-    window.location.href = '/'
+    router.push('/')
+    router.refresh()
   }
 
   const isActive = (href: string) => {

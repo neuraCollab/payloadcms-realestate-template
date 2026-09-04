@@ -22,6 +22,11 @@ describe('i18n proxy matcher', () => {
     assert.equal(pattern.test('/flats'), true)
     assert.equal(pattern.test('/kz/flats'), true)
     assert.equal(pattern.test('/kz/flats/some-slug'), true)
+    // Regression: the matcher must be anchored to a path-segment boundary —
+    // a slug that merely starts with "admin"/"api" but isn't that route
+    // must not be wrongly excluded from locale routing (see Fix 1).
+    assert.equal(pattern.test('/apidocs'), true)
+    assert.equal(pattern.test('/administration'), true)
   })
 })
 
