@@ -288,14 +288,31 @@ Full per-file breakdown: [PROJECT_MAP.md](PROJECT_MAP.md).
 - Currency is RUB everywhere in new code.
 - When a component needs the *count-aware* Russian word for something,
   reach for `pluralizeRu` — don't hand-roll pluralization logic again.
+- A heavy, below-the-fold client-only library (chart/map/editor)
+  imported by a Server Component should go through `next/dynamic()`
+  rather than a plain `import` — it code-splits into its own chunk
+  instead of bloating the route's main bundle. `mapbox-gl` was already
+  loaded this way everywhere (`await import('mapbox-gl')` inside a
+  `useEffect`, since it's a client-only lib with no meaningful SSR
+  output); `recharts` in `PropertyDetailPage/{PriceHistoryChart,PropertyAnalytics}`
+  was static until this pass — see those files for the `next/dynamic`
+  pattern (named export → `dynamic(() => import('./X').then(m => m.X))`).
+  There's no other `next/dynamic` usage in the codebase yet — it's not
+  a house convention to reach for by default, just the right tool for
+  "big library, not needed for first paint."
+- Before assuming an npm dependency is dead because nothing imports it
+  from `.ts`/`.tsx`, also check for a bare CSS `@import` — `globals.css`
+  had `@import 'leaflet/dist/leaflet.css'` with zero JS usage of
+  `leaflet`/`react-leaflet` anywhere (the map stack is `mapbox-gl`
+  only); removing the npm package without also dropping that CSS line
+  broke the dev server (`Module not found`). Both are gone now.
 
 ## Known pre-existing issues (not yours to silently fix, but don't add to them)
 
-- `playwright.config.ts` and `src/endpoints/seed/index.ts` have
-  pre-existing `tsc` errors unrelated to any recent change (duplicate
-  object property; a couple of seed fixtures typed against a stricter
-  `Post`/global shape than they populate). Leave them unless
-  specifically asked to clean up seed scripts.
+- `tsc --noEmit` has a real, currently-unaddressed backlog of ~130
+  errors — see "Verifying a change before you call it done" above for
+  the breakdown and don't take an old "just two errors" claim at face
+  value.
 - `houses` has no public catalog route (see above).
 - `Agents` and `Testimonials` are real, wired-in Payload collections
   (used by `AgentsBlock`/`TestimonialsBlock` in the page builder) that

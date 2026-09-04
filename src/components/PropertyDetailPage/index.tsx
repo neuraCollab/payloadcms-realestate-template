@@ -1,4 +1,5 @@
 import React from 'react'
+import dynamic from 'next/dynamic'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { notFound } from 'next/navigation'
@@ -14,7 +15,6 @@ import { RealtorCard } from './RealtorCard'
 import { ContactCTA } from '@/components/LeadForm/ContactCTA'
 import { PropertyFaq } from './PropertyFaq'
 import { MortgageCalculator } from './MortgageCalculator'
-import { PriceHistoryChart } from './PriceHistoryChart'
 import { PropertyJsonLd } from './JsonLd'
 import { TrackView } from './TrackView'
 import { FavoriteButton } from '@/components/FavoriteButton'
@@ -22,6 +22,13 @@ import type { PropertyType } from '@/components/PropertyFilters/schemas'
 import { buildBreadcrumbJsonLd } from '@/utilities/seo'
 import { formatPrice } from '@/utilities/formatPrice'
 
+// recharts (~пара сотен KB) грузим отдельным чанком — график истории
+// цены ниже сгиба и часто вообще не рендерится (см. PriceHistoryChart:
+// возвращает null при < 2 точек), незачем тянуть его в основной бандл
+// страницы объявления.
+const PriceHistoryChart = dynamic(() =>
+  import('./PriceHistoryChart').then((mod) => mod.PriceHistoryChart),
+)
 
 const COLLECTION_MAP: Record<PropertyType, string> = {
   flats: 'flats',

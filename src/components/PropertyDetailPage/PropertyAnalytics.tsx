@@ -1,4 +1,5 @@
 import React from 'react'
+import dynamic from 'next/dynamic'
 import { TrendingUp, TrendingDown, Minus, BarChart3 } from 'lucide-react'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
@@ -8,9 +9,15 @@ import {
   monthlyTrend,
   type FlatLike,
 } from '@/lib/marketAnalytics'
-import { PriceTrendChart, PriceCompareChart } from './AnalyticsCharts'
 import { formatPrice } from '@/utilities/formatPrice'
 
+// recharts отдельным чанком — см. комментарий в PropertyDetailPage/index.tsx.
+const PriceTrendChart = dynamic(() =>
+  import('./AnalyticsCharts').then((mod) => mod.PriceTrendChart),
+)
+const PriceCompareChart = dynamic(() =>
+  import('./AnalyticsCharts').then((mod) => mod.PriceCompareChart),
+)
 
 interface Props {
   subject: any
