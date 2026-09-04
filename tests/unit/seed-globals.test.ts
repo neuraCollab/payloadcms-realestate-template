@@ -4,6 +4,32 @@ import * as assert from 'node:assert/strict'
 import { seedGlobals } from '../../src/endpoints/seed-globals/index.js'
 import type { Payload, PayloadRequest } from 'payload'
 
+/**
+ * Reconstructs a readable SQL string from a drizzle-orm `SQL` tagged-
+ * template object (as produced by `@payloadcms/db-postgres`'s `sql`
+ * export). `SQL` has no useful `.toString()` — it's always
+ * "[object Object]" — the real query text lives in `.queryChunks`:
+ * a StringChunk (`.value: string[]`) alternating with either a bound
+ * Param (`.value`, from `sql\`...${x}...\``) or another raw StringChunk
+ * (from `sql.raw(...)`, used here for identifiers).
+ */
+function stringifySql(query: unknown): string {
+  const chunks = (query as any)?.queryChunks
+  if (!Array.isArray(chunks)) return String(query)
+  const render = (v: unknown): string => (typeof v === 'string' ? `'${v}'` : String(v))
+  return chunks
+    .map((chunk: any) => {
+      // sql.raw(str) — identifiers interpolated via sql.raw() — nests
+      // another SQL (with its own queryChunks) rather than a bare
+      // StringChunk, so recurse first.
+      if (Array.isArray(chunk?.queryChunks)) return stringifySql(chunk)
+      if (Array.isArray(chunk?.value)) return chunk.value.join('') // StringChunk
+      if (chunk && typeof chunk === 'object' && 'value' in chunk) return render(chunk.value) // Param
+      return render(chunk) // plain interpolated primitive
+    })
+    .join('')
+}
+
 describe('seedGlobals', () => {
   it('throws an error if Postgres adapter is not available', async () => {
     const infoMock = mock.fn()
@@ -34,7 +60,7 @@ describe('seedGlobals', () => {
     const executedQueries: string[] = []
     const mockDrizzle = {
       execute: mock.fn(async (query: any) => {
-        const queryString = typeof query === 'string' ? query : query.toString() || ''
+        const queryString = typeof query === 'string' ? query : stringifySql(query)
         executedQueries.push(queryString.trim().replace(/\s+/g, ' '))
       }),
     }
