@@ -65,7 +65,12 @@ everything every time" checklist:
 - If you touched a **collection's fields**: run `pnpm payload
   migrate:create` and commit the generated migration. Never hand-edit
   a merged migration file — write a new one. See "Schema drift" below
-  for how to verify config and DB actually agree.
+  for how to verify config and DB actually agree. Nothing applies
+  migrations automatically anywhere (not on boot, not in the
+  Dockerfile, not in CI/CD) — locally that's `pnpm payload migrate`;
+  in production, the deployed image has no CLI inside the container,
+  so it's `POST /api/admin/migrate` (Bearer `CRON_SECRET`) instead.
+  Someone always has to trigger it by hand after a deploy.
 - If you touched a **Payload Block** (`src/blocks/**/config.ts`): see
   "Every Block needs `interfaceName`" below — this is the single most
   expensive mistake to make in this codebase.
