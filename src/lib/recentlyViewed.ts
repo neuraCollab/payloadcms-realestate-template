@@ -67,7 +67,8 @@ const getSnapshot = (): RecentRef[] => {
   return snapshot
 }
 
-const getServerSnapshot = (): RecentRef[] => []
+const EMPTY_SNAPSHOT: RecentRef[] = []
+const getServerSnapshot = (): RecentRef[] => EMPTY_SNAPSHOT
 
 const subscribe = (onStoreChange: () => void) => {
   const refresh = () => {

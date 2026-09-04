@@ -96,7 +96,8 @@ const getSnapshot = (): CompareRef[] => {
   return snapshot
 }
 
-const getServerSnapshot = (): CompareRef[] => []
+const EMPTY_SNAPSHOT: CompareRef[] = []
+const getServerSnapshot = (): CompareRef[] => EMPTY_SNAPSHOT
 
 const subscribe = (onStoreChange: () => void) => {
   const refresh = () => {

@@ -75,7 +75,8 @@ const getSnapshot = (): FavoriteRef[] => {
   return snapshot
 }
 
-const getServerSnapshot = (): FavoriteRef[] => []
+const EMPTY_SNAPSHOT: FavoriteRef[] = []
+const getServerSnapshot = (): FavoriteRef[] => EMPTY_SNAPSHOT
 
 const subscribe = (onStoreChange: () => void) => {
   const refresh = () => {

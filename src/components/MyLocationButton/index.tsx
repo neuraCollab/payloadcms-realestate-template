@@ -17,7 +17,7 @@ interface Props {
 /**
  * Унифицированная кнопка «к моему местоположению» для всех карт сайта.
  * Поведение:
- *   • если геолокация недоступна — кнопка задизейблена с tooltip
+ *   • если геолокация недоступна — сообщение об этом появляется по клику
  *   • при клике запрашивает координаты, отдаёт через onLocate
  *   • показывает loading-состояние пока браузер ждёт пермишн
  *
@@ -32,10 +32,13 @@ export const MyLocationButton: React.FC<Props> = ({
   const [loading, setLoading] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
 
-  const supported = typeof navigator !== 'undefined' && 'geolocation' in navigator
-
   const handle = () => {
-    if (!supported) {
+    // Checked here rather than in render — `typeof navigator` differs
+    // between server and client, so branching on it in the button's
+    // `disabled` prop caused a hydration mismatch. Every real browser has
+    // had the Geolocation API for over a decade; this only fires for the
+    // rare host with none at all.
+    if (!('geolocation' in navigator)) {
       setError('Геолокация недоступна в браузере')
       return
     }
@@ -70,7 +73,7 @@ export const MyLocationButton: React.FC<Props> = ({
       <button
         type="button"
         onClick={handle}
-        disabled={!supported || loading}
+        disabled={loading}
         aria-label={label}
         title={error ?? label}
         className="inline-flex items-center gap-1.5 h-10 px-3 rounded-full bg-card shadow-e2 text-on-surface text-body-sm hover:bg-surface-container disabled:opacity-60"
