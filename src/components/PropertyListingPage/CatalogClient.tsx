@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { Crosshair, List, Map as MapIcon } from 'lucide-react'
 import { CatalogMap, type CatalogMapItem, MOSCOW_CENTER } from '@/components/CatalogMap'
 import { FavoriteButton } from '@/components/FavoriteButton'
+import { CompareButton } from '@/components/CompareButton'
 import { PropertyFiltersSheet } from '@/components/PropertyFilters/PropertyFiltersSheet'
 import type { PropertyType } from '@/components/PropertyFilters/schemas'
 import { cn } from '@/utilities/ui'
@@ -293,12 +294,13 @@ const CardList: React.FC<{
                   {c.badge}
                 </span>
               ) : null}
-              <div className="absolute top-2 right-2">
+              <div className="absolute top-2 right-2 flex flex-col gap-1.5">
                 <FavoriteButton
                   collection={type}
                   id={c.id}
                   variant="icon"
                 />
+                <CompareButton collection={type} id={c.id} />
               </div>
             </div>
 
