@@ -1,11 +1,11 @@
 import { test, describe } from 'node:test'
 import * as assert from 'node:assert/strict'
 
-import { config } from '../../src/middleware.js'
+import { config } from '../../src/proxy.js'
 
 const pattern = new RegExp(`^${config.matcher[0]}$`)
 
-describe('i18n middleware matcher', () => {
+describe('i18n proxy matcher', () => {
   test('excludes /admin, /api, /next, sitemaps, and static files', () => {
     assert.equal(pattern.test('/admin'), false)
     assert.equal(pattern.test('/admin/collections/flats'), false)
