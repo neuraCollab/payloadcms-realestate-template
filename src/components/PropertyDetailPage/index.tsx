@@ -75,6 +75,11 @@ export const PropertyDetailPage: React.FC<Props> = async ({
     data = found.docs[0]
   }
 
+  // ResidentialComplex docs use `name`, every other collection uses `title`.
+  if (data.title === undefined && data.name !== undefined) {
+    data = { ...data, title: data.name }
+  }
+
   // Агрегат рейтингов риэлтора → AggregateRating в JSON-LD объекта.
   // Google показывает звёзды в SERP только при reviewCount > 0.
   // Один запрос, не дёргаем повторно в RealtorCard — у неё свой.

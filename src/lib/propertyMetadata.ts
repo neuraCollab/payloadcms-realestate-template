@@ -41,11 +41,13 @@ export const buildPropertyMetadata = async (
     const doc: any = result.docs?.[0]
     if (!doc) return { title: 'Объект не найден' }
 
-    const title = `${doc.title} — ${TYPE_LABEL[type]}`
+    // ResidentialComplex docs use `name`, every other collection uses `title`.
+    const docTitle: string = doc.title ?? doc.name
+    const title = `${docTitle} — ${TYPE_LABEL[type]}`
     const priceText = typeof doc.price === 'number' ? formatPrice(doc.price) : null
     const where = doc.location?.address || doc.location?.city || ''
     const description = [
-      doc.title,
+      docTitle,
       where ? `· ${where}` : '',
       priceText ? `· ${priceText}` : '',
     ]
@@ -68,7 +70,7 @@ export const buildPropertyMetadata = async (
         description,
         url: canonical,
         type: 'website',
-        images: ogImage ? [{ url: ogImage, width: 1200, height: 630, alt: doc.title }] : undefined,
+        images: ogImage ? [{ url: ogImage, width: 1200, height: 630, alt: docTitle }] : undefined,
         siteName: 'Demo Realty',
         locale: 'ru_RU',
       },
