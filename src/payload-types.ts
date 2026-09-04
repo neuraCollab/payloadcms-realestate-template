@@ -266,52 +266,7 @@ export interface Page {
         blockName?: string | null;
         blockType: 'vision';
       }
-    | {
-        blockType: 'properties';
-        title: string;
-        /**
-         * Например: /properties
-         */
-        showAllLink?: string | null;
-        /**
-         * Выберите объекты из любых коллекций недвижимости
-         */
-        properties?:
-          | (
-              | {
-                  relationTo: 'commercial';
-                  value: number | Commercial;
-                }
-              | {
-                  relationTo: 'flats';
-                  value: number | Flat;
-                }
-              | {
-                  relationTo: 'lands';
-                  value: number | Land;
-                }
-              | {
-                  relationTo: 'residential-complexes';
-                  value: number | ResidentialComplex;
-                }
-            )[]
-          | null;
-        layout?: ('grid' | 'list') | null;
-        /**
-         * Минимум 3, максимум 12 объектов
-         */
-        itemsPerPage: number;
-        enableFilters?: boolean | null;
-        filters?: {
-          priceRange?: boolean | null;
-          propertyType?: boolean | null;
-          bedrooms?: boolean | null;
-          bathrooms?: boolean | null;
-          area?: boolean | null;
-        };
-        id?: string | null;
-        blockName?: string | null;
-      }
+    | PropertiesBlock
     | {
         blockType: 'feature';
         label: string;
@@ -414,22 +369,8 @@ export interface Page {
         id?: string | null;
         blockName?: string | null;
       }
-    | {
-        blockType: 'agents';
-        label: string;
-        title: string;
-        agents: (number | Agent)[];
-        id?: string | null;
-        blockName?: string | null;
-      }
-    | {
-        blockType: 'testimonials';
-        label: string;
-        title: string;
-        testimonials: (number | Testimonial)[];
-        id?: string | null;
-        blockName?: string | null;
-      }
+    | AgentsBlock
+    | TestimonialsBlock
     | {
         blockType: 'call-to-action-new';
         label: string;
@@ -1125,6 +1066,56 @@ export interface NavbarBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PropertiesBlock".
+ */
+export interface PropertiesBlock {
+  blockType: 'properties';
+  title: string;
+  /**
+   * Например: /properties
+   */
+  showAllLink?: string | null;
+  /**
+   * Выберите объекты из любых коллекций недвижимости
+   */
+  properties?:
+    | (
+        | {
+            relationTo: 'commercial';
+            value: number | Commercial;
+          }
+        | {
+            relationTo: 'flats';
+            value: number | Flat;
+          }
+        | {
+            relationTo: 'lands';
+            value: number | Land;
+          }
+        | {
+            relationTo: 'residential-complexes';
+            value: number | ResidentialComplex;
+          }
+      )[]
+    | null;
+  layout?: ('grid' | 'list') | null;
+  /**
+   * Минимум 3, максимум 12 объектов
+   */
+  itemsPerPage: number;
+  enableFilters?: boolean | null;
+  filters?: {
+    priceRange?: boolean | null;
+    propertyType?: boolean | null;
+    bedrooms?: boolean | null;
+    bathrooms?: boolean | null;
+    area?: boolean | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "commercial".
  */
 export interface Commercial {
@@ -1393,6 +1384,18 @@ export interface Land {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AgentsBlock".
+ */
+export interface AgentsBlock {
+  blockType: 'agents';
+  label: string;
+  title: string;
+  agents: (number | Agent)[];
+  id?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "agents".
  */
 export interface Agent {
@@ -1412,6 +1415,18 @@ export interface Agent {
     | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialsBlock".
+ */
+export interface TestimonialsBlock {
+  blockType: 'testimonials';
+  label: string;
+  title: string;
+  testimonials: (number | Testimonial)[];
+  id?: string | null;
+  blockName?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2173,28 +2188,7 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
-        properties?:
-          | T
-          | {
-              blockType?: T;
-              title?: T;
-              showAllLink?: T;
-              properties?: T;
-              layout?: T;
-              itemsPerPage?: T;
-              enableFilters?: T;
-              filters?:
-                | T
-                | {
-                    priceRange?: T;
-                    propertyType?: T;
-                    bedrooms?: T;
-                    bathrooms?: T;
-                    area?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
+        properties?: T | PropertiesBlockSelect<T>;
         feature?:
           | T
           | {
@@ -2291,26 +2285,8 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
-        agents?:
-          | T
-          | {
-              blockType?: T;
-              label?: T;
-              title?: T;
-              agents?: T;
-              id?: T;
-              blockName?: T;
-            };
-        testimonials?:
-          | T
-          | {
-              blockType?: T;
-              label?: T;
-              title?: T;
-              testimonials?: T;
-              id?: T;
-              blockName?: T;
-            };
+        agents?: T | AgentsBlockSelect<T>;
+        testimonials?: T | TestimonialsBlockSelect<T>;
         'call-to-action-new'?:
           | T
           | {
@@ -2583,6 +2559,54 @@ export interface NavbarBlockSelect<T extends boolean = true> {
         url?: T;
       };
   avatar?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PropertiesBlock_select".
+ */
+export interface PropertiesBlockSelect<T extends boolean = true> {
+  blockType?: T;
+  title?: T;
+  showAllLink?: T;
+  properties?: T;
+  layout?: T;
+  itemsPerPage?: T;
+  enableFilters?: T;
+  filters?:
+    | T
+    | {
+        priceRange?: T;
+        propertyType?: T;
+        bedrooms?: T;
+        bathrooms?: T;
+        area?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AgentsBlock_select".
+ */
+export interface AgentsBlockSelect<T extends boolean = true> {
+  blockType?: T;
+  label?: T;
+  title?: T;
+  agents?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialsBlock_select".
+ */
+export interface TestimonialsBlockSelect<T extends boolean = true> {
+  blockType?: T;
+  label?: T;
+  title?: T;
+  testimonials?: T;
   id?: T;
   blockName?: T;
 }
