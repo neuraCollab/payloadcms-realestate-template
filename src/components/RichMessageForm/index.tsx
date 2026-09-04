@@ -31,7 +31,9 @@ export function RichMessageForm({ realtorId, realtorName, propertyTitle }: Props
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
-      StarterKit,
+      // StarterKit 3.x bundles Link itself — disable it so our own
+      // Link.configure() below doesn't register a duplicate extension.
+      StarterKit.configure({ link: false }),
       Image.configure({ inline: true }),
       Link.configure({ openOnClick: false }),
     ],

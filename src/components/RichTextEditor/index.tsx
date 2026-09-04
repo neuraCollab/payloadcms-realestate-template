@@ -40,6 +40,10 @@ export const RichTextEditor: React.FC<Props> = ({ value, onChange, placeholder }
         blockquote: false,
         horizontalRule: false,
         strike: false,
+        // StarterKit 3.x бандлит Link сам — отключаем встроенный,
+        // иначе Tiptap ругается на дублирующееся расширение и
+        // применяет последний зарегистрированный конфиг непредсказуемо.
+        link: false,
       }),
       Link.configure({
         openOnClick: false,
