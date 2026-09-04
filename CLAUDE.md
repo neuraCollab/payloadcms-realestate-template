@@ -14,9 +14,17 @@ AI search. Five listing types (`flats`, `commercial`, `lands`,
 landing pages, a user cabinet for self-serve listing submission and
 realtor messaging, and a CMS-driven page builder for marketing pages.
 
-All user-facing text is Russian. There is no i18n layer — don't add
-one unless asked; just write Russian strings directly like the rest
-of the codebase does.
+All user-facing text is Russian. As of the RU/KZ i18n routing phase,
+next-intl is wired up: routing config lives at `src/i18n/routing.ts`
+(locales `ru` — default, unprefixed — and `kz` — prefixed `/kz/...`),
+and routes live under `src/app/(frontend)/[locale]/`. Navigation must
+go through `@/i18n/navigation`'s `Link`/`usePathname`/`useRouter`/
+`redirect` (not `next/link`/`next/navigation`) so it stays
+locale-aware. Actual string translation/extraction hasn't happened
+yet — that's a separate future phase — so Russian string literals are
+still the norm today; just use the i18n-aware navigation helpers
+above when writing new locale-aware code, rather than reintroducing
+plain `next/link`/`next/navigation`.
 
 ## Quick start
 
@@ -208,6 +216,16 @@ a child Client Component's own handler — a descendant's
 `stopPropagation()` before the event reaches a parent `<Link>` is
 usually enough on its own, no wrapper needed.
 
+**Next.js 16 allows only one of `src/middleware.ts` or `src/proxy.ts` —
+never both.** Having both files present throws at boot. This repo
+already had `src/proxy.ts` before the i18n work (it held the
+`/cabinet` auth-gate redirect), so the next-intl locale-routing
+middleware couldn't get its own conventional `src/middleware.ts` —
+it had to be merged into the existing `src/proxy.ts` instead.
+`src/proxy.ts` now does two unrelated jobs (locale routing + cabinet
+auth) in one file; anyone touching either concern needs to know the
+other one lives right there too.
+
 **`pnpm install` needs `pnpm.onlyBuiltDependencies` in `package.json`.**
 pnpm 10 blocks native postinstall scripts (`sharp`, `esbuild`,
 `unrs-resolver`) by default; in a non-interactive install (Docker, CI,
@@ -242,9 +260,12 @@ the right call here, not premature-DRY.
   UI components) exports the config.
 - `src/globals/`, `src/Header/`, `src/Footer/` — singleton documents
   (LegalInfo, HomeSeo, Header nav, Footer nav).
-- `src/app/(frontend)/` — public Next.js routes. Server Components by
-  default; `'use client'` only for actual interactivity (forms, maps,
-  filters).
+- `src/app/(frontend)/[locale]/` — public Next.js routes, under the
+  next-intl `[locale]` segment (`ru` unprefixed, `kz` at `/kz/...` —
+  see `src/i18n/routing.ts`). Server Components by default; `'use
+  client'` only for actual interactivity (forms, maps, filters).
+  `next/*` seed routes, `(sitemaps)/`, and `robots.txt` stay outside
+  `[locale]` (see `src/proxy.ts`'s matcher).
 - `src/app/(payload)/` — `/admin` (Payload's own UI) and `/api/*`
   (both Payload's auto-generated REST/GraphQL and this app's own
   custom routes, side by side in the same directory).
@@ -320,6 +341,11 @@ Full per-file breakdown: [PROJECT_MAP.md](PROJECT_MAP.md).
   Don't confuse them with `Users` (`role: 'realtor'`), which is the
   collection actually driving realtor cards, messaging, and the
   `/realtors`/`/agents` pages.
+- `/admin/login` returns a 500, caused by
+  `src/components/BeforeDashboard/index.scss`'s
+  `@import '~@payloadcms/ui/scss'` failing to resolve under Next's
+  sass-loader. Confirmed identical on unmodified `main` — unrelated
+  to, and not caused by, the RU/KZ i18n routing work.
 
 ## Where to look next
 

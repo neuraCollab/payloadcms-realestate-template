@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { Phone, Send, MessageCircle } from 'lucide-react'
 import { Instagram } from '@/components/icons/BrandIcons'
 import { trackEvent } from '@/lib/analytics'

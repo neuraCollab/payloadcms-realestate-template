@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { X, Sparkles } from 'lucide-react'
 import { OAuthButtons } from '@/components/OAuthButtons'
 

@@ -49,7 +49,11 @@ went with it. Don't recreate this pattern; see CLAUDE.md.
 | `legal-info` | `globals/LegalInfo/config.ts` | Company legal details — footer, /privacy, /terms, JSON-LD. |
 | `home-seo` | `globals/HomeSeo/config.ts` | Homepage SEO title/description overrides. |
 
-## Frontend routes (`app/(frontend)/`)
+## Frontend routes (`app/(frontend)/[locale]/`)
+
+Routes below live under the next-intl `[locale]` segment (`ru` —
+default, unprefixed — and `kz`, prefixed `/kz/...`; see
+`src/i18n/routing.ts`). Paths shown are locale-relative.
 
 - `/` — `page.tsx`. Hero, category tiles, featured listings, recently-viewed, map, city SEO blurbs, FAQ.
 - `/flats`, `/commercial`, `/lands`, `/residential-complexes` — `(realestate)/<type>/page.tsx`. Catalog: filters + split list/map view (`PropertyListingPage` + `CatalogClient`).
@@ -103,7 +107,9 @@ This app's own routes:
 
 Also `/robots.txt`, `/(sitemaps)/pages-sitemap.xml`,
 `/listings-sitemap.xml`, `/posts-sitemap.xml` — all under
-`app/(frontend)/`, not `(payload)`.
+`app/(frontend)/`, not `(payload)`. Unlike the routes above, these
+stay outside the `[locale]` segment (unprefixed, single-locale) — see
+`src/proxy.ts`'s matcher.
 
 ## `lib/` — cross-cutting logic
 

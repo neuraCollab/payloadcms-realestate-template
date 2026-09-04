@@ -45,8 +45,8 @@ The business context (from conversation): the owner is repositioning this codeba
 
 Chosen over a hand-rolled dictionary+middleware (more custom routing/redirect edge-case risk to get right) and over storing chrome strings as Payload content (turns compile-time constants into a DB dependency for zero benefit at this layer).
 
-- `src/app/(frontend)` moves to `src/app/[locale]/(frontend)` — every existing route file shifts down one directory level, imports unaffected (path alias `@/` unchanged). `(payload)` route group (`/admin`, `/api/*`) is **not** touched — those stay unprefixed.
-- `src/middleware.ts` — next-intl middleware, `localePrefix: 'as-needed'` (default locale `ru` gets no prefix, `kz` gets `/kz`).
+- `src/app/(frontend)` moves to `src/app/(frontend)/[locale]` — every existing route file shifts down one directory level, imports unaffected (path alias `@/` unchanged). Keeping `[locale]` *inside* `(frontend)` rather than wrapping it (as originally sketched here) lets `next/*` seed routes, `(sitemaps)/`, and `robots.txt` stay siblings of `[locale]` — unprefixed, outside locale routing — without also escaping the `(frontend)` route group. `(payload)` route group (`/admin`, `/api/*`) is **not** touched — those stay unprefixed.
+- `src/proxy.ts` — next-intl middleware, `localePrefix: 'as-needed'` (default locale `ru` gets no prefix, `kz` gets `/kz`). Not `src/middleware.ts`: Next.js 16 doesn't allow both `middleware.ts` and `proxy.ts` to exist, and this repo already had `proxy.ts` (the `/cabinet` auth-gate redirect), so the locale middleware was merged into it instead.
 - `src/i18n/routing.ts` — `defineRouting({ locales: ['ru', 'kz'], defaultLocale: 'ru' })`.
 - `src/i18n/request.ts` — loads the message catalog for the active locale.
 - `messages/ru.json`, `messages/kz.json` — flat-namespaced message catalogs (e.g. `catalog.mapToggle`, `leadForm.phoneRequired`). Populated by extracting every hardcoded string found across `src/app/(frontend)`, `src/components`, `src/blocks`, `src/Header`, `src/Footer`.
@@ -71,7 +71,7 @@ Collections/globals in scope: `Pages` (every block's copy fields, per §5.1's ru
 
 **Migration:** generated via `payload migrate:create` (never hand-written for this — the field-level `localized` diff is exactly what the generator is for), then verified against the drift-check procedure already documented in `CLAUDE.md` before it's trusted.
 
-**Frontend data fetching:** every `payload.find`/`payload.findByID` call in `src/app/[locale]/(frontend)/**` passes `locale` (from the route's `[locale]` param) through to Payload so it returns the right language's field values.
+**Frontend data fetching:** every `payload.find`/`payload.findByID` call in `src/app/(frontend)/[locale]/**` passes `locale` (from the route's `[locale]` param) through to Payload so it returns the right language's field values.
 
 **Seed scripts:** `seed-pages`, `seed-posts`, `seed-globals`, `seed-home-seo` (the ones writing localized fields) change from writing a bare string to writing `{ ru: '...', kz: '...' }` for each localized field, so the demo/seed flow described in the earlier "Day 1 demo" conversation produces a bilingual demo out of the box.
 

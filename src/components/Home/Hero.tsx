@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/i18n/navigation'
 import { Search, ArrowRight, ChevronDown, Sparkles } from 'lucide-react'
 import { RecommendModal } from '@/components/RecommendModal'
 

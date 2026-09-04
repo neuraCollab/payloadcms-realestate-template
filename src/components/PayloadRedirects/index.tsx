@@ -3,7 +3,9 @@ import type { Page, Post } from '@/payload-types'
 
 import { getCachedDocument } from '@/utilities/getDocument'
 import { getCachedRedirects } from '@/utilities/getRedirects'
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
+import { redirect } from '@/i18n/navigation'
+import { getLocale } from 'next-intl/server'
 
 interface Props {
   disableNotFound?: boolean
@@ -13,12 +15,13 @@ interface Props {
 /* This component helps us with SSR based dynamic redirects */
 export const PayloadRedirects: React.FC<Props> = async ({ disableNotFound, url }) => {
   const redirects = await getCachedRedirects()()
+  const locale = await getLocale()
 
   const redirectItem = redirects.find((redirect) => redirect.from === url)
 
   if (redirectItem) {
     if (redirectItem.to?.url) {
-      redirect(redirectItem.to.url)
+      redirect({ href: redirectItem.to.url, locale })
     }
 
     let redirectUrl: string
@@ -39,7 +42,7 @@ export const PayloadRedirects: React.FC<Props> = async ({ disableNotFound, url }
       }`
     }
 
-    if (redirectUrl) redirect(redirectUrl)
+    if (redirectUrl) redirect({ href: redirectUrl, locale })
   }
 
   if (disableNotFound) return null

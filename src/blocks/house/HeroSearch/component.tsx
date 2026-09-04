@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/i18n/navigation'
 import { Search as SearchIcon, ChevronDown } from 'lucide-react'
 
 export type HeroSearchBlockType = {

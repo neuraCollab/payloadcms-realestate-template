@@ -3,7 +3,8 @@
 import React from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import { SlidersHorizontal, X } from 'lucide-react'
-import { usePathname, useSearchParams } from 'next/navigation'
+import { usePathname } from '@/i18n/navigation'
+import { useSearchParams } from 'next/navigation'
 import { PropertyFilters } from './index'
 import { FILTER_SCHEMAS, type PropertyType } from './schemas'
 
