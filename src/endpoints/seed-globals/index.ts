@@ -1,5 +1,4 @@
 import type { Payload, PayloadRequest } from 'payload'
-import { sql } from '@payloadcms/db-postgres'
 
 interface Args {
   payload: Payload
@@ -56,46 +55,33 @@ const LEGAL_INFO_MOCK = {
 export const seedGlobals = async ({ payload, req }: Args) => {
   payload.logger.info('[seed-globals] updating header & footer & legal-info…')
 
-  // LegalInfo через стандартный updateGlobal API (без drizzle).
   await payload.updateGlobal({
     slug: 'legal-info',
     data: LEGAL_INFO_MOCK,
     req,
   })
 
-  // Payload's link-field has `reference: required` even when type='custom'
-  // (the required flag fires regardless of admin.condition). Bypass the
-  // validator by writing directly to the Postgres tables that back the
-  // global. Schema:
-  //   header (id=1) ← header_nav_items (id, _order, _parent_id, link_type,
-  //     link_new_tab, link_url, link_label)
-  const db = (payload as any).db
-  const drizzle = db?.drizzle
-  if (!drizzle) {
-    throw new Error('Postgres adapter not available')
-  }
+  await payload.updateGlobal({
+    slug: 'header',
+    data: {
+      navItems: HEADER_NAV.map((item) => ({
+        link: { type: 'custom' as const, newTab: false, url: item.url, label: item.label },
+      })),
+    },
+    locale: 'ru',
+    req,
+  })
 
-  for (const [globalSlug, items] of [
-    ['header', HEADER_NAV],
-    ['footer', FOOTER_NAV],
-  ] as const) {
-    // Ensure the global row exists; create it if missing.
-    await drizzle.execute(
-      sql`INSERT INTO ${sql.raw(globalSlug)} (id) VALUES (1) ON CONFLICT (id) DO NOTHING`,
-    )
-    // Wipe existing nav items, repopulate.
-    await drizzle.execute(sql`DELETE FROM ${sql.raw(`${globalSlug}_nav_items`)} WHERE _parent_id = 1`)
-    for (let i = 0; i < items.length; i++) {
-      const it = items[i]
-      const itemId = `seed_${globalSlug}_${i}_${Date.now()}`
-      await drizzle.execute(
-        sql`INSERT INTO ${sql.raw(`${globalSlug}_nav_items`)}
-           (id, _order, _parent_id, link_type, link_new_tab, link_url, link_label)
-         VALUES
-           (${itemId}, ${i + 1}, 1, 'custom', false, ${it.url}, ${it.label})`,
-      )
-    }
-  }
+  await payload.updateGlobal({
+    slug: 'footer',
+    data: {
+      navItems: FOOTER_NAV.map((item) => ({
+        link: { type: 'custom' as const, newTab: false, url: item.url, label: item.label },
+      })),
+    },
+    locale: 'ru',
+    req,
+  })
 
   payload.logger.info('[seed-globals] done')
   return { header: HEADER_NAV.length, footer: FOOTER_NAV.length }

@@ -4,78 +4,14 @@ import * as assert from 'node:assert/strict'
 import { seedGlobals } from '../../src/endpoints/seed-globals/index.js'
 import type { Payload, PayloadRequest } from 'payload'
 
-/**
- * Reconstructs a readable SQL string from a drizzle-orm `SQL` tagged-
- * template object (as produced by `@payloadcms/db-postgres`'s `sql`
- * export). `SQL` has no useful `.toString()` — it's always
- * "[object Object]" — the real query text lives in `.queryChunks`:
- * a StringChunk (`.value: string[]`) alternating with either a bound
- * Param (`.value`, from `sql\`...${x}...\``) or another raw StringChunk
- * (from `sql.raw(...)`, used here for identifiers).
- */
-function stringifySql(query: unknown): string {
-  const chunks = (query as any)?.queryChunks
-  if (!Array.isArray(chunks)) return String(query)
-  const render = (v: unknown): string => (typeof v === 'string' ? `'${v}'` : String(v))
-  return chunks
-    .map((chunk: any) => {
-      // sql.raw(str) — identifiers interpolated via sql.raw() — nests
-      // another SQL (with its own queryChunks) rather than a bare
-      // StringChunk, so recurse first.
-      if (Array.isArray(chunk?.queryChunks)) return stringifySql(chunk)
-      if (Array.isArray(chunk?.value)) return chunk.value.join('') // StringChunk
-      if (chunk && typeof chunk === 'object' && 'value' in chunk) return render(chunk.value) // Param
-      return render(chunk) // plain interpolated primitive
-    })
-    .join('')
-}
-
 describe('seedGlobals', () => {
-  it('throws an error if Postgres adapter is not available', async () => {
+  it('seeds legal-info, header, and footer via updateGlobal', async () => {
     const infoMock = mock.fn()
-    const updateGlobalMock = mock.fn()
+    const updateGlobalMock = mock.fn(async () => ({}))
 
     const mockPayload = {
-      logger: {
-        info: infoMock,
-      },
+      logger: { info: infoMock },
       updateGlobal: updateGlobalMock,
-      db: {
-        // no drizzle
-      },
-    } as unknown as Payload
-
-    const mockReq = {} as PayloadRequest
-
-    await assert.rejects(
-      seedGlobals({ payload: mockPayload, req: mockReq }),
-      new Error('Postgres adapter not available')
-    )
-
-    assert.equal(infoMock.mock.calls.length, 1)
-    assert.equal(updateGlobalMock.mock.calls.length, 1)
-  })
-
-  it('successfully seeds globals via drizzle execute', async () => {
-    const executedQueries: string[] = []
-    const mockDrizzle = {
-      execute: mock.fn(async (query: any) => {
-        const queryString = typeof query === 'string' ? query : stringifySql(query)
-        executedQueries.push(queryString.trim().replace(/\s+/g, ' '))
-      }),
-    }
-
-    const infoMock = mock.fn()
-    const updateGlobalMock = mock.fn()
-
-    const mockPayload = {
-      logger: {
-        info: infoMock,
-      },
-      updateGlobal: updateGlobalMock,
-      db: {
-        drizzle: mockDrizzle,
-      },
     } as unknown as Payload
 
     const mockReq = {} as PayloadRequest
@@ -84,37 +20,40 @@ describe('seedGlobals', () => {
 
     assert.deepEqual(result, { header: 6, footer: 6 })
 
-    // Verify logger
     assert.equal(infoMock.mock.calls.length, 2)
-    assert.equal(infoMock.mock.calls[0].arguments[0], '[seed-globals] updating header & footer & legal-info…')
+    assert.equal(
+      infoMock.mock.calls[0].arguments[0],
+      '[seed-globals] updating header & footer & legal-info…',
+    )
     assert.equal(infoMock.mock.calls[1].arguments[0], '[seed-globals] done')
 
-    // Verify updateGlobal
-    assert.equal(updateGlobalMock.mock.calls.length, 1)
-    const updateGlobalArgs = updateGlobalMock.mock.calls[0].arguments[0] as any
-    assert.equal(updateGlobalArgs.slug, 'legal-info')
-    assert.equal(updateGlobalArgs.req, mockReq)
-    assert.equal(updateGlobalArgs.data.displayName, 'Realty')
+    assert.equal(updateGlobalMock.mock.calls.length, 3)
 
-    // Verify drizzle queries
-    assert.ok(mockDrizzle.execute.mock.calls.length > 0)
+    const legalCall = updateGlobalMock.mock.calls[0].arguments[0] as any
+    assert.equal(legalCall.slug, 'legal-info')
+    assert.equal(legalCall.req, mockReq)
+    assert.equal(legalCall.data.displayName, 'Realty')
 
-    const headerInsertGlobal = executedQueries.find(q => q.includes('INSERT INTO header (id) VALUES (1)'))
-    assert.ok(headerInsertGlobal, 'Should insert header global')
+    const headerCall = updateGlobalMock.mock.calls[1].arguments[0] as any
+    assert.equal(headerCall.slug, 'header')
+    assert.equal(headerCall.locale, 'ru')
+    assert.equal(headerCall.data.navItems.length, 6)
+    assert.deepEqual(headerCall.data.navItems[0].link, {
+      type: 'custom',
+      newTab: false,
+      url: '/',
+      label: 'Главная',
+    })
 
-    const headerDeleteItems = executedQueries.find(q => q.includes('DELETE FROM header_nav_items WHERE _parent_id = 1'))
-    assert.ok(headerDeleteItems, 'Should delete header nav items')
-
-    const headerInsertItem = executedQueries.find(q => q.includes('INSERT INTO header_nav_items') && q.includes("link_url, link_label) VALUES ('seed_header_0_") && q.includes(", 1, 1, 'custom', false, '/', 'Главная')"))
-    assert.ok(headerInsertItem, 'Should insert header nav items')
-
-    const footerInsertGlobal = executedQueries.find(q => q.includes('INSERT INTO footer (id) VALUES (1)'))
-    assert.ok(footerInsertGlobal, 'Should insert footer global')
-
-    const footerDeleteItems = executedQueries.find(q => q.includes('DELETE FROM footer_nav_items WHERE _parent_id = 1'))
-    assert.ok(footerDeleteItems, 'Should delete footer nav items')
-
-    const footerInsertItem = executedQueries.find(q => q.includes('INSERT INTO footer_nav_items') && q.includes("link_url, link_label) VALUES ('seed_footer_0_") && q.includes(", 1, 1, 'custom', false, '/about', 'О нас')"))
-    assert.ok(footerInsertItem, 'Should insert footer nav items')
+    const footerCall = updateGlobalMock.mock.calls[2].arguments[0] as any
+    assert.equal(footerCall.slug, 'footer')
+    assert.equal(footerCall.locale, 'ru')
+    assert.equal(footerCall.data.navItems.length, 6)
+    assert.deepEqual(footerCall.data.navItems[0].link, {
+      type: 'custom',
+      newTab: false,
+      url: '/about',
+      label: 'О нас',
+    })
   })
 })
