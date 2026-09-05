@@ -8,17 +8,17 @@ export const revalidate = 300
 export default async function CommercialDetailRoute({
   params,
 }: {
-  params: Promise<{ slug: string }>
+  params: Promise<{ locale: string; slug: string }>
 }) {
-  const { slug } = await params
-  return <PropertyDetailPage type="commercial" slug={slug} />
+  const { locale, slug } = await params
+  return <PropertyDetailPage type="commercial" slug={slug} locale={locale} />
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>
+  params: Promise<{ locale: string; slug: string }>
 }): Promise<Metadata> {
-  const { slug } = await params
-  return buildPropertyMetadata('commercial', slug)
+  const { locale, slug } = await params
+  return buildPropertyMetadata('commercial', slug, locale)
 }

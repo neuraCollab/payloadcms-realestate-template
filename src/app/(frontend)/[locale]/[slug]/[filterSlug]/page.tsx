@@ -8,6 +8,7 @@ import { ALL_FILTER_SLUGS, parseFilterSlug } from '@/lib/cityUrls'
 import { getServerSideURL } from '@/utilities/getURL'
 
 interface RouteParams {
+  locale: string
   slug: string
   filterSlug: string
 }
@@ -66,7 +67,7 @@ export default async function CityFilterPage({
   params: paramsPromise,
   searchParams: searchParamsPromise,
 }: Args) {
-  const { slug, filterSlug } = await paramsPromise
+  const { locale, slug, filterSlug } = await paramsPromise
   const userParams = await searchParamsPromise
 
   const [city, parsed, landing] = await Promise.all([
@@ -132,6 +133,7 @@ export default async function CityFilterPage({
           title={landing ? undefined : `${parsed.label} в городе ${city.name}`}
           searchParams={composed}
           mapBaseUrl={`/${parsed.category}`}
+          locale={locale}
         />
 
         {/* FAQ — внизу страницы, под каталогом. Видимые вопросы +

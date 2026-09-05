@@ -98,7 +98,13 @@ export default async function PreviewListingPage({ params, searchParams }: Props
         ) : null}
       </div>
 
-      <PropertyDetailPage type={previewType as any} slug={doc.slug} doc={doc} previewMode />
+      <PropertyDetailPage
+        type={previewType as any}
+        slug={doc.slug}
+        locale={locale}
+        doc={doc}
+        previewMode
+      />
     </div>
   )
 }

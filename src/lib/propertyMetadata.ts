@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { getPayload } from 'payload'
+import type { TypedLocale } from 'payload'
 import config from '@/payload.config'
 import { getServerSideURL } from '@/utilities/getURL'
 import type { PropertyType } from '@/components/PropertyFilters/schemas'
@@ -20,6 +21,11 @@ const TYPE_LABEL: Record<PropertyType, string> = {
   'residential-complexes': 'Жилой комплекс',
 }
 
+const OG_LOCALE: Record<string, string> = {
+  ru: 'ru_RU',
+  kz: 'kk_KZ',
+}
+
 
 /**
  * Generates SEO metadata for a property detail page.
@@ -29,6 +35,7 @@ const TYPE_LABEL: Record<PropertyType, string> = {
 export const buildPropertyMetadata = async (
   type: PropertyType,
   slug: string,
+  locale: string,
 ): Promise<Metadata> => {
   try {
     const payload = await getPayload({ config })
@@ -37,6 +44,10 @@ export const buildPropertyMetadata = async (
       where: { slug: { equals: slug } },
       limit: 1,
       depth: 1,
+      // `locale` comes in as a plain string from Next.js route params —
+      // cast at the boundary to Payload's generated `TypedLocale` union
+      // (see src/utilities/getGlobals.ts for the same pattern).
+      locale: locale as TypedLocale,
     })
     const doc: any = result.docs?.[0]
     if (!doc) return { title: 'Объект не найден' }
@@ -72,7 +83,7 @@ export const buildPropertyMetadata = async (
         type: 'website',
         images: ogImage ? [{ url: ogImage, width: 1200, height: 630, alt: docTitle }] : undefined,
         siteName: 'Demo Realty',
-        locale: 'ru_RU',
+        locale: OG_LOCALE[locale] ?? 'ru_RU',
       },
       twitter: {
         card: 'summary_large_image',

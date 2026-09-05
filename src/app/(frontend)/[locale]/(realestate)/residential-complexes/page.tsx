@@ -4,19 +4,19 @@ import { buildCatalogMeta } from '@/utilities/seo'
 
 export const dynamic = 'force-dynamic'
 
-export default async function ComplexesListingRoute(
-  props: {
-    searchParams: Promise<Record<string, string | undefined>>
-  }
-) {
-  const searchParams = await props.searchParams;
-  const sp = await searchParams
+export default async function ComplexesListingRoute(props: {
+  params: Promise<{ locale: string }>
+  searchParams: Promise<Record<string, string | undefined>>
+}) {
+  const { locale } = await props.params
+  const sp = await props.searchParams
   return (
     <PropertyListingPage
       type="residential-complexes"
       title="Жилые комплексы"
       searchParams={sp}
       mapBaseUrl="/residential-complexes"
+      locale={locale}
     />
   )
 }
