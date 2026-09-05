@@ -20,6 +20,7 @@ export const Agents: CollectionConfig = {
       type: 'text',
       required: true,
       label: 'Должность',
+      localized: true,
     },
     {
       name: 'image',
@@ -44,6 +45,7 @@ export const Agents: CollectionConfig = {
       name: 'description',
       type: 'textarea',
       label: 'Описание',
+      localized: true,
     },
     {
       name: 'socialLinks',
