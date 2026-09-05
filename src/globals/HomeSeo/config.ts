@@ -26,6 +26,7 @@ export const HomeSeo: GlobalConfig = {
               type: 'text',
               label: 'Title (60-70 символов)',
               required: true,
+              localized: true,
               defaultValue:
                 'Demo Realty — квартиры, дома и коммерческая недвижимость',
               admin: {
@@ -38,6 +39,7 @@ export const HomeSeo: GlobalConfig = {
               type: 'textarea',
               label: 'Description (150-160 символов)',
               required: true,
+              localized: true,
               defaultValue:
                 'Поиск квартир, домов и коммерческой недвижимости. Проверенные объявления, прозрачные сделки, прямые контакты с собственниками.',
               admin: {
@@ -56,6 +58,7 @@ export const HomeSeo: GlobalConfig = {
               name: 'h1',
               type: 'text',
               required: true,
+              localized: true,
               label: 'H1 (главный заголовок)',
               defaultValue: 'Недвижимость, которой доверяют',
               admin: {
@@ -67,6 +70,7 @@ export const HomeSeo: GlobalConfig = {
               name: 'subtitle',
               type: 'textarea',
               label: 'Подзаголовок под H1',
+              localized: true,
               defaultValue:
                 'Прозрачные сделки, проверенные объявления, удобный кабинет.',
             },
@@ -96,6 +100,7 @@ export const HomeSeo: GlobalConfig = {
                   name: 'heading',
                   type: 'text',
                   required: true,
+                  localized: true,
                   label: 'H2 заголовок',
                   admin: {
                     description:
@@ -106,12 +111,14 @@ export const HomeSeo: GlobalConfig = {
                   name: 'body',
                   type: 'textarea',
                   required: true,
+                  localized: true,
                   label: 'Текст блока (2-4 предложения)',
                 },
                 {
                   name: 'ctaLabel',
                   type: 'text',
                   label: 'Кнопка / ссылка',
+                  localized: true,
                   defaultValue: 'Смотреть объекты',
                 },
                 {
@@ -127,6 +134,7 @@ export const HomeSeo: GlobalConfig = {
                 {
                   name: 'highlightKeywords',
                   type: 'text',
+                  localized: true,
                   label:
                     'Ключевые слова (через запятую, для подсветки в bold)',
                 },
@@ -143,6 +151,7 @@ export const HomeSeo: GlobalConfig = {
               name: 'faqIntro',
               type: 'text',
               label: 'Заголовок FAQ',
+              localized: true,
               defaultValue: 'Частые вопросы',
             },
             {
@@ -162,12 +171,14 @@ export const HomeSeo: GlobalConfig = {
                   name: 'question',
                   type: 'text',
                   required: true,
+                  localized: true,
                   label: 'Вопрос',
                 },
                 {
                   name: 'answer',
                   type: 'textarea',
                   required: true,
+                  localized: true,
                   label: 'Ответ (2-5 предложений)',
                 },
               ],
