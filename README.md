@@ -1,10 +1,20 @@
 # MegaDomic — Real Estate Platform Template (Next.js + Payload CMS)
 
+![License](https://img.shields.io/badge/license-non--commercial%20%2B%20custom-blue?style=flat-square)
+![Last Commit](https://img.shields.io/github/last-commit/neuraCollab/payloadcms-realestate-template?style=flat-square)
+![Stars](https://img.shields.io/github/stars/neuraCollab/payloadcms-realestate-template?style=flat-square)
+![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)
+![Payload CMS](https://img.shields.io/badge/Payload%20CMS-v3-black?style=flat-square&logo=payloadcms&logoColor=white)
+
 A production-grade real estate listings platform template, built on **Next.js 16** and **Payload CMS v3**. Five listing types (apartments, commercial, land, residential complexes, houses), a public catalog with SEO city landing pages, a self-serve user cabinet with realtor messaging, AI-powered semantic search, and a CMS-driven page builder — everything a real estate agency or marketplace needs as a starting point.
 
 ![MegaDomic homepage](docs/screenshot-home.png)
 
-📺 **Video walkthrough:** [YOUTUBE FAST PREVIEW](https://youtu.be/onsBNegQaUo)
+📺 **Video walkthrough:**
+
+<a href="https://youtu.be/onsBNegQaUo">
+  <img src="https://img.youtube.com/vi/onsBNegQaUo/maxresdefault.jpg" alt="MegaDomic video walkthrough" width="600">
+</a>
 
 ## Standout features
 
