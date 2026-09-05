@@ -166,6 +166,15 @@ export default async function Page({ params, searchParams: searchParamsPromise }
       await Promise.all(
         targetColls.map(async (c) => {
           const where = buildWhere(c, sp)
+          // buildWhere() adds a keyword `where.or` matching the raw
+          // free-text query against title/address/district/city — that's
+          // the plain-keyword-search behavior. AI mode replaces keyword
+          // matching with the embeddings vector search below, so this
+          // prefilter should stay purely structural (status/city/rooms/
+          // price). Left in place, `where.or` ANDs against everything
+          // else and (almost) never matches the full natural-language
+          // prompt verbatim, silently zeroing out the prefilter.
+          delete where.or
           if (parsed.city) where['location.city'] = { like: parsed.city }
           if (parsed.rooms && c === 'flats') where.rooms = { equals: parsed.rooms }
           if (parsed.transactionType && (c === 'flats' || c === 'commercial'))
