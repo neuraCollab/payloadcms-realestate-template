@@ -9,13 +9,14 @@ export const NavbarBlock: Block = {
       name: 'logoText',
       type: 'text',
       required: true,
+      localized: true,
     },
     {
       name: 'links',
       type: 'array',
       required: true,
       fields: [
-        { name: 'text', type: 'text', required: true },
+        { name: 'text', type: 'text', required: true, localized: true },
         { name: 'url', type: 'text', required: true },
       ],
     },
@@ -29,6 +30,7 @@ export const NavbarBlock: Block = {
           type: 'text',
           label: 'Текст кнопки',
           required: true,
+          localized: true,
           defaultValue: 'Связаться',
         },
         {

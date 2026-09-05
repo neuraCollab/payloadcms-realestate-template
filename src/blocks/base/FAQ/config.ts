@@ -21,12 +21,14 @@ export const FAQBlock: Block = {
       name: 'label',
       type: 'text',
       required: true,
+      localized: true,
       defaultValue: 'faq',
     },
     {
       name: 'title',
       type: 'text',
       required: true,
+      localized: true,
       defaultValue: 'Your questions, Answered',
     },
     {
@@ -41,12 +43,14 @@ export const FAQBlock: Block = {
           type: 'text',
           required: true,
           label: 'Вопрос',
+          localized: true,
         },
         {
           name: 'answer',
           type: 'textarea',
           required: true,
           label: 'Ответ',
+          localized: true,
         },
       ],
       defaultValue: [
