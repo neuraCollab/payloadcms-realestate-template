@@ -130,7 +130,7 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: null;
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('ru' | 'kz') | ('ru' | 'kz')[];
   globals: {
     header: Header;
     footer: Footer;
@@ -143,7 +143,7 @@ export interface Config {
     'legal-info': LegalInfoSelect<false> | LegalInfoSelect<true>;
     'home-seo': HomeSeoSelect<false> | HomeSeoSelect<true>;
   };
-  locale: null;
+  locale: 'ru' | 'kz';
   widgets: {
     collections: CollectionsWidget;
   };
