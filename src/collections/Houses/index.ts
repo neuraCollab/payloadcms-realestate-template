@@ -61,7 +61,7 @@ export const Houses: CollectionConfig = {
     afterDelete: [embedAfterDelete('houses' as any)],
   },
   fields: [
-    { name: 'title', type: 'text', required: true, label: 'Название' },
+    { name: 'title', type: 'text', required: true, localized: true, label: 'Название' },
     {
       name: 'slug',
       type: 'text',
@@ -156,7 +156,7 @@ export const Houses: CollectionConfig = {
         { name: 'alt', type: 'text' },
       ],
     },
-    { name: 'description', type: 'richText', label: 'Описание' },
+    { name: 'description', type: 'richText', localized: true, label: 'Описание' },
     {
       name: 'amenities',
       type: 'array',

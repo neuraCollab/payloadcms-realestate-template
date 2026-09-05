@@ -27,6 +27,7 @@ export const Lands: CollectionConfig = {
       type: 'text',
       required: true,
       label: 'Название участка',
+      localized: true,
     },
     {
       name: 'slug',
@@ -87,6 +88,7 @@ export const Lands: CollectionConfig = {
         {
           name: 'communication',
           type: 'text',
+          localized: true,
         },
       ],
     },

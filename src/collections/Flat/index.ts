@@ -61,6 +61,7 @@ export const Flats: CollectionConfig = {
       type: 'text',
       required: true,
       label: 'Название объекта',
+      localized: true,
     },
     {
       name: 'slug',
@@ -326,6 +327,7 @@ export const Flats: CollectionConfig = {
       name: 'description',
       type: 'richText',
       label: 'Описание',
+      localized: true,
     },
 
     // Удобства
@@ -338,6 +340,7 @@ export const Flats: CollectionConfig = {
           name: 'amenity',
           type: 'text',
           required: true,
+          localized: true,
         },
       ],
     },
