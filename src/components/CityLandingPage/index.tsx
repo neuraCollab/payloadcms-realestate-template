@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 import { getPayload } from 'payload'
+import type { TypedLocale } from 'payload'
 import config from '@/payload.config'
 import { Building2, Home, MapPin, Trees, Briefcase, ArrowRight } from 'lucide-react'
 import { PropertyCard } from '@/components/PropertyCard'
@@ -14,6 +15,7 @@ import { formatPrice } from '@/utilities/formatPrice'
 
 interface Props {
   city: any
+  locale: string
 }
 
 interface Counters {
@@ -24,7 +26,7 @@ interface Counters {
 }
 
 
-export const CityLandingPage: React.FC<Props> = async ({ city }) => {
+export const CityLandingPage: React.FC<Props> = async ({ city, locale }) => {
   const payload = await getPayload({ config })
 
   // Counts per category for this city
@@ -71,6 +73,7 @@ export const CityLandingPage: React.FC<Props> = async ({ city }) => {
       sort: '-createdAt',
       limit: 6,
       depth: 1,
+      locale: locale as TypedLocale,
     }),
   ])
 
@@ -139,7 +142,11 @@ export const CityLandingPage: React.FC<Props> = async ({ city }) => {
   // из глобала legal-info (если заполнены).
   let legal: any = null
   try {
-    legal = await payload.findGlobal({ slug: 'legal-info' as any, depth: 0 })
+    legal = await payload.findGlobal({
+      slug: 'legal-info' as any,
+      depth: 0,
+      locale: locale as TypedLocale,
+    })
   } catch {
     /* без legal info — не критично, агента всё равно отрисуем */
   }

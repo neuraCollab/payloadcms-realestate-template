@@ -13,8 +13,13 @@ interface LegalInfo {
   dataProtectionOfficer?: string
 }
 
-export default async function PrivacyPage() {
-  const legal = (await getCachedGlobal('legal-info', 1)()) as LegalInfo
+export default async function PrivacyPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  const legal = (await getCachedGlobal('legal-info', 1, locale)()) as LegalInfo
   const operator = legal?.fullName ?? 'Оператор сайта'
   const today = new Date().toLocaleDateString('ru-RU', {
     day: 'numeric',

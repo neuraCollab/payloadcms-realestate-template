@@ -1,6 +1,7 @@
 import React from 'react'
 import dynamic from 'next/dynamic'
 import { getPayload } from 'payload'
+import type { TypedLocale } from 'payload'
 import config from '@/payload.config'
 import { notFound } from 'next/navigation'
 import { Link } from '@/i18n/navigation'
@@ -47,6 +48,7 @@ const TYPE_LABEL: Record<PropertyType, string> = {
 interface Props {
   type: PropertyType
   slug: string
+  locale: string
   /**
    * Optional pre-fetched document — для preview-режима в кабинете.
    * Если передан — slug игнорируется, DB не дёргаем, рендерим как
@@ -64,6 +66,7 @@ interface Props {
 export const PropertyDetailPage: React.FC<Props> = async ({
   type,
   slug,
+  locale,
   doc: docProp,
   previewMode = false,
 }) => {
@@ -77,6 +80,10 @@ export const PropertyDetailPage: React.FC<Props> = async ({
       where: { slug: { equals: slug } },
       depth: 2,
       limit: 1,
+      // `locale` comes in as a plain string from Next.js route params —
+      // cast at the boundary to Payload's generated `TypedLocale` union
+      // (see src/utilities/getGlobals.ts for the same pattern).
+      locale: locale as TypedLocale,
     })
     if (!found.docs.length) notFound()
     data = found.docs[0]
@@ -247,6 +254,7 @@ export const PropertyDetailPage: React.FC<Props> = async ({
               propertyTitle={data.title}
               propertyCollection={type}
               propertyId={data.id}
+              locale={locale}
             />
           ) : null}
 

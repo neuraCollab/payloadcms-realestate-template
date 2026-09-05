@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import configPromise from '@payload-config'
-import { getPayload, type RequiredDataFromCollectionSlug } from 'payload'
+import { getPayload, type RequiredDataFromCollectionSlug, type TypedLocale } from 'payload'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 import React, { cache } from 'react'
@@ -23,6 +23,7 @@ export const dynamic = 'force-dynamic'
 
 type Args = {
   params: Promise<{
+    locale: string
     slug?: string
   }>
 }
@@ -33,7 +34,7 @@ const DISABLED_PAGE_SLUGS = new Set(['home-v2'])
 
 export default async function Page({ params: paramsPromise }: Args) {
   const { isEnabled: draft } = await draftMode()
-  const { slug = 'home' } = await paramsPromise
+  const { locale, slug = 'home' } = await paramsPromise
   const url = '/' + slug
 
   if (DISABLED_PAGE_SLUGS.has(slug)) {
@@ -43,11 +44,11 @@ export default async function Page({ params: paramsPromise }: Args) {
   // 1. City landing page takes precedence over arbitrary page slugs.
   const city = await queryCityBySlug({ slug })
   if (city) {
-    return <CityLandingPage city={city} />
+    return <CityLandingPage city={city} locale={locale} />
   }
 
   // 2. Fall back to legacy pages collection.
-  let page: RequiredDataFromCollectionSlug<'pages'> | null = await queryPageBySlug({ slug })
+  let page: RequiredDataFromCollectionSlug<'pages'> | null = await queryPageBySlug({ slug, locale })
 
   // Remove this code once your website is seeded
   if (!page && slug === 'home') {
@@ -69,13 +70,13 @@ export default async function Page({ params: paramsPromise }: Args) {
       {draft && <LivePreviewListener />}
 
       <RenderHero {...hero} />
-      <RenderBlocks blocks={layout} />
+      <RenderBlocks blocks={layout} locale={locale} />
     </article>
   )
 }
 
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
-  const { slug = 'home' } = await paramsPromise
+  const { locale, slug = 'home' } = await paramsPromise
 
   const city = await queryCityBySlug({ slug })
   if (city) {
@@ -102,7 +103,7 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
     }
   }
 
-  const page = await queryPageBySlug({ slug })
+  const page = await queryPageBySlug({ slug, locale })
   return generateMeta({ doc: page })
 }
 
@@ -120,7 +121,7 @@ const queryCityBySlug = cache(async ({ slug }: { slug: string }) => {
   return result.docs?.[0] ?? null
 })
 
-const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
+const queryPageBySlug = cache(async ({ slug, locale }: { slug: string; locale: string }) => {
   const { isEnabled: draft } = await draftMode()
 
   const payload = await getPayload({ config: configPromise })
@@ -131,6 +132,7 @@ const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
     limit: 1,
     pagination: false,
     overrideAccess: draft,
+    locale: locale as TypedLocale,
     where: {
       slug: {
         equals: slug,

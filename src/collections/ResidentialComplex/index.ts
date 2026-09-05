@@ -27,6 +27,7 @@ export const ResidentialComplex: CollectionConfig = {
       type: 'text',
       required: true,
       label: 'Название ЖК',
+      localized: true,
     },
     {
       name: 'slug',
@@ -95,6 +96,7 @@ export const ResidentialComplex: CollectionConfig = {
       name: 'description',
       type: 'richText',
       label: 'Описание',
+      localized: true,
     },
     {
       name: 'images',
@@ -117,6 +119,7 @@ export const ResidentialComplex: CollectionConfig = {
         {
           name: 'item',
           type: 'text',
+          localized: true,
         },
       ],
     },

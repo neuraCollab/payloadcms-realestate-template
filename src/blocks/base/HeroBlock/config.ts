@@ -9,6 +9,7 @@ export const HeroBlock: Block = {
       name: 'badgeText',
       label: 'Текст бейджа',
       type: 'text',
+      localized: true,
       admin: {
         description: 'Опциональный текст для бейджа (например, "Real Estate")',
       },
@@ -17,17 +18,20 @@ export const HeroBlock: Block = {
       name: 'headline',
       label: 'Заголовок',
       type: 'text',
+      localized: true,
       required: true,
     },
     {
       name: 'highlight',
       label: 'Выделенное слово',
       type: 'text',
+      localized: true,
     },
     {
       name: 'subheadline',
       label: 'Подзаголовок',
       type: 'textarea',
+      localized: true,
     },
     {
       name: 'image',

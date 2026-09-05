@@ -21,18 +21,21 @@ export const VisionMissionBlock: Block = {
       name: 'title',
       type: 'text',
       required: true,
+      localized: true,
       defaultValue: 'Your trusted real estate experts:',
     },
     {
       name: 'description',
       type: 'textarea',
       required: true,
+      localized: true,
       defaultValue:
         "With years of local expertise, we're committed to helping you buy, sell, or invest in properties with confidence. Our personalized approach ensures every client's unique needs are met with professionalism and care.",
     },
     {
       name: 'buttonText',
       type: 'text',
+      localized: true,
       defaultValue: 'View Properties',
     },
     {
@@ -56,6 +59,7 @@ export const VisionMissionBlock: Block = {
           name: 'label',
           type: 'text',
           required: true,
+          localized: true,
         },
       ],
       defaultValue: [

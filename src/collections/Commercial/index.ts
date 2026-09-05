@@ -56,6 +56,7 @@ export const Commercial: CollectionConfig = {
       type: 'text',
       required: true,
       label: 'Название объекта',
+      localized: true,
     },
     {
       name: 'slug',
@@ -243,6 +244,7 @@ export const Commercial: CollectionConfig = {
         {
           name: 'utility',
           type: 'text',
+          localized: true,
         },
       ],
     },
@@ -268,6 +270,7 @@ export const Commercial: CollectionConfig = {
       name: 'description',
       type: 'richText',
       label: 'Описание',
+      localized: true,
     },
 
     // Контактная информация

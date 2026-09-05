@@ -21,12 +21,14 @@ export const HowItWorksBlock: Block = {
       name: 'label',
       type: 'text',
       required: true,
+      localized: true,
       defaultValue: 'How it works',
     },
     {
       name: 'title',
       type: 'text',
       required: true,
+      localized: true,
       defaultValue: 'Discover the advantages and exclusive benefits',
     },
     {
@@ -49,11 +51,13 @@ export const HowItWorksBlock: Block = {
           name: 'title',
           type: 'text',
           required: true,
+          localized: true,
         },
         {
           name: 'description',
           type: 'textarea',
           required: true,
+          localized: true,
         },
       ],
     },

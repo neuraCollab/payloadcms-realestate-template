@@ -24,12 +24,14 @@ export const TestimonialsBlock: Block = {
       name: 'label',
       type: 'text',
       required: true,
+      localized: true,
       defaultValue: 'Testimonials',
     },
     {
       name: 'title',
       type: 'text',
       required: true,
+      localized: true,
       defaultValue: 'Real feedback from our satisfied clients',
     },
     {

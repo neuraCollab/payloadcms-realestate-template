@@ -75,6 +75,16 @@ export default buildConfig({
   },
   // This config helps us configure global or default features that the other editors can inherit
   editor: defaultLexical,
+  // RU (default, unprefixed URLs) / KZ (prefixed `/kz/...`) — see
+  // src/i18n/routing.ts for the matching next-intl locale list. `kz` is a
+  // deliberate routing identifier, not the ISO-639 code (`kk`) — see
+  // src/i18n/routing.ts's LOCALE_TO_BCP47 map for where the real BCP-47
+  // code is used (the <html lang> attribute only).
+  localization: {
+    locales: ['ru', 'kz'],
+    defaultLocale: 'ru',
+    fallback: true,
+  },
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI || '',

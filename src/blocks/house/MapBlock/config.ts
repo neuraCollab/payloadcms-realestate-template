@@ -27,6 +27,7 @@ export const MapBlock: Block = {
       name: 'title',
       type: 'text',
       label: 'Заголовок',
+      localized: true,
     },
     {
       name: 'center',
@@ -46,7 +47,7 @@ export const MapBlock: Block = {
         description: 'Если указан label, в центре карты будет показан одиночный маркер с этой подписью.',
       },
       fields: [
-        { name: 'label', type: 'text', label: 'Подпись' },
+        { name: 'label', type: 'text', label: 'Подпись', localized: true },
         { name: 'address', type: 'text', label: 'Адрес офиса' },
       ],
     },

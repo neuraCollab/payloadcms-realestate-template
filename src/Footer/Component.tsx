@@ -35,9 +35,9 @@ const LEGAL_FORM_LABEL: Record<NonNullable<LegalInfoShape['legalForm']>, string>
   pao: 'ПАО',
 }
 
-export async function Footer() {
-  const footerData = (await getCachedGlobal('footer', 1)()) as FooterType
-  const legal = (await getCachedGlobal('legal-info', 1)()) as LegalInfoShape
+export async function Footer({ locale }: { locale: string }) {
+  const footerData = (await getCachedGlobal('footer', 1, locale)()) as FooterType
+  const legal = (await getCachedGlobal('legal-info', 1, locale)()) as LegalInfoShape
   const navItems = footerData?.navItems || []
 
   const displayName = legal?.displayName ?? 'Demo Realty'

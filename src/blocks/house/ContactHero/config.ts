@@ -21,12 +21,14 @@ export const ContactHeroBlock: Block = {
       name: 'label',
       type: 'text',
       required: true,
+      localized: true,
       defaultValue: 'Contact',
     },
     {
       name: 'title',
       type: 'text',
       required: true,
+      localized: true,
       defaultValue: 'Get in touch with us today for expert assistance',
     },
     {

@@ -21,12 +21,14 @@ export const AmenitiesBlock: Block = {
       name: 'label',
       type: 'text',
       required: true,
+      localized: true,
       defaultValue: 'Amenities',
     },
     {
       name: 'title',
       type: 'text',
       required: true,
+      localized: true,
       defaultValue: 'Discover exceptional amenities for a luxurious lifestyle',
     },
     {
@@ -69,6 +71,7 @@ export const AmenitiesBlock: Block = {
           name: 'title',
           type: 'text',
           required: true,
+          localized: true,
         },
       ],
       defaultValue: [

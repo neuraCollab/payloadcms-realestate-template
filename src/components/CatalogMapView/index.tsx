@@ -375,7 +375,15 @@ export const CatalogMap: React.FC<Props> = ({
     <div className={`relative w-full ${className}`} style={{ height }}>
       <div
         ref={containerRef}
-        className="absolute inset-0 rounded-md overflow-hidden"
+        // w-full h-full (not just absolute+inset-0): mapbox-gl.css sets its
+        // own `.mapboxgl-map { position: relative }` at equal specificity to
+        // Tailwind's `.absolute`, and whichever stylesheet loads later wins
+        // the tie — mapbox-gl.css is imported dynamically at runtime, so it
+        // reliably wins, silently turning `inset-0` into a no-op offset (it
+        // only affects position, not size, once `position` isn't `absolute`)
+        // and collapsing this container to zero height. Percentage sizing
+        // doesn't depend on which `position` value wins.
+        className="absolute inset-0 w-full h-full rounded-md overflow-hidden"
       />
 
       {/* «Назад к списку» — только если родитель попросил

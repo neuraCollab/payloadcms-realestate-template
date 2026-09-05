@@ -22,6 +22,7 @@ export const BlogBlock: Block = {
       type: 'text',
       required: true,
       label: 'Заголовок блока',
+      localized: true,
       defaultValue: 'Expert advice and market updates on real estate',
     },
     {
@@ -29,6 +30,7 @@ export const BlogBlock: Block = {
       type: 'text',
       required: false,
       label: 'Подзаголовок блока',
+      localized: true,
       defaultValue: 'Blogs',
     },
     {

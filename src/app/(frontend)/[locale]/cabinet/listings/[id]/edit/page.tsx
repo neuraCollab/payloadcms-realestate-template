@@ -46,6 +46,7 @@ export default async function EditListingPage({ params, searchParams }: Props) {
       id,
       depth: 1,
       overrideAccess: true,
+      locale: 'ru',
     })
   } catch {
     /* not found */

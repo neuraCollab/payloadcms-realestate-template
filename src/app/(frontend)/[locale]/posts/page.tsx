@@ -4,7 +4,7 @@ import { CollectionArchive } from '@/components/CollectionArchive'
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
 import configPromise from '@payload-config'
-import { getPayload } from 'payload'
+import { getPayload, type TypedLocale } from 'payload'
 import React from 'react'
 import PageClient from './page.client'
 import { buildBreadcrumbJsonLd } from '@/utilities/seo'
@@ -14,7 +14,12 @@ import { buildBreadcrumbJsonLd } from '@/utilities/seo'
 // запрос, ничего не кэшируется на этапе билда.
 export const dynamic = 'force-dynamic'
 
-export default async function Page() {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
   const payload = await getPayload({ config: configPromise })
 
   const posts = await payload.find({
@@ -22,6 +27,7 @@ export default async function Page() {
     depth: 1,
     limit: 12,
     overrideAccess: false,
+    locale: locale as TypedLocale,
     select: {
       title: true,
       slug: true,

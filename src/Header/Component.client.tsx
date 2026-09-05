@@ -8,6 +8,7 @@ import { Logo } from '@/components/Logo/Logo'
 import { HeaderNav } from './Nav'
 import { MobileNav } from './MobileNav'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { LocaleSwitcher } from '@/components/LocaleSwitcher'
 import { CabinetLink } from './CabinetLink'
 import { AiHelperButton } from '@/components/AiHelperButton'
 
@@ -33,6 +34,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
               (модалка покажет auth-gate если cookie пуст). */}
           <AiHelperButton variant="icon" label="AI-помощник" />
           <CabinetLink />
+          <LocaleSwitcher />
           <ThemeToggle />
           <div className="lg:hidden">
             <MobileNav data={data} />

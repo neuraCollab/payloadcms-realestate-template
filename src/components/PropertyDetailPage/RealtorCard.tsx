@@ -3,6 +3,7 @@ import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 import { User as UserIcon, Star } from 'lucide-react'
 import { getPayload } from 'payload'
+import type { TypedLocale } from 'payload'
 import config from '@/payload.config'
 import { Button } from '@/components/ui/button'
 import { MessageButton } from './MessageButton'
@@ -16,6 +17,7 @@ interface Props {
   propertyTitle?: string
   propertyCollection?: string
   propertyId?: string | number
+  locale: string
 }
 
 
@@ -26,6 +28,7 @@ export const RealtorCard: React.FC<Props> = async ({
   propertyTitle,
   propertyCollection,
   propertyId,
+  locale,
 }) => {
   const payload = await getPayload({ config })
 
@@ -42,6 +45,7 @@ export const RealtorCard: React.FC<Props> = async ({
       sort: '-createdAt',
       limit: 4,
       depth: 1,
+      locale: locale as TypedLocale,
     }),
     payload.find({
       collection: 'flats',
@@ -54,6 +58,7 @@ export const RealtorCard: React.FC<Props> = async ({
       sort: '-updatedAt',
       limit: 3,
       depth: 1,
+      locale: locale as TypedLocale,
     }),
     payload.find({
       collection: 'reviews',

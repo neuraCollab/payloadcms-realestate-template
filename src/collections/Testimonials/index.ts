@@ -33,6 +33,7 @@ export const Testimonials: CollectionConfig = {
       type: 'textarea',
       required: true,
       label: 'Текст отзыва',
+      localized: true,
     },
     {
       name: 'rating',

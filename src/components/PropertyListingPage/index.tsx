@@ -1,5 +1,6 @@
 import React from 'react'
 import { getPayload } from 'payload'
+import type { TypedLocale } from 'payload'
 import config from '@/payload.config'
 import { PropertyCard } from '@/components/PropertyCard'
 import { PropertyFilters } from '@/components/PropertyFilters'
@@ -29,6 +30,7 @@ interface Props {
   title: string
   searchParams: Record<string, string | undefined>
   mapBaseUrl: string
+  locale: string
 }
 
 const COLLECTION_MAP: Record<PropertyType, string> = {
@@ -182,6 +184,7 @@ export const PropertyListingPage: React.FC<Props> = async ({
   title,
   searchParams,
   mapBaseUrl,
+  locale,
 }) => {
   const payload = await getPayload({ config })
   const where = buildWhere(type, searchParams)
@@ -209,6 +212,10 @@ export const PropertyListingPage: React.FC<Props> = async ({
     // nothing here reads a relation nested inside another relation,
     // so depth 2 was populating data this page never uses.
     depth: 1,
+    // `locale` comes in as a plain string from Next.js route params —
+    // cast at the boundary to Payload's generated `TypedLocale` union
+    // (see src/utilities/getGlobals.ts for the same pattern).
+    locale: locale as TypedLocale,
   })
 
   // Карточки для списка и метки для карты — строим один раз на сервере.

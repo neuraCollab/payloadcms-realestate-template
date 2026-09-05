@@ -33,6 +33,7 @@ export const PropertiesBlock: Block = {
       name: 'title',
       type: 'text',
       required: true,
+      localized: true,
       label: 'Заголовок блока',
     },
     {

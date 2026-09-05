@@ -21,12 +21,14 @@ export const ContactUsFormBlock: Block = {
       name: 'label',
       type: 'text',
       required: true,
+      localized: true,
       defaultValue: 'Contact',
     },
     {
       name: 'title',
       type: 'text',
       required: true,
+      localized: true,
       defaultValue: "Fill out this form, Let's get in touch",
     },
     {

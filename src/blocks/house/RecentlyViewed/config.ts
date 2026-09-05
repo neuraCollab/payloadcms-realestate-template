@@ -15,7 +15,7 @@ export const RecentlyViewedBlock: Block = {
       admin: { hidden: true },
       defaultValue: 'recently-viewed',
     },
-    { name: 'title', type: 'text', label: 'Заголовок', defaultValue: 'Недавно вы смотрели' },
+    { name: 'title', type: 'text', localized: true, label: 'Заголовок', defaultValue: 'Недавно вы смотрели' },
     {
       name: 'limit',
       type: 'number',

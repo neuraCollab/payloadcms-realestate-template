@@ -20,6 +20,7 @@ export const HouseFilter: Block = {
           type: 'text',
           label: 'Название фильтра',
           required: true,
+          localized: true,
         },
         {
           name: 'collection',
@@ -43,6 +44,7 @@ export const HouseFilter: Block = {
               name: 'label',
               type: 'text',
               label: 'Заголовок поля (label)',
+              localized: true,
             },
             {
               name: 'type',
@@ -75,6 +77,7 @@ export const HouseFilter: Block = {
                 {
                   name: 'label',
                   type: 'text',
+                  localized: true,
                 },
               ],
             },
