@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 import { getPayload } from 'payload'
+import type { TypedLocale } from 'payload'
 import config from '@/payload.config'
 import { Building2, Home, MapPin, Trees, Briefcase, ArrowRight } from 'lucide-react'
 import { PropertyCard } from '@/components/PropertyCard'
@@ -72,6 +73,7 @@ export const CityLandingPage: React.FC<Props> = async ({ city, locale }) => {
       sort: '-createdAt',
       limit: 6,
       depth: 1,
+      locale: locale as TypedLocale,
     }),
   ])
 
@@ -140,7 +142,11 @@ export const CityLandingPage: React.FC<Props> = async ({ city, locale }) => {
   // из глобала legal-info (если заполнены).
   let legal: any = null
   try {
-    legal = await payload.findGlobal({ slug: 'legal-info' as any, depth: 0 })
+    legal = await payload.findGlobal({
+      slug: 'legal-info' as any,
+      depth: 0,
+      locale: locale as TypedLocale,
+    })
   } catch {
     /* без legal info — не критично, агента всё равно отрисуем */
   }

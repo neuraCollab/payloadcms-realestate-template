@@ -254,6 +254,7 @@ export const PropertyDetailPage: React.FC<Props> = async ({
               propertyTitle={data.title}
               propertyCollection={type}
               propertyId={data.id}
+              locale={locale}
             />
           ) : null}
 

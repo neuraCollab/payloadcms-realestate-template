@@ -195,6 +195,26 @@ for (const tableName of Object.keys(db.tables)) {
 from `db.tables` + `information_schema.columns` rather than trusting
 migrations by inspection alone.)
 
+**The RU/KZ localization migrations were only ever run against an
+empty database — don't run them against production without a
+backfill migration first.** `20260905_110753_prepare_localized_versions`
+and `20260905_110857_enable_localization` (both under
+`src/migrations/`) turn on Payload localization for roughly 150
+fields across every listing collection plus the `categories`/`forms`/
+`search` plugin-managed tables (localization pulls those in as a side
+effect too). Turning on `localized: true` on an existing field moves
+its data into new locale-keyed tables/columns — Payload does not
+backfill existing rows into the new `ru` slot for you. Every run of
+these two migrations so far has been against a fresh dev DB with no
+real rows in any of those fields, so this has never actually been
+exercised against data that needed preserving. Running them against a
+database that already has production content in any of those ~150
+fields **will lose that content** unless someone writes a proper
+data-migration step first (read the old un-localized column, write it
+back as the `ru` value in the new localized shape, then run these two
+migrations). Do not run `pnpm payload migrate` with these two pending
+against a database you care about without doing that first.
+
 **Russian pluralization needs `pluralizeRu`, not a binary ternary.**
 Russian has three plural forms selected by the count's last digit(s)
 (one/few/many — e.g. "1 объект", "3 объекта", "5 объектов"), not two
