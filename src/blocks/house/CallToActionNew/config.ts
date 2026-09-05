@@ -21,18 +21,21 @@ export const CallToActionNewBlock: Block = {
       name: 'label',
       type: 'text',
       required: true,
+      localized: true,
       defaultValue: 'Want to Book a Call?',
     },
     {
       name: 'title',
       type: 'text',
       required: true,
+      localized: true,
       defaultValue: 'Ready to make your step in real estate? Book Now.',
     },
     {
       name: 'buttonText',
       type: 'text',
       required: true,
+      localized: true,
       defaultValue: 'View Properties',
     },
     {

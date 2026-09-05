@@ -21,12 +21,14 @@ export const AboutHeroBlock: Block = {
       name: 'label',
       type: 'text',
       required: true,
+      localized: true,
       defaultValue: 'About us',
     },
     {
       name: 'title',
       type: 'text',
       required: true,
+      localized: true,
       defaultValue: 'Connect with our experts and bring your Real Estate ideas to life',
     },
     {

@@ -15,9 +15,9 @@ export const QuickNavBlock: Block = {
       admin: { hidden: true },
       defaultValue: 'quick-nav',
     },
-    { name: 'label', type: 'text', label: 'Маленький лейбл сверху' },
-    { name: 'title', type: 'text', label: 'Заголовок', required: true },
-    { name: 'subtitle', type: 'textarea', label: 'Подзаголовок' },
+    { name: 'label', type: 'text', localized: true, label: 'Маленький лейбл сверху' },
+    { name: 'title', type: 'text', localized: true, label: 'Заголовок', required: true },
+    { name: 'subtitle', type: 'textarea', localized: true, label: 'Подзаголовок' },
     {
       name: 'items',
       type: 'array',
@@ -46,8 +46,8 @@ export const QuickNavBlock: Block = {
           required: true,
           defaultValue: 'home',
         },
-        { name: 'title', type: 'text', label: 'Заголовок карточки', required: true },
-        { name: 'description', type: 'text', label: 'Короткое описание' },
+        { name: 'title', type: 'text', localized: true, label: 'Заголовок карточки', required: true },
+        { name: 'description', type: 'text', localized: true, label: 'Короткое описание' },
         { name: 'href', type: 'text', label: 'URL', required: true },
         {
           name: 'accent',

@@ -15,9 +15,9 @@ export const HeroSearchBlock: Block = {
       admin: { hidden: true },
       defaultValue: 'hero-search',
     },
-    { name: 'badge', type: 'text', label: 'Маленький лейбл сверху' },
-    { name: 'headline', type: 'text', label: 'Заголовок', required: true },
-    { name: 'subheadline', type: 'textarea', label: 'Подзаголовок' },
+    { name: 'badge', type: 'text', localized: true, label: 'Маленький лейбл сверху' },
+    { name: 'headline', type: 'text', localized: true, label: 'Заголовок', required: true },
+    { name: 'subheadline', type: 'textarea', localized: true, label: 'Подзаголовок' },
     {
       name: 'image',
       type: 'upload',

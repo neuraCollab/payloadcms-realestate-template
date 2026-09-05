@@ -24,12 +24,14 @@ export const AgentsBlock: Block = {
       name: 'label',
       type: 'text',
       required: true,
+      localized: true,
       defaultValue: 'Agents',
     },
     {
       name: 'title',
       type: 'text',
       required: true,
+      localized: true,
       defaultValue: 'Meet our exceptional agents for a seamless experience',
     },
     {
