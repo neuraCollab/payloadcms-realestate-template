@@ -67,9 +67,9 @@ export default async function RootLayout({
       <body>
         <NextIntlClientProvider>
           <Providers>
-            <Header />
+            <Header locale={locale} />
             {children}
-            <Footer />
+            <Footer locale={locale} />
             <CookieConsent />
             <CompareTray />
           </Providers>

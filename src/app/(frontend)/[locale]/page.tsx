@@ -24,31 +24,36 @@ import { getConfiguredProviders } from '@/lib/auth/oauth/providers'
 // без релиза кода.
 export const dynamic = 'force-dynamic'
 
-const fetchHomeSeo = async () => {
+const fetchHomeSeo = async (locale: string) => {
   try {
     const payload = await getPayload({ config })
-    const seo = await payload.findGlobal({ slug: 'home-seo' as any, depth: 0 })
+    const seo = await payload.findGlobal({ slug: 'home-seo' as any, depth: 0, locale: locale as any })
     return seo as any
   } catch {
     return null
   }
 }
 
-const fetchLegal = async () => {
+const fetchLegal = async (locale: string) => {
   try {
     const payload = await getPayload({ config })
-    const legal = await payload.findGlobal({ slug: 'legal-info' as any, depth: 0 })
+    const legal = await payload.findGlobal({ slug: 'legal-info' as any, depth: 0, locale: locale as any })
     return legal as any
   } catch {
     return null
   }
 }
 
-export default async function HomePage() {
+export default async function HomePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
   const hdrs = await headers()
   const [seo, legal, detectedCity] = await Promise.all([
-    fetchHomeSeo(),
-    fetchLegal(),
+    fetchHomeSeo(locale),
+    fetchLegal(locale),
     // Город по IP. Промис гонится параллельно — даже если ip-api ляжет
     // на 1.5 сек, общий рендер не блокируется (Promise.all дожидается).
     detectCityFromRequestHeaders(hdrs),
@@ -94,8 +99,13 @@ export default async function HomePage() {
   )
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  const seo = await fetchHomeSeo()
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const seo = await fetchHomeSeo(locale)
   return {
     title: seo?.metaTitle || 'Demo Realty — недвижимость',
     description:
