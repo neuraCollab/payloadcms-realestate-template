@@ -1,5 +1,5 @@
 import React from 'react'
-import { getPayload } from 'payload'
+import { getPayload, type TypedLocale } from 'payload'
 import configPromise from '@payload-config'
 import { MapNearbyClient } from './MapNearbyClient'
 import type { PropertyMapItem } from '@/components/PropertyMap'
@@ -8,7 +8,7 @@ import type { PropertyMapItem } from '@/components/PropertyMap'
 // отдаёт их в клиентский остров, который показывает карту и кнопку
 // «Показать объекты рядом» с запросом геолокации только по клику
 // (бриф п.5).
-export const MapNearby = async () => {
+export const MapNearby = async ({ locale }: { locale: string }) => {
   const payload = await getPayload({ config: configPromise })
   let items: PropertyMapItem[] = []
   try {
@@ -19,6 +19,7 @@ export const MapNearby = async () => {
       limit: 30,
       depth: 1,
       pagination: false,
+      locale: locale as TypedLocale,
     })
     items = (res.docs as any[])
       .map((d) => ({

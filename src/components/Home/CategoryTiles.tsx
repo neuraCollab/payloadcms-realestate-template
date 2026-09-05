@@ -1,5 +1,5 @@
 import React from 'react'
-import { getPayload } from 'payload'
+import { getPayload, type TypedLocale } from 'payload'
 import configPromise from '@payload-config'
 import { CategoryTileClient, type TilePreview, type TileIconKey } from './CategoryTileClient'
 
@@ -57,6 +57,7 @@ const TILES: TileSpec[] = [
 const fetchPreview = async (
   payload: Awaited<ReturnType<typeof getPayload>>,
   spec: TileSpec,
+  locale: string,
 ): Promise<TilePreview> => {
   const where: any =
     spec.collection === 'residential-complexes' ? {} : { status: { equals: 'active' } }
@@ -69,6 +70,7 @@ const fetchPreview = async (
       limit: 1,
       depth: 1,
       pagination: false,
+      locale: locale as TypedLocale,
     })
     const doc: any = res.docs?.[0]
     const docImage: string | null = doc?.images?.[0]?.image?.url ?? null
@@ -86,9 +88,9 @@ const fetchPreview = async (
   }
 }
 
-export const CategoryTiles = async () => {
+export const CategoryTiles = async ({ locale }: { locale: string }) => {
   const payload = await getPayload({ config: configPromise })
-  const previews = await Promise.all(TILES.map((t) => fetchPreview(payload, t)))
+  const previews = await Promise.all(TILES.map((t) => fetchPreview(payload, t, locale)))
 
   return (
     <section className="px-4 py-10 md:py-14">

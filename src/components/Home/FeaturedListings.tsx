@@ -1,13 +1,13 @@
 import React from 'react'
 import { Link } from '@/i18n/navigation'
-import { getPayload } from 'payload'
+import { getPayload, type TypedLocale } from 'payload'
 import configPromise from '@payload-config'
 import { ArrowRight } from 'lucide-react'
 import { PropertyCard } from '@/components/PropertyCard'
 
 // «Витрина объектов» главной — 8 свежих активных квартир.
 // Кнопка «Все объекты» справа вверху (см. бриф п.2.4).
-export const FeaturedListings = async () => {
+export const FeaturedListings = async ({ locale }: { locale: string }) => {
   const payload = await getPayload({ config: configPromise })
   let docs: any[] = []
   try {
@@ -18,6 +18,7 @@ export const FeaturedListings = async () => {
       limit: 8,
       depth: 1,
       pagination: false,
+      locale: locale as TypedLocale,
     })
     docs = res.docs
   } catch {

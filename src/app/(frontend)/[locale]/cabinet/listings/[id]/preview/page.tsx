@@ -55,6 +55,7 @@ export default async function PreviewListingPage({ params, searchParams }: Props
       id,
       depth: 2,
       overrideAccess: true,
+      locale: 'ru',
     })
   } catch {
     /* notFound */

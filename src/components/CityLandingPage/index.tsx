@@ -14,6 +14,7 @@ import { formatPrice } from '@/utilities/formatPrice'
 
 interface Props {
   city: any
+  locale: string
 }
 
 interface Counters {
@@ -24,7 +25,7 @@ interface Counters {
 }
 
 
-export const CityLandingPage: React.FC<Props> = async ({ city }) => {
+export const CityLandingPage: React.FC<Props> = async ({ city, locale }) => {
   const payload = await getPayload({ config })
 
   // Counts per category for this city

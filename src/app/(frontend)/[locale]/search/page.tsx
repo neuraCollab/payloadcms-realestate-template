@@ -1,6 +1,6 @@
 import type { Metadata } from 'next/types'
 import configPromise from '@payload-config'
-import { getPayload } from 'payload'
+import { getPayload, type TypedLocale } from 'payload'
 import React from 'react'
 
 import { Link } from '@/i18n/navigation'
@@ -18,6 +18,7 @@ const CATEGORIES = ['flats', 'commercial', 'lands', 'residential-complexes'] as 
 type Category = (typeof CATEGORIES)[number]
 
 type Args = {
+  params: Promise<{ locale: string }>
   searchParams: Promise<{
     q?: string
     category?: string
@@ -144,7 +145,8 @@ const toHit = (doc: any, collection: Category): SearchHit => {
   }
 }
 
-export default async function Page({ searchParams: searchParamsPromise }: Args) {
+export default async function Page({ params, searchParams: searchParamsPromise }: Args) {
+  const { locale } = await params
   const sp = await searchParamsPromise
   const payload = await getPayload({ config: configPromise })
 
@@ -178,6 +180,7 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
             depth: 0,
             limit: 200,
             sort: '-createdAt',
+            locale: locale as TypedLocale,
           })
           prefilterIds[c] = (r.docs as Array<{ id: number }>).map((d) => Number(d.id))
         }),
@@ -202,6 +205,7 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
             where: { id: { in: ids } },
             depth: 1,
             limit: ids.length,
+            locale: locale as TypedLocale,
           })
           const m = new Map<number, any>()
           for (const d of r.docs) m.set(Number(d.id), d)
@@ -240,6 +244,7 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
             sort: '-createdAt',
             limit: perLimit,
             depth: 1,
+            locale: locale as TypedLocale,
           })
           .then((r) => ({ c, docs: r.docs, totalDocs: r.totalDocs }))
           .catch(() => ({ c, docs: [] as any[], totalDocs: 0 })),

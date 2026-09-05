@@ -73,9 +73,9 @@ export default async function HomePage({
         subtitle={seo?.subtitle}
         defaultCity={detectedCity ?? undefined}
       />
-      <CategoryTiles />
+      <CategoryTiles locale={locale} />
       <WhyUs />
-      <FeaturedListings />
+      <FeaturedListings locale={locale} />
 
       {/* «Недавно вы смотрели» — клиентский, прячется если localStorage пуст. */}
       <section className="px-4 py-6 md:py-8">
@@ -84,7 +84,7 @@ export default async function HomePage({
         </div>
       </section>
 
-      <MapNearby />
+      <MapNearby locale={locale} />
 
       {/* Нишевые SEO-блоки — H2 секции с ключевыми словами + CTA. */}
       {Array.isArray(seo?.seoBlocks) && seo.seoBlocks.length > 0 ? (
